@@ -91,3 +91,12 @@ Todas las tablas tienen RLS activado. Política general:
 - `purchases` / `subscriptions`: el usuario ve solo las suyas; admin ve todas.
 - `affiliates` / `affiliate_referrals`: el afiliado ve solo lo suyo; admin ve todo.
 - `suggestions`: cualquiera puede insertar; solo admin puede leer/actualizar.
+
+## Fix aplicado — RLS recursion (10/07/2026)
+Las políticas que verificaban `role = 'admin'` con un subquery directo a `profiles`
+generaban recursión infinita (error 42P17), porque consultar `profiles` disparaba
+sus propias políticas, que volvían a consultar `profiles`.
+
+Solución: función `is_admin()` con `security definer`, que bypassea RLS al chequear
+el rol. Todas las políticas de tipo `*_admin_all` ahora usan `public.is_admin()`
+en vez de un subquery directo.
