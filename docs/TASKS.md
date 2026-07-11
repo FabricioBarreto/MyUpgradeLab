@@ -1,14 +1,14 @@
-# TASKS — UpgradeLab
+﻿# TASKS â€” UpgradeLab
 
 ## To Do
 - [ ] Definir precios y % de afiliados (bloqueante para checkout)
-- [ ] Crear proyecto en Supabase y conectar variables de entorno
+- [x] Crear proyecto en Supabase y conectar variables de entorno (10/07/2026)
 - [ ] Crear schema base de datos (ver DATABASE.md)
 - [ ] Auth (registro/login) con Supabase
-- [ ] Landing pública + catálogo de cursos
-- [ ] Integración Mercado Pago (Checkout Pro)
-- [ ] Integración Mercado Pago (Suscripciones)
-- [ ] Panel admin básico
+- [ ] Landing pÃºblica + catÃ¡logo de cursos
+- [ ] IntegraciÃ³n Mercado Pago (Checkout Pro)
+- [ ] IntegraciÃ³n Mercado Pago (Suscripciones)
+- [ ] Panel admin bÃ¡sico
 - [ ] Sistema de afiliados
 - [ ] Formulario de sugerencias
 - [ ] Emails transaccionales (SMTP)
