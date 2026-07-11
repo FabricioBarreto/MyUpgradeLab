@@ -4,7 +4,7 @@
 - [ ] Definir precios y % de afiliados (bloqueante para checkout)
 - [x] Crear proyecto en Supabase y conectar variables de entorno (10/07/2026)
 - [x] Crear schema base de datos (ver DATABASE.md) (10/07/2026)
-- [ ] Auth (registro/login) con Supabase
+- [x] Auth (registro/login) con Supabase (10/07/2026)
 - [ ] Landing pÃºblica + catÃ¡logo de cursos
 - [ ] IntegraciÃ³n Mercado Pago (Checkout Pro)
 - [ ] IntegraciÃ³n Mercado Pago (Suscripciones)
