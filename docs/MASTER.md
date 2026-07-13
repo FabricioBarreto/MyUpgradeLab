@@ -29,10 +29,12 @@ UpgradeLab
 - Ante ambigüedad, se prioriza simplicidad y lo que ya soporta Supabase/Vercel de fábrica
 
 ## Reglas de negocio definidas
-- Comisión de afiliados: [DEFINIR %]
-- Comisión recurrente o solo primer pago: [DEFINIR]
-- Precio suscripción mensual: [DEFINIR]
-- Precio PDFs individuales: [DEFINIR]
+- Moneda: todos los precios se manejan en ARS (pesos argentinos), no en USD, porque el cobro es via Mercado Pago Argentina.
+- Precio suscripción mensual: $7.999 ARS/mes (referencia: por debajo de Netflix Estandar ~$21.000 y por encima de Spotify Individual ~$5.000, ajustado a que UpgradeLab es un catalogo mas chico y de nicho).
+- Precio PDFs individuales: $3.000-$8.000 ARS segun profundidad del curso (recursos simples en la parte baja, cursos mas extensos de programacion/IA en la parte alta). Definir precio por curso al cargarlo en el panel admin, siempre por debajo del valor de la suscripcion mensual.
+- Comisión de afiliados: 30% por venta (suscripcion o PDF individual).
+- Comisión recurrente o solo primer pago: recurrente, se paga mientras el referido mantenga la suscripcion activa (la tabla `affiliate_referrals` ya soporta esto via `source_id` apuntando a `subscriptions`).
+- Nota: falta confirmar el % de comisión exacto que cobra Mercado Pago Checkout Pro para Argentina antes de cerrar margenes finales (consultar panel de Mercado Pago).
 
 ## Estructura de carpetas (referencia)
 Ver DATABASE.md para schema completo.
