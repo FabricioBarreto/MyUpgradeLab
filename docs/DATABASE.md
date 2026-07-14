@@ -101,12 +101,30 @@ Unique (user_id, course_id).
 - Comunidad: no se modela en base de datos por ahora, es un link estatico a un grupo externo (WhatsApp/Discord) por categoria, mostrado en el dashboard.
 
 ## Pendiente de diseño
-- Mecanismo de descuento para "referidos casuales" (rama 2 del programa de afiliados en MASTER.md): falta definir si es un cupon aplicado en el checkout de Mercado Pago o un campo en `affiliate_referrals`. Se define al construir el checkout.
+- Mecanismo de descuento para "referidos casuales" (rama 2 del programa de afiliados en MASTER.md): falta definir si es un cupon aplicado en el checkout de Mercado Pago (`coupon_code` de la preferencia) o un campo en `affiliate_referrals`. Se define al construir esa rama.
+
+## Mercado Pago — Checkout Pro (implementado 14/07/2026)
+Compra individual: `src/lib/actions/checkout.ts` crea una `purchase` en estado `pending` y una preferencia
+de Checkout Pro (`external_reference` = id de la purchase). El webhook en
+`src/app/api/webhooks/mercadopago/route.ts` recibe la notificacion, busca el pago con la API de Payments,
+y actualiza el status de la purchase (`approved` \| `rejected` \| `refunded` \| `pending`) usando un cliente
+Supabase con service role (`src/lib/supabase/service.ts`), porque el webhook no tiene sesion de usuario.
+
+**Pendiente antes de que esto funcione en producción/pruebas reales:**
+- Completar `MP_ACCESS_TOKEN`, `MP_PUBLIC_KEY` y `MP_WEBHOOK_SECRET` en `.env.local` con las credenciales
+  reales de la cuenta de Mercado Pago (Tus integraciones > credenciales / webhooks).
+- Completar `SUPABASE_SERVICE_ROLE_KEY` (Supabase > Project Settings > API > service_role).
+- Configurar la URL de notificaciones en el panel de Mercado Pago apuntando a
+  `{NEXT_PUBLIC_APP_URL}/api/webhooks/mercadopago` (o via `notification_url` de la preferencia, ya seteado).
+- Verificar en Supabase que la tabla `purchases` tenga una policy de **INSERT** que permita a un usuario
+  autenticado crear su propia fila (`user_id = auth.uid()`). La documentacion de RLS solo confirma
+  lectura ("el usuario ve solo las suyas"); si no existe la policy de insert, el checkout va a fallar
+  silenciosamente al crear la purchase.
 
 ## RLS (Row Level Security)
 Todas las tablas tienen RLS activado. Política general:
 - `courses`: lectura pública si `is_active = true`; escritura solo admin.
-- `purchases` / `subscriptions`: el usuario ve solo las suyas; admin ve todas.
+- `purchases` / `subscriptions`: el usuario ve solo las suyas y puede insertar las suyas (`user_id = auth.uid()`); admin ve todas.
 - `affiliates` / `affiliate_referrals`: el afiliado ve solo lo suyo; admin ve todo.
 - `course_progress`: el usuario ve y edita solo lo suyo; admin ve todo.
 - `suggestions`: cualquiera puede insertar; solo admin puede leer/actualizar.
