@@ -9,7 +9,6 @@
 - [ ] Revision trimestral de precios (proceso de negocio, no requiere codigo — ver regla en MASTER.md)
 - [ ] Formulario de sugerencias
 - [ ] Emails transaccionales (SMTP) — ej. confirmar compra aprobada
-- [ ] Deploy inicial en Vercel
 
 ## In Progress
 - [ ] Integracion Mercado Pago (Suscripciones) — incluir periodo de prueba de 7 dias (free_trial en preapproval). App "MyUpgradeLab" creada en panel MP (16/07/2026), credenciales de prueba cargadas. Codigo implementado (16/07/2026): `subscribe.ts` (preapproval ad-hoc + free_trial), webhook extendido para `subscription_preapproval`, boton de suscripcion en dashboard. Falta: configurar webhook secret de esta app en el panel MP (Notificaciones > Webhooks) y completar un pago de prueba con la cuenta compradora de test.
@@ -23,3 +22,4 @@
 - [x] Definir precios y % de afiliados (13/07/2026)
 - [x] Landing publica + catalogo de cursos (13/07/2026)
 - [x] Integracion Mercado Pago (Checkout Pro) — compra individual, webhook y dashboard de compras (14/07/2026). Pendiente de configurar credenciales reales, ver DATABASE.md.
+- [x] Deploy inicial en Vercel (24/07/2026) — https://my-upgrade-lab.vercel.app
