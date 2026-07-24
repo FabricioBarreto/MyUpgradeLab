@@ -3,6 +3,17 @@ import { Payment, PreApproval } from "mercadopago"
 import { WebhookSignatureValidator, InvalidWebhookSignatureError } from "mercadopago"
 import { getMercadoPagoConfig, getMercadoPagoWebhookSecret } from "@/lib/mercadopago"
 import { createServiceClient } from "@/lib/supabase/service"
+import { sendPurchaseApprovedEmail, sendSubscriptionActiveEmail } from "@/lib/email"
+
+// Los emails transaccionales nunca deben tirar abajo el webhook: si el envio
+// falla (SMTP caido, credenciales mal, etc.) lo logueamos y seguimos.
+async function sendEmailSafely(fn: () => Promise<void>) {
+  try {
+    await fn()
+  } catch (err) {
+    console.error("Error enviando email transaccional", err)
+  }
+}
 
 // Mapea el status de un pago de Mercado Pago al status que usamos en `purchases`.
 function mapPaymentStatus(mpStatus: string | undefined): string {
@@ -89,10 +100,21 @@ export async function POST(request: NextRequest) {
         return NextResponse.json({ received: true })
       }
 
+      // Traemos el estado previo antes de actualizar para saber si esta
+      // notificacion es la que recien aprueba el pago (y no un reenvio de
+      // MP de un pago que ya estaba approved).
+      const { data: existingPurchase } = await supabase
+        .from("purchases")
+        .select("status, user_id, courses(title, resource_url)")
+        .eq("id", purchaseId)
+        .maybeSingle()
+
+      const newStatus = mapPaymentStatus(payment.status)
+
       const { error } = await supabase
         .from("purchases")
         .update({
-          status: mapPaymentStatus(payment.status),
+          status: newStatus,
           mp_payment_id: String(payment.id),
         })
         .eq("id", purchaseId)
@@ -100,6 +122,25 @@ export async function POST(request: NextRequest) {
       if (error) {
         console.error("Error actualizando purchase desde webhook", error)
         return NextResponse.json({ error: "db error" }, { status: 500 })
+      }
+
+      if (existingPurchase && existingPurchase.status !== "approved" && newStatus === "approved") {
+        const course = existingPurchase.courses as unknown as {
+          title: string
+          resource_url: string | null
+        } | null
+        const { data: userData } = await supabase.auth.admin.getUserById(existingPurchase.user_id)
+        const email = userData?.user?.email
+
+        if (email && course) {
+          await sendEmailSafely(() =>
+            sendPurchaseApprovedEmail({
+              to: email,
+              courseTitle: course.title,
+              resourceUrl: course.resource_url,
+            })
+          )
+        }
       }
     } else {
       const preapprovalClient = new PreApproval(getMercadoPagoConfig("suscripciones"))
@@ -110,6 +151,12 @@ export async function POST(request: NextRequest) {
         console.error("Suscripcion de Mercado Pago sin external_reference", preapproval.id)
         return NextResponse.json({ received: true })
       }
+
+      const { data: existingSubscription } = await supabase
+        .from("subscriptions")
+        .select("status, user_id")
+        .eq("id", subscriptionId)
+        .maybeSingle()
 
       const status = mapSubscriptionStatus(preapproval.status)
       const { error } = await supabase
@@ -123,6 +170,15 @@ export async function POST(request: NextRequest) {
       if (error) {
         console.error("Error actualizando subscription desde webhook", error)
         return NextResponse.json({ error: "db error" }, { status: 500 })
+      }
+
+      if (existingSubscription && existingSubscription.status !== "active" && status === "active") {
+        const { data: userData } = await supabase.auth.admin.getUserById(existingSubscription.user_id)
+        const email = userData?.user?.email
+
+        if (email) {
+          await sendEmailSafely(() => sendSubscriptionActiveEmail({ to: email }))
+        }
       }
     }
 
