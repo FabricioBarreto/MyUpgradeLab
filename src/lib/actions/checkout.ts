@@ -52,7 +52,7 @@ export async function createCheckoutPreference(formData: FormData) {
   }
 
   const appUrl = process.env.NEXT_PUBLIC_APP_URL!
-  const preferenceClient = new Preference(getMercadoPagoConfig())
+  const preferenceClient = new Preference(getMercadoPagoConfig('checkout'))
 
   let initPoint: string | undefined
 

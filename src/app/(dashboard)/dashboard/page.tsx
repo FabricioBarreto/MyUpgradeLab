@@ -2,6 +2,7 @@ import Link from "next/link"
 import { redirect } from "next/navigation"
 import { createClient } from "@/lib/supabase/server"
 import { signOut } from "@/lib/actions/auth"
+import { createSubscription } from "@/lib/actions/subscribe"
 import { categoryLabel, formatPrice } from "@/lib/format"
 
 const PURCHASE_STATUS_LABELS: Record<string, string> = {
@@ -11,7 +12,20 @@ const PURCHASE_STATUS_LABELS: Record<string, string> = {
   refunded: "Reembolsado",
 }
 
-export default async function DashboardPage() {
+const SUBSCRIPTION_STATUS_LABELS: Record<string, string> = {
+  pending: "Pendiente de pago",
+  active: "Activa",
+  cancelled: "Cancelada",
+  paused: "Pausada",
+  past_due: "Pago vencido",
+}
+
+export default async function DashboardPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ error?: string }>
+}) {
+  const { error } = await searchParams
   const supabase = await createClient()
   const {
     data: { user },
@@ -27,10 +41,65 @@ export default async function DashboardPage() {
     .eq("user_id", user.id)
     .order("created_at", { ascending: false })
 
+  const { data: subscription } = await supabase
+    .from("subscriptions")
+    .select("*")
+    .eq("user_id", user.id)
+    .order("created_at", { ascending: false })
+    .limit(1)
+    .maybeSingle()
+
   return (
     <div className="mx-auto max-w-2xl px-4 py-16">
       <h1 className="text-2xl font-semibold text-neutral-900">Dashboard</h1>
       <p className="mt-2 text-neutral-600">Hola, {user.email}</p>
+
+      {error && (
+        <p className="mt-4 rounded-md bg-red-50 px-4 py-2 text-sm text-red-700">{error}</p>
+      )}
+
+      <div className="mt-8 rounded-lg border border-neutral-200 bg-white p-4">
+        <h2 className="text-lg font-medium text-neutral-900">Suscripcion</h2>
+        {subscription ? (
+          <div className="mt-3 flex items-center justify-between">
+            <span
+              className={
+                subscription.status === "active"
+                  ? "rounded-full bg-green-100 px-2 py-1 text-xs text-green-700"
+                  : subscription.status === "cancelled" || subscription.status === "past_due"
+                    ? "rounded-full bg-red-100 px-2 py-1 text-xs text-red-700"
+                    : "rounded-full bg-neutral-100 px-2 py-1 text-xs text-neutral-500"
+              }
+            >
+              {SUBSCRIPTION_STATUS_LABELS[subscription.status] ?? subscription.status}
+            </span>
+            {(subscription.status === "cancelled" || subscription.status === "past_due") && (
+              <form action={createSubscription}>
+                <button
+                  type="submit"
+                  className="rounded-md bg-neutral-900 px-4 py-2 text-sm font-medium text-white hover:bg-neutral-800"
+                >
+                  Suscribirme de nuevo
+                </button>
+              </form>
+            )}
+          </div>
+        ) : (
+          <div className="mt-3">
+            <p className="text-sm text-neutral-600">
+              Acceso completo a todo el catalogo, con 7 dias de prueba gratis.
+            </p>
+            <form action={createSubscription} className="mt-3">
+              <button
+                type="submit"
+                className="rounded-md bg-neutral-900 px-4 py-2 text-sm font-medium text-white hover:bg-neutral-800"
+              >
+                Suscribirme
+              </button>
+            </form>
+          </div>
+        )}
+      </div>
 
       <div className="mt-8">
         <h2 className="text-lg font-medium text-neutral-900">Mis compras</h2>

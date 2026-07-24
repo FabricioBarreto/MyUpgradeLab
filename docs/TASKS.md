@@ -1,7 +1,7 @@
 # TASKS — UpgradeLab
 
 ## To Do
-- [ ] Integracion Mercado Pago (Suscripciones) — incluir periodo de prueba de 7 dias (free_trial en preapproval)
+- [ ] Crear app dedicada de Checkout Pro en el panel de Mercado Pago y cargar credenciales reales en `MP_ACCESS_TOKEN_CHECKOUT` / `MP_WEBHOOK_SECRET_CHECKOUT` (quedó separada de la app de Suscripciones, ver nota en MASTER.md)
 - [ ] Sistema de afiliados — dos ramas: comision cash para promotores (30%) + descuento para el referido casual (doble beneficio). La rama de descuento depende de agregar soporte de cupon en el checkout (coupon_code de la preferencia).
 - [ ] Progreso y certificado por curso (marcar completado + certificado automatico) — independiente de Mercado Pago, se puede empezar ahora
 - [ ] Canal de comunidad por categoria (link a WhatsApp/Discord en el dashboard) — independiente de Mercado Pago, se puede empezar ahora
@@ -12,6 +12,7 @@
 - [ ] Deploy inicial en Vercel
 
 ## In Progress
+- [ ] Integracion Mercado Pago (Suscripciones) — incluir periodo de prueba de 7 dias (free_trial en preapproval). App "MyUpgradeLab" creada en panel MP (16/07/2026), credenciales de prueba cargadas. Codigo implementado (16/07/2026): `subscribe.ts` (preapproval ad-hoc + free_trial), webhook extendido para `subscription_preapproval`, boton de suscripcion en dashboard. Falta: configurar webhook secret de esta app en el panel MP (Notificaciones > Webhooks) y completar un pago de prueba con la cuenta compradora de test.
 
 ## Done
 - [x] Setup inicial Next.js + estructura de carpetas + docs
