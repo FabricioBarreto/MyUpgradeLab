@@ -3,7 +3,8 @@ import { redirect } from "next/navigation"
 import { createClient } from "@/lib/supabase/server"
 import { signOut } from "@/lib/actions/auth"
 import { createSubscription } from "@/lib/actions/subscribe"
-import { categoryLabel, formatPrice } from "@/lib/format"
+import { CATEGORY_LABELS, categoryLabel, formatPrice } from "@/lib/format"
+import { COMMUNITY_LINKS } from "@/lib/community"
 
 const PURCHASE_STATUS_LABELS: Record<string, string> = {
   pending: "Pendiente",
@@ -48,6 +49,23 @@ export default async function DashboardPage({
     .order("created_at", { ascending: false })
     .limit(1)
     .maybeSingle()
+
+  // Categorias a las que el usuario tiene acceso: todas si tiene suscripcion
+  // activa, o solo las de sus compras aprobadas.
+  const isSubscribed = subscription?.status === "active"
+  const purchasedCategories = new Set(
+    (purchases ?? [])
+      .filter((p) => p.status === "approved")
+      .map((p) => (p.courses as { category: string | null } | null)?.category)
+      .filter((c): c is string => Boolean(c))
+  )
+  const accessibleCategories = isSubscribed
+    ? new Set(Object.keys(CATEGORY_LABELS))
+    : purchasedCategories
+
+  const communityCategories = Object.keys(COMMUNITY_LINKS).filter((category) =>
+    accessibleCategories.has(category)
+  )
 
   return (
     <div className="mx-auto max-w-2xl px-4 py-16">
@@ -160,6 +178,33 @@ export default async function DashboardPage({
           </p>
         )}
       </div>
+
+      {communityCategories.length > 0 && (
+        <div className="mt-8">
+          <h2 className="text-lg font-medium text-neutral-900">Comunidad</h2>
+          <p className="mt-1 text-sm text-neutral-500">
+            Sumate al grupo de las categorias a las que tenes acceso.
+          </p>
+          <div className="mt-4 space-y-3">
+            {communityCategories.map((category) => (
+              <div
+                key={category}
+                className="flex items-center justify-between rounded-lg border border-neutral-200 bg-white p-4"
+              >
+                <span className="font-medium text-neutral-900">{categoryLabel(category)}</span>
+                <a
+                  href={COMMUNITY_LINKS[category]}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="rounded-md bg-neutral-900 px-3 py-1.5 text-sm font-medium text-white hover:bg-neutral-800"
+                >
+                  Unirme
+                </a>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
 
       <form action={signOut} className="mt-10">
         <button

@@ -10,7 +10,7 @@ export async function signUp(formData: FormData) {
   const fullName = formData.get('fullName') as string
 
   if (password !== confirmPassword) {
-    redirect(`/register?error=${encodeURIComponent('Las contrasenas no coinciden')}`)
+    redirect(`/register?error=${encodeURIComponent('Las contraseñas no coinciden')}`)
   }
 
   const supabase = await createClient()
