@@ -60,6 +60,19 @@ export default async function RegisterPage({
               className="w-full rounded-md border border-neutral-300 px-3 py-2 text-sm focus:border-neutral-900 focus:outline-none"
             />
           </div>
+          <div className="space-y-1">
+            <label htmlFor="confirmPassword" className="text-sm font-medium text-neutral-700">
+              Confirmar contrasena
+            </label>
+            <input
+              id="confirmPassword"
+              name="confirmPassword"
+              type="password"
+              required
+              minLength={6}
+              className="w-full rounded-md border border-neutral-300 px-3 py-2 text-sm focus:border-neutral-900 focus:outline-none"
+            />
+          </div>
           <button
             type="submit"
             className="w-full rounded-md bg-neutral-900 py-2 text-sm font-medium text-white hover:bg-neutral-800"
