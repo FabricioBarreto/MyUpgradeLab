@@ -148,12 +148,12 @@ export default async function DashboardPage({
                 </div>
                 {course.resource_url && (
                   <a
-                    href={course.resource_url}
+                    href={`/api/cursos/${course.slug}/leer`}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="text-sm font-medium text-neutral-900 hover:underline"
                   >
-                    Acceder
+                    Leer
                   </a>
                 )}
               </div>
@@ -169,6 +169,7 @@ export default async function DashboardPage({
           <div className="mt-4 space-y-3">
             {purchases.map((purchase) => {
               const course = purchase.courses as {
+                slug: string
                 title: string
                 category: string | null
                 resource_url: string | null
@@ -199,12 +200,12 @@ export default async function DashboardPage({
                     </span>
                     {purchase.status === "approved" && course?.resource_url && (
                       <a
-                        href={course.resource_url}
+                        href={`/api/cursos/${course.slug}/leer`}
                         target="_blank"
                         rel="noopener noreferrer"
                         className="text-sm font-medium text-neutral-900 hover:underline"
                       >
-                        Acceder
+                        Descargar
                       </a>
                     )}
                   </div>
