@@ -67,6 +67,17 @@ export default async function DashboardPage({
     accessibleCategories.has(category)
   )
 
+  // Con suscripcion activa el acceso es a todo el catalogo, no solo a lo
+  // que aparece en `purchases` (esa tabla es historial de compras
+  // individuales). Traemos todos los cursos activos para listarlos aca.
+  const { data: subscribedCourses } = isSubscribed
+    ? await supabase
+        .from("courses")
+        .select("*")
+        .eq("is_active", true)
+        .order("category", { ascending: true })
+    : { data: null }
+
   return (
     <div className="mx-auto max-w-2xl px-4 py-16">
       <h1 className="text-2xl font-semibold text-neutral-900">Dashboard</h1>
@@ -118,6 +129,38 @@ export default async function DashboardPage({
           </div>
         )}
       </div>
+
+      {isSubscribed && subscribedCourses && subscribedCourses.length > 0 && (
+        <div className="mt-8">
+          <h2 className="text-lg font-medium text-neutral-900">Cursos incluidos en tu suscripcion</h2>
+          <p className="mt-1 text-sm text-neutral-500">
+            Acceso completo a todo el catalogo mientras tu suscripcion este activa.
+          </p>
+          <div className="mt-4 space-y-3">
+            {subscribedCourses.map((course) => (
+              <div
+                key={course.id}
+                className="flex items-center justify-between rounded-lg border border-neutral-200 bg-white p-4"
+              >
+                <div>
+                  <p className="font-medium text-neutral-900">{course.title}</p>
+                  <p className="text-sm text-neutral-500">{categoryLabel(course.category)}</p>
+                </div>
+                {course.resource_url && (
+                  <a
+                    href={course.resource_url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-sm font-medium text-neutral-900 hover:underline"
+                  >
+                    Acceder
+                  </a>
+                )}
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
 
       <div className="mt-8">
         <h2 className="text-lg font-medium text-neutral-900">Mis compras</h2>
