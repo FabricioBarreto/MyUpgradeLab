@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>Programar con IA - Nivel 3</title>
+<style>
+  @page {
+    size: A4;
+    margin: 2.4cm 2.2cm 2.6cm 2.2cm;
+    @bottom-center {
+      content: "UpgradeLab — Programar con IA: Proyectos completos";
+      font-family: 'Helvetica', 'Arial', sans-serif;
+      font-size: 8pt;
+      color: #999;
+    }
+    @bottom-right {
+      content: counter(page);
+      font-family: 'Helvetica', 'Arial', sans-serif;
+      font-size: 8pt;
+      color: #999;
+    }
+  }
+  @page cover {
+    margin: 0;
+    @bottom-center { content: none; }
+    @bottom-right { content: none; }
+  }
+
+  * { box-sizing: border-box; }
+  body {
+    font-family: 'Helvetica', 'Arial', sans-serif;
+    color: #1a1a1a;
+    font-size: 10.5pt;
+    line-height: 1.55;
+  }
+
+  .cover {
+    page: cover;
+    height: 100vh;
+    width: 100%;
+    background: #171717;
+    color: #ffffff;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: 3cm 2.4cm;
+  }
+  .cover .brand { font-size: 14pt; font-weight: 700; letter-spacing: 0.02em; }
+  .cover .brand .dot { color: #5ec9c2; }
+  .cover .cover-main { margin-top: 6cm; }
+  .cover .kicker {
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    font-size: 9pt;
+    color: #5ec9c2;
+    margin-bottom: 0.6cm;
+  }
+  .cover h1 { font-size: 28pt; line-height: 1.15; margin: 0 0 0.5cm 0; font-weight: 700; color: #ffffff; }
+  .cover .subtitle { font-size: 12pt; color: #cfcfcf; max-width: 12cm; }
+  .cover .tools-row { margin-top: 1cm; display: flex; gap: 0.4cm; flex-wrap: wrap; }
+  .cover .tool-pill {
+    border: 1px solid #444;
+    border-radius: 999px;
+    padding: 0.18cm 0.5cm;
+    font-size: 9pt;
+    color: #e5e5e5;
+  }
+  .cover .footer-note {
+    font-size: 8.5pt;
+    color: #888;
+    border-top: 1px solid #333;
+    padding-top: 0.4cm;
+  }
+
+  h1 {
+    font-size: 19pt;
+    color: #171717;
+    margin: 0 0 0.5cm 0;
+    padding-bottom: 0.25cm;
+    border-bottom: 2px solid #171717;
+  }
+  h2 { font-size: 13.5pt; color: #171717; margin: 0.9cm 0 0.35cm 0; }
+  h3 { font-size: 11.5pt; color: #171717; margin: 0.6cm 0 0.25cm 0; }
+  p { margin: 0 0 0.35cm 0; text-align: left; }
+  ul, ol { margin: 0 0 0.4cm 0; padding-left: 0.5cm; }
+  li { margin-bottom: 0.18cm; }
+  strong { color: #171717; }
+
+  .chapter { page-break-before: always; }
+  .lead { font-size: 11.5pt; color: #444; margin-bottom: 0.6cm; }
+
+  .box {
+    background: #f2f9f8;
+    border-left: 3px solid #171717;
+    border-radius: 4px;
+    padding: 0.4cm 0.55cm;
+    margin: 0.4cm 0 0.5cm 0;
+  }
+  .box .box-label {
+    font-size: 8pt;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: #888;
+    margin-bottom: 0.15cm;
+    display: block;
+  }
+  .prompt {
+    background: #171717;
+    color: #f5f5f5;
+    border-radius: 4px;
+    padding: 0.4cm 0.55cm;
+    margin: 0.3cm 0 0.5cm 0;
+    font-family: 'Courier New', monospace;
+    font-size: 9pt;
+    line-height: 1.5;
+    white-space: pre-wrap;
+  }
+  .prompt .prompt-label {
+    display: block;
+    font-family: 'Helvetica', sans-serif;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    font-size: 7.5pt;
+    color: #5ec9c2;
+    margin-bottom: 0.15cm;
+  }
+
+  table.usecases {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 0.3cm 0 0.5cm 0;
+    font-size: 9.5pt;
+  }
+  table.usecases th {
+    background: #171717;
+    color: #fff;
+    text-align: left;
+    padding: 0.22cm 0.3cm;
+    font-size: 9pt;
+  }
+  table.usecases td {
+    border-bottom: 1px solid #e2e2e2;
+    padding: 0.22cm 0.3cm;
+    vertical-align: top;
+  }
+
+  .toc { page-break-before: always; }
+  .toc-item {
+    display: flex;
+    justify-content: space-between;
+    border-bottom: 1px dotted #ccc;
+    padding: 0.22cm 0;
+    font-size: 10.5pt;
+  }
+  .toc-item .num { color: #5ec9c2; font-weight: 700; margin-right: 0.3cm; }
+
+  .checklist { list-style: none; padding-left: 0; }
+  .checklist li { padding-left: 0.7cm; position: relative; }
+  .checklist li::before {
+    content: "✓";
+    position: absolute;
+    left: 0;
+    color: #171717;
+    font-weight: 700;
+  }
+
+  .flow-step { display: flex; gap: 0.4cm; margin-bottom: 0.4cm; }
+  .flow-step .flow-num {
+    flex: 0 0 0.9cm;
+    height: 0.9cm;
+    background: #171717;
+    color: #fff;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 11pt;
+    font-weight: 700;
+  }
+  .flow-step .flow-body { flex: 1; padding-top: 0.05cm; }
+  .flow-step .flow-body h3 { margin-top: 0; }
+
+  .callout-warning {
+    border: 1px solid #e0b400;
+    background: #fffaeb;
+    border-radius: 4px;
+    padding: 0.4cm 0.55cm;
+    margin: 0.4cm 0;
+    font-size: 9.5pt;
+  }
+
+  .glossary dt { font-weight: 700; color: #171717; margin-top: 0.3cm; }
+  .glossary dd { margin: 0.05cm 0 0 0; color: #333; }
+</style>
+</head>
+<body>
+
+<div class="cover">
+  <div class="brand">Upgrade<span class="dot">Lab</span></div>
+  <div class="cover-main">
+    <div class="kicker">Programación / IA — Nivel 3 de 3</div>
+    <h1>Programar con IA: proyectos completos</h1>
+    <p class="subtitle">Cómo llevar un proyecto real de punta a punta usando IA en cada etapa: arquitectura, construcción, testing, deploy y mantenimiento en producción.</p>
+    <div class="tools-row">
+      <span class="tool-pill">Arquitectura</span>
+      <span class="tool-pill">Deploy</span>
+      <span class="tool-pill">Producción</span>
+    </div>
+  </div>
+  <div class="footer-note">UpgradeLab · Categoría: Programación / IA · Nivel 3 — Proyectos completos</div>
+</div>
+
+<div class="toc">
+  <h1>Índice</h1>
+  <div class="toc-item"><span><span class="num">01</span>Introducción — de tareas puntuales a un proyecto completo</span></div>
+  <div class="toc-item"><span><span class="num">02</span>Planificar antes de programar: arquitectura asistida por IA</span></div>
+  <div class="toc-item"><span><span class="num">03</span>Construyendo el proyecto: backend, frontend y base de datos</span></div>
+  <div class="toc-item"><span><span class="num">04</span>Testing y calidad con IA</span></div>
+  <div class="toc-item"><span><span class="num">05</span>Deploy a producción</span></div>
+  <div class="toc-item"><span><span class="num">06</span>Mantenimiento: monitoreo, logs e iteración</span></div>
+  <div class="toc-item"><span><span class="num">07</span>Errores comunes en proyectos reales con IA</span></div>
+  <div class="toc-item"><span><span class="num">08</span>Checklist final</span></div>
+</div>
+
+<div class="chapter">
+  <h1>01 · Introducción</h1>
+  <p class="lead">Este es el cierre de la serie de Programación/IA de UpgradeLab. Si en el Nivel 1 construiste algo desde cero sin saber programar, y en el Nivel 2 aprendiste a integrar IA a tareas puntuales dentro de un proyecto ya existente, este Nivel 3 conecta todo: cómo llevar un proyecto real de punta a punta.</p>
+
+  <p>La diferencia con los niveles anteriores no es la herramienta — es la <strong>secuencia</strong>. Un proyecto completo no es una serie de prompts sueltos: es planificación, construcción por etapas, verificación constante, y decisiones que hay que sostener en el tiempo, mucho después de que la IA generó el primer borrador.</p>
+
+  <div class="box">
+    <span class="box-label">Qué vas a poder hacer al terminar esta guía</span>
+    Planificar la arquitectura de un proyecto antes de escribir la primera línea, construirlo por etapas verificables, usar IA para testing y control de calidad, hacer un deploy real a producción, y mantenerlo funcionando con monitoreo básico una vez que tiene usuarios reales.
+  </div>
+</div>
+
+<div class="chapter">
+  <h1>02 · Planificar antes de programar</h1>
+  <p class="lead">El error más común en proyectos asistidos por IA es empezar a construir antes de decidir qué se va a construir.</p>
+
+  <p>Antes de escribir código, conviene definir con la IA — como si fuera una sesión de diseño, no de programación:</p>
+
+  <ol>
+    <li><strong>Qué problema resuelve el proyecto</strong> y para quién.</li>
+    <li><strong>Las piezas principales</strong>: qué necesita guardar (base de datos), qué necesita mostrar (interfaz), con qué servicios externos se conecta (pagos, emails, storage).</li>
+    <li><strong>El alcance de la primera versión</strong> — qué queda afuera a propósito para no eternizar el lanzamiento.</li>
+  </ol>
+
+  <div class="prompt">
+    <span class="prompt-label">Prompt de planificación de ejemplo</span>Quiero construir [tu proyecto]. Los usuarios van a poder [funcion principal]. Antes de escribir codigo, ayudame a definir: que tablas necesita la base de datos, que paginas necesita el frontend, y que hay que dejar fuera de la primera version para lanzar rapido. Dame esto como un plan, no como codigo todavia.</div>
+
+  <div class="box">
+    <span class="box-label">Por que conviene este paso</span>
+    Un plan claro, aunque sea breve, evita que la IA tome decisiones de arquitectura por vos sin que te des cuenta — y te da un documento de referencia para todo el resto del proyecto.
+  </div>
+</div>
+
+<div class="chapter">
+  <h1>03 · Construyendo el proyecto</h1>
+  <p class="lead">Con el plan definido, construir por etapas es mucho más manejable que pedir "todo el proyecto" de una vez.</p>
+
+  <div class="flow-step">
+    <div class="flow-num">1</div>
+    <div class="flow-body">
+      <h3>Base de datos primero</h3>
+      <p>Definí las tablas y sus relaciones antes que nada — todo lo demás depende de esta estructura, y cambiarla después de construir encima es más costoso.</p>
+    </div>
+  </div>
+
+  <div class="flow-step">
+    <div class="flow-num">2</div>
+    <div class="flow-body">
+      <h3>Backend / lógica central</h3>
+      <p>Las funciones que hacen el trabajo real: crear, leer, actualizar datos, validar reglas de negocio.</p>
+    </div>
+  </div>
+
+  <div class="flow-step">
+    <div class="flow-num">3</div>
+    <div class="flow-body">
+      <h3>Frontend / interfaz</h3>
+      <p>Una vez que la lógica funciona, construir la interfaz sobre algo que ya se puede probar es mucho más simple que construir ambos a ciegas al mismo tiempo.</p>
+    </div>
+  </div>
+
+  <div class="flow-step">
+    <div class="flow-num">4</div>
+    <div class="flow-body">
+      <h3>Integraciones externas al final</h3>
+      <p>Pagos, emails, servicios de terceros: conviene integrarlos cuando el resto ya funciona, para poder distinguir un error propio de un error de la integración.</p>
+    </div>
+  </div>
+
+  <div class="callout-warning">
+    <strong>Ojo:</strong> pedirle a la IA "construime toda la app" en un solo prompt gigante suele generar algo que funciona a medias y es dificil de depurar, porque no hay forma de saber en que paso se rompio algo. Ir por etapas, verificando cada una, ahorra horas mas adelante.
+  </div>
+</div>
+
+<div class="chapter">
+  <h1>04 · Testing y calidad con IA</h1>
+  <p class="lead">Un proyecto completo necesita alguna forma de confirmar que sigue funcionando a medida que crece.</p>
+
+  <ul>
+    <li><strong>Probá cada etapa antes de seguir a la siguiente.</strong> No avances a construir el frontend si el backend todavía no responde lo que debería.</li>
+    <li><strong>Pedile a la IA que genere casos de prueba para los flujos críticos</strong> — registro, pago, cualquier acción que si falla, falla en serio.</li>
+    <li><strong>Probá los casos límite</strong>, no solo el camino feliz: qué pasa si un campo viene vacío, si un pago se rechaza, si dos personas hacen la misma acción al mismo tiempo.</li>
+  </ul>
+
+  <div class="prompt">
+    <span class="prompt-label">Prompt de ejemplo</span>Este es el flujo de registro de usuarios [pegar codigo o descripcion]. Decime que casos limite no estoy contemplando y por que cada uno importa.</div>
+</div>
+
+<div class="chapter">
+  <h1>05 · Deploy a producción</h1>
+  <p class="lead">Pasar de "funciona en mi computadora" a "funciona en internet, para cualquiera" tiene sus propios cuidados.</p>
+
+  <ul>
+    <li><strong>Variables de entorno separadas.</strong> Las claves y configuraciones de producción nunca deberían ser las mismas que usás mientras probás en local.</li>
+    <li><strong>Un dominio de prueba antes que el real.</strong> La mayoría de las plataformas de deploy (Vercel, Netlify, Railway) te dan una URL temporaria para verificar todo antes de conectar tu dominio definitivo.</li>
+    <li><strong>Revisá los logs después del primer deploy real.</strong> Es el momento en el que suelen aparecer errores que no se veían en local (variables faltantes, permisos, límites de la plataforma).</li>
+  </ul>
+
+  <div class="prompt">
+    <span class="prompt-label">Prompt util para diagnosticar errores de deploy</span>[Pegar el error exacto del log de produccion]. Este es el codigo relacionado: [pegar archivo]. Explicame la causa mas probable antes de proponer un cambio.</div>
+</div>
+
+<div class="chapter">
+  <h1>06 · Mantenimiento</h1>
+  <p class="lead">Un proyecto en producción con usuarios reales necesita atención continua, no solo el esfuerzo inicial de construirlo.</p>
+
+  <ul>
+    <li><strong>Revisá los logs periódicamente</strong>, no solo cuando algo se rompe visiblemente — muchos errores quedan silenciosos si nadie los reporta.</li>
+    <li><strong>Guardá un registro de qué cambia y cuándo.</strong> Cuando algo falla, poder preguntar "qué cambié en los últimos días" ahorra mucho tiempo de diagnóstico.</li>
+    <li><strong>Usá la IA para analizar patrones en errores recurrentes</strong>, pegándole logs reales en vez de descripciones vagas del problema.</li>
+  </ul>
+</div>
+
+<div class="chapter">
+  <h1>07 · Errores comunes en proyectos reales con IA</h1>
+
+  <ul>
+    <li><strong>Construir sin plan.</strong> Ya visto en el capítulo 2 — es la causa más frecuente de proyectos que hay que rehacer parcialmente.</li>
+    <li><strong>No revisar lo que se generó.</strong> Aceptar cambios grandes sin leerlos es la forma más común de introducir bugs silenciosos.</li>
+    <li><strong>Mezclar entorno de prueba y de producción.</strong> Usar las mismas credenciales o la misma base de datos para probar y para usuarios reales expone a errores costosos.</li>
+    <li><strong>No tener forma de volver atrás.</strong> Sin control de versiones (git) con commits frecuentes, un cambio que rompe algo se vuelve mucho más difícil de revertir.</li>
+  </ul>
+</div>
+
+<div class="chapter">
+  <h1>08 · Checklist final</h1>
+
+  <ul class="checklist">
+    <li>Definiste un plan de arquitectura antes de construir.</li>
+    <li>Construiste por etapas verificables: base de datos, backend, frontend, integraciones.</li>
+    <li>Probaste los flujos críticos, incluyendo casos límite.</li>
+    <li>Hiciste un deploy real, con variables de entorno separadas de producción.</li>
+    <li>Tenés un hábito de revisar logs y mantener el proyecto una vez lanzado.</li>
+  </ul>
+
+  <div class="box">
+    <span class="box-label">Fin de la serie</span>
+    Con los Niveles 1, 2 y 3 ya tenés el recorrido completo: crear algo desde cero sin saber programar, integrar IA a un flujo de trabajo real, y llevar un proyecto de punta a punta hasta producción. De acá en adelante, la mejor forma de seguir mejorando es construir proyectos propios, cada vez más ambiciosos.
+  </div>
+</div>
+
+</body>
+</html>

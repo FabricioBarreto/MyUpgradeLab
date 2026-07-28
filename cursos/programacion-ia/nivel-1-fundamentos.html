@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>Programar con IA - Nivel 1</title>
+<style>
+  @page {
+    size: A4;
+    margin: 2.4cm 2.2cm 2.6cm 2.2cm;
+    @bottom-center {
+      content: "UpgradeLab — Programar con IA: Fundamentos";
+      font-family: 'Helvetica', 'Arial', sans-serif;
+      font-size: 8pt;
+      color: #999;
+    }
+    @bottom-right {
+      content: counter(page);
+      font-family: 'Helvetica', 'Arial', sans-serif;
+      font-size: 8pt;
+      color: #999;
+    }
+  }
+  @page cover {
+    margin: 0;
+    @bottom-center { content: none; }
+    @bottom-right { content: none; }
+  }
+
+  * { box-sizing: border-box; }
+  body {
+    font-family: 'Helvetica', 'Arial', sans-serif;
+    color: #1a1a1a;
+    font-size: 10.5pt;
+    line-height: 1.55;
+  }
+
+  .cover {
+    page: cover;
+    height: 100vh;
+    width: 100%;
+    background: #171717;
+    color: #ffffff;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: 3cm 2.4cm;
+  }
+  .cover .brand { font-size: 14pt; font-weight: 700; letter-spacing: 0.02em; }
+  .cover .brand .dot { color: #5ec9c2; }
+  .cover .cover-main { margin-top: 6cm; }
+  .cover .kicker {
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    font-size: 9pt;
+    color: #5ec9c2;
+    margin-bottom: 0.6cm;
+  }
+  .cover h1 { font-size: 30pt; line-height: 1.15; margin: 0 0 0.5cm 0; font-weight: 700; color: #ffffff; }
+  .cover .subtitle { font-size: 12pt; color: #cfcfcf; max-width: 12cm; }
+  .cover .tools-row { margin-top: 1cm; display: flex; gap: 0.4cm; flex-wrap: wrap; }
+  .cover .tool-pill {
+    border: 1px solid #444;
+    border-radius: 999px;
+    padding: 0.18cm 0.5cm;
+    font-size: 9pt;
+    color: #e5e5e5;
+  }
+  .cover .footer-note {
+    font-size: 8.5pt;
+    color: #888;
+    border-top: 1px solid #333;
+    padding-top: 0.4cm;
+  }
+
+  h1 {
+    font-size: 19pt;
+    color: #171717;
+    margin: 0 0 0.5cm 0;
+    padding-bottom: 0.25cm;
+    border-bottom: 2px solid #171717;
+  }
+  h2 { font-size: 13.5pt; color: #171717; margin: 0.9cm 0 0.35cm 0; }
+  h3 { font-size: 11.5pt; color: #171717; margin: 0.6cm 0 0.25cm 0; }
+  p { margin: 0 0 0.35cm 0; text-align: left; }
+  ul, ol { margin: 0 0 0.4cm 0; padding-left: 0.5cm; }
+  li { margin-bottom: 0.18cm; }
+  strong { color: #171717; }
+
+  .chapter { page-break-before: always; }
+  .lead { font-size: 11.5pt; color: #444; margin-bottom: 0.6cm; }
+
+  .box {
+    background: #f2f9f8;
+    border-left: 3px solid #171717;
+    border-radius: 4px;
+    padding: 0.4cm 0.55cm;
+    margin: 0.4cm 0 0.5cm 0;
+  }
+  .box .box-label {
+    font-size: 8pt;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: #888;
+    margin-bottom: 0.15cm;
+    display: block;
+  }
+  .prompt {
+    background: #171717;
+    color: #f5f5f5;
+    border-radius: 4px;
+    padding: 0.4cm 0.55cm;
+    margin: 0.3cm 0 0.5cm 0;
+    font-family: 'Courier New', monospace;
+    font-size: 9pt;
+    line-height: 1.5;
+    white-space: pre-wrap;
+  }
+  .prompt .prompt-label {
+    display: block;
+    font-family: 'Helvetica', sans-serif;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    font-size: 7.5pt;
+    color: #5ec9c2;
+    margin-bottom: 0.15cm;
+  }
+
+  table.usecases {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 0.3cm 0 0.5cm 0;
+    font-size: 9.5pt;
+  }
+  table.usecases th {
+    background: #171717;
+    color: #fff;
+    text-align: left;
+    padding: 0.22cm 0.3cm;
+    font-size: 9pt;
+  }
+  table.usecases td {
+    border-bottom: 1px solid #e2e2e2;
+    padding: 0.22cm 0.3cm;
+    vertical-align: top;
+  }
+
+  .toc { page-break-before: always; }
+  .toc-item {
+    display: flex;
+    justify-content: space-between;
+    border-bottom: 1px dotted #ccc;
+    padding: 0.22cm 0;
+    font-size: 10.5pt;
+  }
+  .toc-item .num { color: #5ec9c2; font-weight: 700; margin-right: 0.3cm; }
+
+  .checklist { list-style: none; padding-left: 0; }
+  .checklist li { padding-left: 0.7cm; position: relative; }
+  .checklist li::before {
+    content: "✓";
+    position: absolute;
+    left: 0;
+    color: #171717;
+    font-weight: 700;
+  }
+
+  .flow-step { display: flex; gap: 0.4cm; margin-bottom: 0.4cm; }
+  .flow-step .flow-num {
+    flex: 0 0 0.9cm;
+    height: 0.9cm;
+    background: #171717;
+    color: #fff;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 11pt;
+    font-weight: 700;
+  }
+  .flow-step .flow-body { flex: 1; padding-top: 0.05cm; }
+  .flow-step .flow-body h3 { margin-top: 0; }
+
+  .callout-warning {
+    border: 1px solid #e0b400;
+    background: #fffaeb;
+    border-radius: 4px;
+    padding: 0.4cm 0.55cm;
+    margin: 0.4cm 0;
+    font-size: 9.5pt;
+  }
+
+  .glossary dt { font-weight: 700; color: #171717; margin-top: 0.3cm; }
+  .glossary dd { margin: 0.05cm 0 0 0; color: #333; }
+</style>
+</head>
+<body>
+
+<div class="cover">
+  <div class="brand">Upgrade<span class="dot">Lab</span></div>
+  <div class="cover-main">
+    <div class="kicker">Programación / IA — Nivel 1 de 3</div>
+    <h1>Programar con IA: primeros pasos</h1>
+    <p class="subtitle">Para quien nunca programó y quiere crear apps, webs y herramientas reales usando inteligencia artificial. Sin código previo, sin carrera de programación.</p>
+    <div class="tools-row">
+      <span class="tool-pill">Lovable</span>
+      <span class="tool-pill">Bolt.new</span>
+      <span class="tool-pill">Replit</span>
+      <span class="tool-pill">v0</span>
+    </div>
+  </div>
+  <div class="footer-note">UpgradeLab · Categoría: Programación / IA · Nivel 1 — Fundamentos</div>
+</div>
+
+<div class="toc">
+  <h1>Índice</h1>
+  <div class="toc-item"><span><span class="num">01</span>Introducción — ya no hace falta saber programar para crear software</span></div>
+  <div class="toc-item"><span><span class="num">02</span>El panorama de herramientas: Lovable, Bolt.new, Replit y v0</span></div>
+  <div class="toc-item"><span><span class="num">03</span>Cómo pedir bien las cosas: la estructura de un buen prompt</span></div>
+  <div class="toc-item"><span><span class="num">04</span>Tu primer proyecto, paso a paso</span></div>
+  <div class="toc-item"><span><span class="num">05</span>Lo mínimo que conviene entender (sin ser programador)</span></div>
+  <div class="toc-item"><span><span class="num">06</span>Cuando la IA no te da lo que pediste: cómo iterar</span></div>
+  <div class="toc-item"><span><span class="num">07</span>Límites y cuidados</span></div>
+  <div class="toc-item"><span><span class="num">08</span>Checklist y hacia dónde seguir</span></div>
+</div>
+
+<div class="chapter">
+  <h1>01 · Introducción</h1>
+  <p class="lead">En 2026 ya no hace falta estudiar programación durante años para crear una app, una web o una herramienta que resuelva un problema real. Hace falta saber pedirle bien las cosas a la IA — y eso es exactamente lo que enseña esta guía.</p>
+
+  <p>A este estilo de trabajo se lo conoce como <strong>"vibe coding"</strong>: describís en lenguaje natural lo que querés construir, y la IA escribe el código completo por vos — interfaz, lógica, base de datos y, en muchos casos, hasta el despliegue online. No es magia ni es solo para prototipos de juguete: hoy hay productos reales, con usuarios reales y hasta con ingresos reales, construidos así.</p>
+
+  <p>Esta guía es el <strong>Nivel 1</strong> de la serie de Programación/IA de UpgradeLab. Está pensada para quien parte de cero. Si ya programás y buscás integrar IA a tu flujo de trabajo profesional, el contenido que te sirve es el Nivel 2 (Flujos de trabajo). Si ya diste tus primeros pasos y querés construir un proyecto completo de punta a punta, te espera el Nivel 3.</p>
+
+  <div class="box">
+    <span class="box-label">Qué vas a poder hacer al terminar esta guía</span>
+    Elegir la herramienta correcta para tu primer proyecto, escribir prompts que realmente te den lo que pedís, entender lo mínimo indispensable de vocabulario técnico para no perderte, y saber qué hacer cuando el resultado no es el esperado — que va a pasar, y es normal.
+  </div>
+</div>
+
+<div class="chapter">
+  <h1>02 · El panorama de herramientas</h1>
+  <p class="lead">No todas sirven para lo mismo. Elegir mal la herramienta es la causa número uno de frustración en quien recién arranca.</p>
+
+  <table class="usecases">
+    <tr><th>Herramienta</th><th>Para qué sirve</th><th>Ideal si...</th></tr>
+    <tr>
+      <td><strong>Bolt.new</strong></td>
+      <td>Crear apps completas (interfaz + funcionalidad + base de datos) desde el navegador, sin instalar nada</td>
+      <td>Sos principiante absoluto y querés ver resultados en minutos</td>
+    </tr>
+    <tr>
+      <td><strong>Lovable</strong></td>
+      <td>Similar a Bolt, pensado especialmente para quien no programa: interfaz muy guiada</td>
+      <td>Querés construir un producto (no solo un prototipo) sin tocar código</td>
+    </tr>
+    <tr>
+      <td><strong>Replit</strong></td>
+      <td>Entorno completo en el navegador con su propio agente de IA, ideal para aprender viendo el código</td>
+      <td>Te interesa además ir entendiendo qué hace el código, no solo obtener el resultado</td>
+    </tr>
+    <tr>
+      <td><strong>v0 (de Vercel)</strong></td>
+      <td>Generar interfaces visuales (pantallas, componentes) a partir de una descripción o una imagen</td>
+      <td>Lo que necesitás es sobre todo el diseño visual de una pantalla o app</td>
+    </tr>
+  </table>
+
+  <p>Las cuatro aceptan instrucciones en español y devuelven todo en español (textos, botones, menús), así que no hay barrera de idioma para arrancar.</p>
+
+  <div class="box">
+    <span class="box-label">Recomendación para tu primer proyecto</span>
+    Empezá con <strong>Bolt.new</strong> o <strong>Replit</strong>. Son gratuitos para probar, no requieren instalar nada, y en el capítulo 4 vamos a usar uno de los dos para el ejemplo paso a paso.
+  </div>
+</div>
+
+<div class="chapter">
+  <h1>03 · Cómo pedir bien las cosas</h1>
+  <p class="lead">La diferencia entre un buen resultado y uno frustrante casi nunca es la herramienta — es el prompt.</p>
+
+  <p>Pedirle a la IA que construya algo es distinto de charlar con un chatbot. Un buen prompt de construcción tiene cuatro partes:</p>
+
+  <ol>
+    <li><strong>Qué es</strong> — una frase clara de qué querés construir.</li>
+    <li><strong>Para quién</strong> — quién lo va a usar, porque cambia el tono y las funciones necesarias.</li>
+    <li><strong>Qué tiene que poder hacer</strong> — la lista concreta de funciones, en orden de importancia.</li>
+    <li><strong>Cómo se tiene que ver</strong> — estilo visual, colores, referencias ("como Notion pero más simple", por ejemplo).</li>
+  </ol>
+
+  <div class="prompt">
+    <span class="prompt-label">Prompt de ejemplo — flojo (evitalo)</span>Hazme una app para organizar tareas</div>
+
+  <div class="prompt">
+    <span class="prompt-label">Prompt de ejemplo — bueno</span>Quiero una app para organizar tareas personales, pensada para uso individual (no en equipo). Tiene que permitir: crear tareas con fecha límite, marcarlas como completadas, y agruparlas por categoría (trabajo, personal, urgente). Estilo visual minimalista, blanco y negro, tipografía grande y legible, sin decoración de más.</div>
+
+  <p>Notá que el segundo prompt no menciona nada de código, lenguajes de programación ni tecnología — y no hace falta. Eso es justamente lo que hace la IA por vos.</p>
+</div>
+
+<div class="chapter">
+  <h1>04 · Tu primer proyecto, paso a paso</h1>
+  <p class="lead">Vamos a construir algo real de punta a punta: una landing page simple para un negocio o proyecto personal.</p>
+
+  <div class="flow-step">
+    <div class="flow-num">1</div>
+    <div class="flow-body">
+      <h3>Entrá a Bolt.new o Replit y creá un proyecto nuevo</h3>
+      <p>No hace falta cuenta paga para empezar a probar.</p>
+    </div>
+  </div>
+
+  <div class="flow-step">
+    <div class="flow-num">2</div>
+    <div class="flow-body">
+      <h3>Escribí el prompt inicial siguiendo la estructura del capítulo 3</h3>
+      <p>Describí qué es, para quién, qué secciones necesita (por ejemplo: presentación, servicios, contacto) y el estilo visual.</p>
+    </div>
+  </div>
+
+  <div class="flow-step">
+    <div class="flow-num">3</div>
+    <div class="flow-body">
+      <h3>Mirá el resultado antes de seguir pidiendo cosas nuevas</h3>
+      <p>La tentación es pedir todo de una — mejor ver primero qué generó, para dar el siguiente pedido con contexto de lo que ya existe.</p>
+    </div>
+  </div>
+
+  <div class="flow-step">
+    <div class="flow-num">4</div>
+    <div class="flow-body">
+      <h3>Pedí cambios puntuales, uno por vez</h3>
+      <p>En vez de "mejorala", pedí cosas concretas: "el botón principal tiene que ser más grande y estar centrado", "agregá una sección de preguntas frecuentes debajo de servicios".</p>
+    </div>
+  </div>
+
+  <div class="flow-step">
+    <div class="flow-num">5</div>
+    <div class="flow-body">
+      <h3>Publicala</h3>
+      <p>Tanto Bolt como Replit tienen un botón de publicar/deploy que te da un link funcionando, sin necesidad de configurar servidores ni dominios técnicos.</p>
+    </div>
+  </div>
+
+  <div class="prompt">
+    <span class="prompt-label">Prompt inicial de ejemplo para este ejercicio</span>Quiero una landing page de una página para [tu negocio o proyecto]. Secciones: portada con título y frase corta, qué ofrezco (3 puntos), cómo contactarme (whatsapp y email). Estilo minimalista, un solo color de acento, tipografía grande.</div>
+</div>
+
+<div class="chapter">
+  <h1>05 · Lo mínimo que conviene entender</h1>
+  <p class="lead">No hace falta ser programador, pero cuatro o cinco términos te van a ahorrar mucha confusión.</p>
+
+  <dl class="glossary">
+    <dt>Componente</dt>
+    <dd>Una pieza reutilizable de la interfaz (un botón, una tarjeta, un menú). Cuando le pedís a la IA "cambiá el botón de arriba", está identificando un componente.</dd>
+
+    <dt>Base de datos</dt>
+    <dd>Donde se guarda la información de tu app (usuarios, tareas, productos) para que no se pierda al cerrar la pantalla. Herramientas como Bolt y Lovable la configuran automáticamente si se lo pedís.</dd>
+
+    <dt>Deploy / publicar</dt>
+    <dd>El paso que convierte tu proyecto de "algo que solo vos ves" a un link real que cualquiera puede abrir desde internet.</dd>
+
+    <dt>Variable de entorno</dt>
+    <dd>Un dato sensible (como una contraseña o una clave de acceso a otro servicio) que se guarda por separado del código, para no exponerlo.</dd>
+
+    <dt>API / integración</dt>
+    <dd>La forma en que tu app se conecta con otro servicio externo (por ejemplo, un sistema de pagos o de envío de emails).</dd>
+  </dl>
+</div>
+
+<div class="chapter">
+  <h1>06 · Cuando la IA no te da lo que pediste</h1>
+  <p class="lead">Va a pasar. No es un fracaso tuyo ni de la herramienta — es parte normal del proceso.</p>
+
+  <ul>
+    <li><strong>Sé específico, no genérico.</strong> "No me gusta" no le da información útil a la IA. "El texto es muy chico y el botón debería estar centrado" sí.</li>
+    <li><strong>Volvé un paso atrás si hace falta.</strong> Todas estas herramientas guardan el historial de versiones — si un cambio rompió algo, podés volver a la versión anterior y pedir el cambio de otra forma.</li>
+    <li><strong>Dividí pedidos grandes en pedidos chicos.</strong> Es mejor pedir tres cambios chicos y confirmar cada uno, que un cambio enorme que después es difícil de corregir si algo sale mal.</li>
+    <li><strong>Copiá el error exacto si algo se rompe.</strong> Si aparece un mensaje de error en pantalla, pegárselo tal cual a la IA suele resolver el problema más rápido que describirlo con tus palabras.</li>
+  </ul>
+</div>
+
+<div class="chapter">
+  <h1>07 · Límites y cuidados</h1>
+
+  <ul>
+    <li><strong>Datos sensibles.</strong> No le pidas a la IA que maneje contraseñas, tarjetas o información personal de terceros sin entender primero cómo se está guardando esa información.</li>
+    <li><strong>Escalabilidad.</strong> Estas herramientas son excelentes para lanzar algo rápido y validar una idea. Si tu proyecto crece mucho (miles de usuarios), en algún punto vas a necesitar ayuda de alguien con conocimiento técnico más profundo — y está bien, es una señal de que el proyecto funcionó.</li>
+    <li><strong>No todo lo que se ve bien funciona bien.</strong> Probá siempre tu app como la probaría un usuario real, no solo mirando que la pantalla se vea prolija.</li>
+  </ul>
+
+  <div class="callout-warning">
+    <strong>Ojo:</strong> antes de publicar algo con datos de usuarios reales (registros, pagos, información personal), es buena idea que alguien con experiencia técnica revise al menos los aspectos de seguridad básicos. El Nivel 2 y el Nivel 3 de esta serie profundizan justamente en eso.
+  </div>
+</div>
+
+<div class="chapter">
+  <h1>08 · Checklist y hacia dónde seguir</h1>
+
+  <ul class="checklist">
+    <li>Elegí la herramienta correcta para tu primer proyecto (Bolt.new o Replit para empezar).</li>
+    <li>Escribí tu primer prompt siguiendo la estructura de 4 partes: qué es, para quién, qué hace, cómo se ve.</li>
+    <li>Construiste algo real, paso a paso, sin pedir todo de una vez.</li>
+    <li>Sabés qué significan componente, base de datos, deploy, variable de entorno y API.</li>
+    <li>Sabés qué hacer cuando el resultado no es el esperado: ser específico, volver atrás, dividir en pedidos chicos.</li>
+  </ul>
+
+  <div class="box">
+    <span class="box-label">Siguiente paso</span>
+    Cuando ya te sientas cómodo construyendo cosas así, el <strong>Nivel 2 — Flujos de trabajo</strong> te muestra cómo se usa la IA cuando ya se programa de forma más tradicional: herramientas como Claude Code, Cursor y GitHub Copilot, pensadas para trabajar sobre proyectos de código más grandes y complejos.
+  </div>
+</div>
+
+</body>
+</html>

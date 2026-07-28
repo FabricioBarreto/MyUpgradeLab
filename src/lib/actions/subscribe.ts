@@ -52,11 +52,11 @@ export async function createSubscription() {
   }
 
   const appUrl = process.env.NEXT_PUBLIC_APP_URL!
-  const preapprovalClient = new PreApproval(getMercadoPagoConfig('suscripciones'))
 
   let initPoint: string | undefined
 
   try {
+    const preapprovalClient = new PreApproval(getMercadoPagoConfig('suscripciones'))
     // El SDK de Mercado Pago (v3.2.0) tipa `auto_recurring` sin `free_trial`
     // para el create de Preapproval, aunque la API si lo acepta (esta
     // documentado y el tipo `AutoRecurringWithFreeTrial` existe para otras

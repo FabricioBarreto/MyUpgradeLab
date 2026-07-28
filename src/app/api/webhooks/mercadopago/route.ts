@@ -47,14 +47,24 @@ function mapSubscriptionStatus(mpStatus: string | undefined): string {
   }
 }
 
+// El evento "Pagos (legacy)" de Checkout Pro usa el mecanismo viejo de IPN,
+// que a veces llega como GET (no POST) con topic/id en query params. Por eso
+// exportamos GET y POST con la misma logica (ver abajo).
+export async function GET(request: NextRequest) {
+  return handleNotification(request)
+}
+
 export async function POST(request: NextRequest) {
+  return handleNotification(request)
+}
+
+async function handleNotification(request: NextRequest) {
   const url = new URL(request.url)
   // Checkout Pro notifica via query params en el notification_url (IPN
-  // clasico). Suscripciones (Webhooks v2) manda un body JSON con type/data.id.
-  // Soportamos ambos formatos.
-  const body: { type?: string; data?: { id?: string } } | null = await request
-    .json()
-    .catch(() => null)
+  // clasico, a veces GET). Suscripciones (Webhooks v2) manda un body JSON
+  // con type/data.id via POST. Soportamos ambos formatos.
+  const body: { type?: string; data?: { id?: string } } | null =
+    request.method === "POST" ? await request.json().catch(() => null) : null
 
   const dataId =
     body?.data?.id ?? url.searchParams.get("data.id") ?? url.searchParams.get("id")

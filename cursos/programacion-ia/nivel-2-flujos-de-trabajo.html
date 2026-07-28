@@ -1,0 +1,409 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>Programar con IA - Nivel 2</title>
+<style>
+  @page {
+    size: A4;
+    margin: 2.4cm 2.2cm 2.6cm 2.2cm;
+    @bottom-center {
+      content: "UpgradeLab — Programar con IA: Flujos de trabajo";
+      font-family: 'Helvetica', 'Arial', sans-serif;
+      font-size: 8pt;
+      color: #999;
+    }
+    @bottom-right {
+      content: counter(page);
+      font-family: 'Helvetica', 'Arial', sans-serif;
+      font-size: 8pt;
+      color: #999;
+    }
+  }
+  @page cover {
+    margin: 0;
+    @bottom-center { content: none; }
+    @bottom-right { content: none; }
+  }
+
+  * { box-sizing: border-box; }
+  body {
+    font-family: 'Helvetica', 'Arial', sans-serif;
+    color: #1a1a1a;
+    font-size: 10.5pt;
+    line-height: 1.55;
+  }
+
+  .cover {
+    page: cover;
+    height: 100vh;
+    width: 100%;
+    background: #171717;
+    color: #ffffff;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: 3cm 2.4cm;
+  }
+  .cover .brand { font-size: 14pt; font-weight: 700; letter-spacing: 0.02em; }
+  .cover .brand .dot { color: #5ec9c2; }
+  .cover .cover-main { margin-top: 6cm; }
+  .cover .kicker {
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    font-size: 9pt;
+    color: #5ec9c2;
+    margin-bottom: 0.6cm;
+  }
+  .cover h1 { font-size: 28pt; line-height: 1.15; margin: 0 0 0.5cm 0; font-weight: 700; color: #ffffff; }
+  .cover .subtitle { font-size: 12pt; color: #cfcfcf; max-width: 12cm; }
+  .cover .tools-row { margin-top: 1cm; display: flex; gap: 0.4cm; flex-wrap: wrap; }
+  .cover .tool-pill {
+    border: 1px solid #444;
+    border-radius: 999px;
+    padding: 0.18cm 0.5cm;
+    font-size: 9pt;
+    color: #e5e5e5;
+  }
+  .cover .footer-note {
+    font-size: 8.5pt;
+    color: #888;
+    border-top: 1px solid #333;
+    padding-top: 0.4cm;
+  }
+
+  h1 {
+    font-size: 19pt;
+    color: #171717;
+    margin: 0 0 0.5cm 0;
+    padding-bottom: 0.25cm;
+    border-bottom: 2px solid #171717;
+  }
+  h2 { font-size: 13.5pt; color: #171717; margin: 0.9cm 0 0.35cm 0; }
+  h3 { font-size: 11.5pt; color: #171717; margin: 0.6cm 0 0.25cm 0; }
+  p { margin: 0 0 0.35cm 0; text-align: left; }
+  ul, ol { margin: 0 0 0.4cm 0; padding-left: 0.5cm; }
+  li { margin-bottom: 0.18cm; }
+  strong { color: #171717; }
+
+  .chapter { page-break-before: always; }
+  .lead { font-size: 11.5pt; color: #444; margin-bottom: 0.6cm; }
+
+  .box {
+    background: #f2f9f8;
+    border-left: 3px solid #171717;
+    border-radius: 4px;
+    padding: 0.4cm 0.55cm;
+    margin: 0.4cm 0 0.5cm 0;
+  }
+  .box .box-label {
+    font-size: 8pt;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: #888;
+    margin-bottom: 0.15cm;
+    display: block;
+  }
+  .prompt {
+    background: #171717;
+    color: #f5f5f5;
+    border-radius: 4px;
+    padding: 0.4cm 0.55cm;
+    margin: 0.3cm 0 0.5cm 0;
+    font-family: 'Courier New', monospace;
+    font-size: 9pt;
+    line-height: 1.5;
+    white-space: pre-wrap;
+  }
+  .prompt .prompt-label {
+    display: block;
+    font-family: 'Helvetica', sans-serif;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    font-size: 7.5pt;
+    color: #5ec9c2;
+    margin-bottom: 0.15cm;
+  }
+
+  table.usecases {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 0.3cm 0 0.5cm 0;
+    font-size: 9.5pt;
+  }
+  table.usecases th {
+    background: #171717;
+    color: #fff;
+    text-align: left;
+    padding: 0.22cm 0.3cm;
+    font-size: 9pt;
+  }
+  table.usecases td {
+    border-bottom: 1px solid #e2e2e2;
+    padding: 0.22cm 0.3cm;
+    vertical-align: top;
+  }
+
+  .toc { page-break-before: always; }
+  .toc-item {
+    display: flex;
+    justify-content: space-between;
+    border-bottom: 1px dotted #ccc;
+    padding: 0.22cm 0;
+    font-size: 10.5pt;
+  }
+  .toc-item .num { color: #5ec9c2; font-weight: 700; margin-right: 0.3cm; }
+
+  .checklist { list-style: none; padding-left: 0; }
+  .checklist li { padding-left: 0.7cm; position: relative; }
+  .checklist li::before {
+    content: "✓";
+    position: absolute;
+    left: 0;
+    color: #171717;
+    font-weight: 700;
+  }
+
+  .flow-step { display: flex; gap: 0.4cm; margin-bottom: 0.4cm; }
+  .flow-step .flow-num {
+    flex: 0 0 0.9cm;
+    height: 0.9cm;
+    background: #171717;
+    color: #fff;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 11pt;
+    font-weight: 700;
+  }
+  .flow-step .flow-body { flex: 1; padding-top: 0.05cm; }
+  .flow-step .flow-body h3 { margin-top: 0; }
+
+  .callout-warning {
+    border: 1px solid #e0b400;
+    background: #fffaeb;
+    border-radius: 4px;
+    padding: 0.4cm 0.55cm;
+    margin: 0.4cm 0;
+    font-size: 9.5pt;
+  }
+
+  .glossary dt { font-weight: 700; color: #171717; margin-top: 0.3cm; }
+  .glossary dd { margin: 0.05cm 0 0 0; color: #333; }
+
+  code.inline {
+    font-family: 'Courier New', monospace;
+    background: #f0f0f0;
+    padding: 0.03cm 0.15cm;
+    border-radius: 3px;
+    font-size: 9.5pt;
+  }
+</style>
+</head>
+<body>
+
+<div class="cover">
+  <div class="brand">Upgrade<span class="dot">Lab</span></div>
+  <div class="cover-main">
+    <div class="kicker">Programación / IA — Nivel 2 de 3</div>
+    <h1>Programar con IA: flujos de trabajo</h1>
+    <p class="subtitle">Para quien ya programa (o dio sus primeros pasos con IA) y quiere integrar Claude Code, Cursor y GitHub Copilot a su flujo real de trabajo — no solo para prototipos, sino para proyectos serios.</p>
+    <div class="tools-row">
+      <span class="tool-pill">Claude Code</span>
+      <span class="tool-pill">Cursor</span>
+      <span class="tool-pill">GitHub Copilot</span>
+    </div>
+  </div>
+  <div class="footer-note">UpgradeLab · Categoría: Programación / IA · Nivel 2 — Flujos de trabajo</div>
+</div>
+
+<div class="toc">
+  <h1>Índice</h1>
+  <div class="toc-item"><span><span class="num">01</span>Introducción — de construir prototipos a programar en serio con IA</span></div>
+  <div class="toc-item"><span><span class="num">02</span>Las tres herramientas: Claude Code, Cursor y GitHub Copilot</span></div>
+  <div class="toc-item"><span><span class="num">03</span>Puesta en marcha: instalación y primer proyecto</span></div>
+  <div class="toc-item"><span><span class="num">04</span>Prompting técnico: dar el contexto correcto</span></div>
+  <div class="toc-item"><span><span class="num">05</span>Casos de uso reales: debugging, refactor, tests y documentación</span></div>
+  <div class="toc-item"><span><span class="num">06</span>Integrarlo a tu flujo diario: git, revisiones y automatización</span></div>
+  <div class="toc-item"><span><span class="num">07</span>Buenas prácticas y límites</span></div>
+  <div class="toc-item"><span><span class="num">08</span>Checklist y hacia dónde seguir</span></div>
+</div>
+
+<div class="chapter">
+  <h1>01 · Introducción</h1>
+  <p class="lead">Una cosa es pedirle a una IA que construya un prototipo desde cero, y otra muy distinta es usarla todos los días dentro de un proyecto real, con código existente, otras personas trabajando en paralelo, y un historial de decisiones que hay que respetar.</p>
+
+  <p>Este es el <strong>Nivel 2</strong> de la serie de Programación/IA de UpgradeLab. Si el Nivel 1 mostró cómo crear algo de la nada sin saber programar, este nivel está pensado para quien ya escribe código (o está aprendiendo a hacerlo) y quiere multiplicar su productividad usando IA como compañera de trabajo diaria, no como reemplazo.</p>
+
+  <p>La diferencia central con el Nivel 1 es el <strong>contexto</strong>: en vez de partir de una pantalla en blanco, estas herramientas trabajan sobre proyectos existentes — leen tu código, entienden la estructura de carpetas, respetan convenciones ya establecidas, y hacen cambios quirúrgicos en vez de generar todo de nuevo.</p>
+
+  <div class="box">
+    <span class="box-label">Qué vas a poder hacer al terminar esta guía</span>
+    Elegir la herramienta correcta según el tipo de tarea, dar contexto suficiente para que la IA entienda tu proyecto real, usarla para debugging, refactors, tests y documentación, e integrarla a tu flujo diario de git y revisión de código sin perder control sobre lo que se cambia.
+  </div>
+</div>
+
+<div class="chapter">
+  <h1>02 · Las tres herramientas</h1>
+  <p class="lead">No compiten exactamente en lo mismo. Cada una tiene un punto fuerte distinto.</p>
+
+  <table class="usecases">
+    <tr><th>Herramienta</th><th>Cómo funciona</th><th>Punto fuerte</th></tr>
+    <tr>
+      <td><strong>GitHub Copilot</strong></td>
+      <td>Autocompletado inteligente dentro de tu editor (VS Code, JetBrains, etc.), sugiere código línea por línea o bloque por bloque mientras escribís</td>
+      <td>Es el más adoptado y funciona en casi cualquier editor. Ideal para acelerar la escritura del día a día</td>
+    </tr>
+    <tr>
+      <td><strong>Cursor</strong></td>
+      <td>Editor de código propio (basado en VS Code) con IA integrada en todo el flujo: chat, edición multi-archivo, entendimiento profundo del proyecto</td>
+      <td>Muy fuerte para trabajar sobre proyectos grandes y complejos, con cambios que tocan varios archivos a la vez</td>
+    </tr>
+    <tr>
+      <td><strong>Claude Code</strong></td>
+      <td>Herramienta de terminal: le describís una tarea y trabaja de forma autónoma — lee archivos, escribe código, corre tests, corrige errores por su cuenta</td>
+      <td>Excelente para tareas grandes y bien delimitadas: refactors extensos, generar tests, automatizar tareas repetitivas</td>
+    </tr>
+  </table>
+
+  <div class="box">
+    <span class="box-label">No es necesario elegir una sola</span>
+    Muchos equipos combinan Copilot para el autocompletado del día a día, con Cursor o Claude Code para tareas más grandes que requieren planificación. Elegí según la tarea, no según la moda.
+  </div>
+</div>
+
+<div class="chapter">
+  <h1>03 · Puesta en marcha</h1>
+  <p class="lead">Los tres tienen una curva de instalación corta. Esto es lo esencial de cada uno.</p>
+
+  <h3>GitHub Copilot</h3>
+  <p>Se instala como extensión en tu editor (VS Code, JetBrains, Neovim, entre otros) y se activa con una cuenta de GitHub. Requiere suscripción paga luego del período de prueba.</p>
+
+  <h3>Cursor</h3>
+  <p>Se descarga como aplicación independiente — reemplaza a tu editor actual (aunque podés importar toda tu configuración de VS Code en un paso). Tiene plan gratuito limitado y plan pago con más uso.</p>
+
+  <h3>Claude Code</h3>
+  <p>Se instala desde la terminal y se usa sin salir de ella. No reemplaza tu editor: trabaja en paralelo, directamente sobre los archivos del proyecto en el que estás parado.</p>
+
+  <div class="prompt">
+    <span class="prompt-label">Primer comando típico con Claude Code, desde la carpeta de tu proyecto</span>Explicame la estructura de este proyecto y qué hace cada carpeta principal</div>
+
+  <p>Este tipo de comando inicial — pedirle que primero "lea" y explique el proyecto — es una buena práctica antes de pedirle cualquier cambio: te confirma que entendió correctamente el contexto.</p>
+</div>
+
+<div class="chapter">
+  <h1>04 · Prompting técnico</h1>
+  <p class="lead">A diferencia del Nivel 1, acá el contexto técnico específico es lo que determina la calidad del resultado.</p>
+
+  <p>Un buen pedido técnico incluye:</p>
+  <ol>
+    <li><strong>Qué archivo(s) o parte del sistema</strong> está involucrado.</li>
+    <li><strong>Qué comportamiento actual</strong> hay, y qué comportamiento se espera.</li>
+    <li><strong>Restricciones</strong> — qué no se puede romper, qué convenciones hay que respetar.</li>
+    <li><strong>Cómo verificar</strong> que el cambio funcionó (un test, un caso de uso concreto).</li>
+  </ol>
+
+  <div class="prompt">
+    <span class="prompt-label">Prompt técnico — flojo</span>Arreglá el bug del login</div>
+
+  <div class="prompt">
+    <span class="prompt-label">Prompt técnico — bueno</span>En src/lib/actions/auth.ts, la función signIn() esta devolviendo error "Invalid credentials" incluso con contraseña correcta cuando el email tiene mayusculas. Sospecho que es un problema de case-sensitivity contra Supabase. Revisa la funcion, corregi el problema, y no cambies el resto del archivo. Confirmame con que test lo probarias.</div>
+
+  <p>Notá que el segundo prompt le da a la IA una hipótesis (no solo el síntoma), delimita el archivo, y le pide una forma de verificar el arreglo — eso reduce enormemente la probabilidad de que "arregle" algo distinto a lo que realmente estaba roto.</p>
+
+  <div class="callout-warning">
+    <strong>Regla practica:</strong> cuanto mas grande y ambiguo el pedido, mas probable que la IA tome decisiones de diseño por vos sin que te des cuenta. Para cambios sensibles, pedile primero que te explique su plan antes de ejecutarlo.
+  </div>
+</div>
+
+<div class="chapter">
+  <h1>05 · Casos de uso reales</h1>
+  <p class="lead">Donde estas herramientas realmente ahorran horas, con ejemplos concretos de cómo pedirlo.</p>
+
+  <h3>Debugging</h3>
+  <div class="prompt">
+    <span class="prompt-label">Ejemplo</span>Este test esta fallando: [pegar el error completo]. Encontra la causa raiz, no soluciones parche, y explicame por que pasaba.</div>
+
+  <h3>Refactor</h3>
+  <div class="prompt">
+    <span class="prompt-label">Ejemplo</span>Esta funcion de 200 lineas en src/utils/report.ts hace demasiadas cosas. Dividila en funciones mas chicas con nombres claros, sin cambiar el comportamiento externo. Mostrame el plan antes de aplicarlo.</div>
+
+  <h3>Generación de tests</h3>
+  <div class="prompt">
+    <span class="prompt-label">Ejemplo</span>Generá tests unitarios para src/lib/pricing.ts. Cubrí casos limite: precio cero, descuento mayor al 100%, moneda invalida.</div>
+
+  <h3>Documentación</h3>
+  <div class="prompt">
+    <span class="prompt-label">Ejemplo</span>Escribi un README para este proyecto basandote en el codigo actual: que hace, como se instala, como se corre en local, y las variables de entorno que necesita.</div>
+
+  <p>En los cuatro casos, el patrón se repite: contexto específico, restricción clara, y una forma de confirmar que el resultado es correcto.</p>
+</div>
+
+<div class="chapter">
+  <h1>06 · Integrarlo a tu flujo diario</h1>
+  <p class="lead">Usar IA de forma aislada, "cuando me acuerdo", rinde mucho menos que integrarla al flujo que ya tenés.</p>
+
+  <div class="flow-step">
+    <div class="flow-num">1</div>
+    <div class="flow-body">
+      <h3>Commits chicos y frecuentes</h3>
+      <p>Con IA generando código más rápido, es aún más importante commitear en pasos pequeños — así podés revertir fácil si algo no sale como esperabas.</p>
+    </div>
+  </div>
+
+  <div class="flow-step">
+    <div class="flow-num">2</div>
+    <div class="flow-body">
+      <h3>Revisá siempre el diff antes de aceptar</h3>
+      <p>Ninguna de estas herramientas reemplaza tu criterio. Mirá qué cambió realmente antes de confirmar, sobre todo en archivos que no mencionaste explícitamente.</p>
+    </div>
+  </div>
+
+  <div class="flow-step">
+    <div class="flow-num">3</div>
+    <div class="flow-body">
+      <h3>Usala para las partes tediosas, no para las decisiones importantes</h3>
+      <p>Generar tests, escribir documentación, o hacer un refactor mecánico son tareas ideales. Decisiones de arquitectura conviene pensarlas vos, con la IA como caja de resonancia.</p>
+    </div>
+  </div>
+
+  <div class="flow-step">
+    <div class="flow-num">4</div>
+    <div class="flow-body">
+      <h3>Automatizá lo repetitivo</h3>
+      <p>Tareas que hacés siempre igual (generar un componente nuevo con la estructura del proyecto, actualizar un changelog, correr una migración) son buenas candidatas para dejarle un procedimiento fijo a la IA y que lo repita.</p>
+    </div>
+  </div>
+</div>
+
+<div class="chapter">
+  <h1>07 · Buenas prácticas y límites</h1>
+
+  <ul>
+    <li><strong>No le pegues secretos ni claves reales.</strong> Nunca incluyas contraseñas, tokens o claves de API reales en un prompt, aunque sea a una herramienta de confianza.</li>
+    <li><strong>Revisá el código generado antes de deployar a producción</strong>, igual que revisarías el código de cualquier compañero de equipo.</li>
+    <li><strong>No asumas que "compila" significa "es correcto".</strong> Código que corre sin errores puede tener bugs lógicos igual.</li>
+    <li><strong>Cuidado con la sobre-dependencia.</strong> Si dejás de entender el código que tu proyecto tiene porque todo lo generó la IA, se vuelve difícil de mantener a largo plazo. Usala para acelerar, no para tercerizar tu criterio.</li>
+  </ul>
+</div>
+
+<div class="chapter">
+  <h1>08 · Checklist y hacia dónde seguir</h1>
+
+  <ul class="checklist">
+    <li>Sabés cuándo usar Copilot, Cursor o Claude Code según el tipo de tarea.</li>
+    <li>Instalaste al menos una de las tres y probaste un primer comando sobre un proyecto real.</li>
+    <li>Escribís prompts técnicos con contexto, restricciones y forma de verificar el resultado.</li>
+    <li>Usaste IA para debugging, refactor, tests o documentación en un caso real.</li>
+    <li>Integraste la IA a tu flujo de git: commits chicos, revisión de diffs antes de aceptar.</li>
+  </ul>
+
+  <div class="box">
+    <span class="box-label">Siguiente paso</span>
+    El <strong>Nivel 3 — Proyectos completos</strong> toma todo lo aprendido en los Niveles 1 y 2 y lo aplica a construir un proyecto real de punta a punta: desde la arquitectura inicial hasta el deploy en producción, usando IA en cada etapa del proceso.
+  </div>
+</div>
+
+</body>
+</html>
