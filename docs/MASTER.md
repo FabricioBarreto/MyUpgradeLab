@@ -1,8 +1,8 @@
 # MASTER — UpgradeLab
 
 ## Idea del proyecto
-Plataforma web de venta de cursos/recursos educativos (ajedrez, programación/IA, 
-estudio con IA, inglés, entrevistas de trabajo). Modelo híbrido:
+Plataforma web de venta de cursos/recursos educativos (programación/IA, 
+estudio con IA, inglés, entrevistas de trabajo, negocio para freelancers). Modelo híbrido:
 - Compra individual de PDFs/cursos sueltos (pago único)
 - Suscripción mensual con acceso total sin descarga + contenido actualizado
 - Programa de afiliados con comisión por referidos

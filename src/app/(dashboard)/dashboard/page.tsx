@@ -147,14 +147,12 @@ export default async function DashboardPage({
                   <p className="text-sm text-neutral-500">{categoryLabel(course.category)}</p>
                 </div>
                 {course.resource_url && (
-                  <a
-                    href={`/api/cursos/${course.slug}/leer`}
-                    target="_blank"
-                    rel="noopener noreferrer"
+                  <Link
+                    href={`/dashboard/leer/${course.slug}`}
                     className="text-sm font-medium text-neutral-900 hover:underline"
                   >
                     Leer
-                  </a>
+                  </Link>
                 )}
               </div>
             ))}

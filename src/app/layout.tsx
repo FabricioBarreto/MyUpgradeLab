@@ -14,7 +14,7 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   title: "UpgradeLab",
-  description: "Cursos y recursos de ajedrez, programacion/IA, estudio con IA, ingles y entrevistas de trabajo.",
+  description: "Cursos y recursos de programacion/IA, estudio con IA, ingles, entrevistas de trabajo y negocio para freelancers.",
 };
 
 export default function RootLayout({

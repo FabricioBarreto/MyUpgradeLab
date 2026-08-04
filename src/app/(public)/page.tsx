@@ -2,11 +2,11 @@ import Link from "next/link"
 import { CATEGORY_LABELS } from "@/lib/format"
 
 const CATEGORY_DESCRIPTIONS: Record<string, string> = {
-  ajedrez: "Aperturas, tacticas y planes de juego para subir de nivel.",
   programacion_ia: "Programacion practica e inteligencia artificial aplicada.",
   estudio_ia: "Tecnicas de estudio potenciadas con herramientas de IA.",
   ingles: "Ingles enfocado en uso real, sin relleno.",
   entrevistas: "Preparacion para entrevistas de trabajo.",
+  ventas_freelance: "Ventas, marketing y herramientas para crecer como freelancer.",
 }
 
 export default function LandingPage() {
@@ -17,8 +17,8 @@ export default function LandingPage() {
           Aprende mas rapido, con recursos que van al grano
         </h1>
         <p className="mx-auto mt-4 max-w-2xl text-lg text-neutral-600">
-          Cursos y recursos de ajedrez, programacion con IA, tecnicas de estudio, ingles y
-          entrevistas de trabajo. Comprá lo que necesitás una vez, o suscribite y accedé a todo.
+          Cursos y recursos de programacion con IA, tecnicas de estudio, ingles, entrevistas de
+          trabajo y negocio para freelancers. Comprá lo que necesitás una vez, o suscribite y accedé a todo.
         </p>
         <div className="mt-8 flex justify-center gap-4">
           <Link

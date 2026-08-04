@@ -1,9 +1,9 @@
 export const CATEGORY_LABELS: Record<string, string> = {
-  ajedrez: "Ajedrez",
   programacion_ia: "Programacion / IA",
   estudio_ia: "Estudio con IA",
   ingles: "Ingles",
   entrevistas: "Entrevistas de trabajo",
+  ventas_freelance: "Negocio para freelancers y devs",
 }
 
 export function categoryLabel(category: string | null): string {

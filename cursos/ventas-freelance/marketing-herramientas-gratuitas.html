@@ -1,0 +1,401 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>Posicioná tu Negocio con Herramientas Gratuitas</title>
+<style>
+  @page {
+    size: A4;
+    margin: 2.4cm 2.2cm 2.6cm 2.2cm;
+    @bottom-center {
+      content: "UpgradeLab — Posicioná tu negocio con herramientas gratuitas";
+      font-family: 'Helvetica', 'Arial', sans-serif;
+      font-size: 8pt;
+      color: #999;
+    }
+    @bottom-right {
+      content: counter(page);
+      font-family: 'Helvetica', 'Arial', sans-serif;
+      font-size: 8pt;
+      color: #999;
+    }
+  }
+  @page cover {
+    margin: 0;
+    @bottom-center { content: none; }
+    @bottom-right { content: none; }
+  }
+
+  * { box-sizing: border-box; }
+  body {
+    font-family: 'Helvetica', 'Arial', sans-serif;
+    color: #1a1a1a;
+    font-size: 10.5pt;
+    line-height: 1.55;
+  }
+
+  .cover {
+    page: cover;
+    height: 100vh;
+    width: 100%;
+    background: #171717;
+    color: #ffffff;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: 3cm 2.4cm;
+  }
+  .cover .brand { font-size: 14pt; font-weight: 700; letter-spacing: 0.02em; }
+  .cover .brand .dot { color: #5ec9c2; }
+  .cover .cover-main { margin-top: 6cm; }
+  .cover .kicker {
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    font-size: 9pt;
+    color: #5ec9c2;
+    margin-bottom: 0.6cm;
+  }
+  .cover h1 { font-size: 27pt; line-height: 1.15; margin: 0 0 0.5cm 0; font-weight: 700; color: #ffffff; }
+  .cover .subtitle { font-size: 12pt; color: #cfcfcf; max-width: 12cm; }
+  .cover .tools-row { margin-top: 1cm; display: flex; gap: 0.4cm; flex-wrap: wrap; }
+  .cover .tool-pill {
+    border: 1px solid #444;
+    border-radius: 999px;
+    padding: 0.18cm 0.5cm;
+    font-size: 9pt;
+    color: #e5e5e5;
+  }
+  .cover .footer-note {
+    font-size: 8.5pt;
+    color: #888;
+    border-top: 1px solid #333;
+    padding-top: 0.4cm;
+  }
+
+  h1 {
+    font-size: 19pt;
+    color: #171717;
+    margin: 0 0 0.5cm 0;
+    padding-bottom: 0.25cm;
+    border-bottom: 2px solid #171717;
+  }
+  h2 { font-size: 13.5pt; color: #171717; margin: 0.9cm 0 0.35cm 0; }
+  h3 { font-size: 11.5pt; color: #171717; margin: 0.6cm 0 0.25cm 0; }
+  p { margin: 0 0 0.35cm 0; text-align: left; }
+  ul, ol { margin: 0 0 0.4cm 0; padding-left: 0.5cm; }
+  li { margin-bottom: 0.18cm; }
+  strong { color: #171717; }
+
+  .chapter { page-break-before: always; }
+  .lead { font-size: 11.5pt; color: #444; margin-bottom: 0.6cm; }
+
+  .box {
+    background: #f2f9f8;
+    border-left: 3px solid #171717;
+    border-radius: 4px;
+    padding: 0.4cm 0.55cm;
+    margin: 0.4cm 0 0.5cm 0;
+  }
+  .box .box-label {
+    font-size: 8pt;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: #888;
+    margin-bottom: 0.15cm;
+    display: block;
+  }
+  .prompt {
+    background: #171717;
+    color: #f5f5f5;
+    border-radius: 4px;
+    padding: 0.4cm 0.55cm;
+    margin: 0.3cm 0 0.5cm 0;
+    font-family: 'Courier New', monospace;
+    font-size: 9pt;
+    line-height: 1.5;
+    white-space: pre-wrap;
+  }
+  .prompt .prompt-label {
+    display: block;
+    font-family: 'Helvetica', sans-serif;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    font-size: 7.5pt;
+    color: #5ec9c2;
+    margin-bottom: 0.15cm;
+  }
+
+  table.usecases {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 0.3cm 0 0.5cm 0;
+    font-size: 9.5pt;
+  }
+  table.usecases th {
+    background: #171717;
+    color: #fff;
+    text-align: left;
+    padding: 0.22cm 0.3cm;
+    font-size: 9pt;
+  }
+  table.usecases td {
+    border-bottom: 1px solid #e2e2e2;
+    padding: 0.22cm 0.3cm;
+    vertical-align: top;
+  }
+
+  .toc { page-break-before: always; }
+  .toc-item {
+    display: flex;
+    justify-content: space-between;
+    border-bottom: 1px dotted #ccc;
+    padding: 0.22cm 0;
+    font-size: 10.5pt;
+  }
+  .toc-item .num { color: #5ec9c2; font-weight: 700; margin-right: 0.3cm; }
+
+  .checklist { list-style: none; padding-left: 0; }
+  .checklist li { padding-left: 0.7cm; position: relative; }
+  .checklist li::before {
+    content: "✓";
+    position: absolute;
+    left: 0;
+    color: #171717;
+    font-weight: 700;
+  }
+
+  .flow-step { display: flex; gap: 0.4cm; margin-bottom: 0.4cm; }
+  .flow-step .flow-num {
+    flex: 0 0 0.9cm;
+    height: 0.9cm;
+    background: #171717;
+    color: #fff;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 11pt;
+    font-weight: 700;
+  }
+  .flow-step .flow-body { flex: 1; padding-top: 0.05cm; }
+  .flow-step .flow-body h3 { margin-top: 0; }
+
+  .callout-warning {
+    border: 1px solid #e0b400;
+    background: #fffaeb;
+    border-radius: 4px;
+    padding: 0.4cm 0.55cm;
+    margin: 0.4cm 0;
+    font-size: 9.5pt;
+  }
+
+  .glossary dt { font-weight: 700; color: #171717; margin-top: 0.3cm; }
+  .glossary dd { margin: 0.05cm 0 0 0; color: #333; }
+</style>
+</head>
+<body>
+
+<div class="cover">
+  <div class="brand">Upgrade<span class="dot">Lab</span></div>
+  <div class="cover-main">
+    <div class="kicker">Negocio para freelancers y devs</div>
+    <h1>Posicioná tu negocio con herramientas gratuitas</h1>
+    <p class="subtitle">Imágenes con IA, video corto, y un calendario de contenido organizado — sin presupuesto de marketing ni depender de un diseñador.</p>
+    <div class="tools-row">
+      <span class="tool-pill">Canva AI</span>
+      <span class="tool-pill">CapCut</span>
+      <span class="tool-pill">Metricool</span>
+    </div>
+  </div>
+  <div class="footer-note">UpgradeLab · Categoría: Negocio para freelancers y devs</div>
+</div>
+
+<div class="toc">
+  <h1>Índice</h1>
+  <div class="toc-item"><span><span class="num">01</span>Introducción — no tener presupuesto ya no es excusa</span></div>
+  <div class="toc-item"><span><span class="num">02</span>El panorama de herramientas gratuitas</span></div>
+  <div class="toc-item"><span><span class="num">03</span>Identidad visual mínima, sin diseñador</span></div>
+  <div class="toc-item"><span><span class="num">04</span>Generar imágenes con IA que sirvan de verdad</span></div>
+  <div class="toc-item"><span><span class="num">05</span>Video corto: estructura y edición rápida</span></div>
+  <div class="toc-item"><span><span class="num">06</span>Organizar todo: calendario de contenido</span></div>
+  <div class="toc-item"><span><span class="num">07</span>Programar publicaciones sin perder el dia</span></div>
+  <div class="toc-item"><span><span class="num">08</span>Checklist final y tu primera semana</span></div>
+</div>
+
+<div class="chapter">
+  <h1>01 · Introducción</h1>
+  <p class="lead">"No tengo presupuesto para marketing" era una excusa valida hace unos años. Hoy, con herramientas gratuitas de IA para imagen y video, mas plataformas de programacion de contenido sin costo, la barrera de entrada bajo muchisimo.</p>
+
+  <p>Esta guia es la continuacion natural de <strong>Venta Consultiva</strong>: de nada sirve saber vender bien en una llamada si nadie llega a agendarla porque no te encuentran o no confian en lo que ven de vos online. Mostrarte de forma consistente — aunque sea con recursos minimos — es lo que genera esas conversaciones en primer lugar.</p>
+
+  <p>No hace falta ser diseñador, editor de video, ni tener presupuesto de agencia. Hace falta un sistema simple: un set chico de herramientas gratuitas, una identidad visual basica y consistente, y un calendario que puedas sostener en el tiempo sin que te consuma todas las semanas.</p>
+
+  <div class="box">
+    <span class="box-label">Qué vas a poder hacer al terminar esta guía</span>
+    Armar una identidad visual minima y consistente sin pagar un diseñador, generar imagenes con IA que se vean profesionales, editar videos cortos rapido, armar un calendario de contenido realista, y programar todo con anticipacion en vez de improvisar cada dia.
+  </div>
+</div>
+
+<div class="chapter">
+  <h1>02 · El panorama de herramientas gratuitas</h1>
+  <p class="lead">No hace falta pagar nada para empezar. Este es el set minimo que cubre imagen, video y programacion.</p>
+
+  <table class="usecases">
+    <tr><th>Herramienta</th><th>Para qué sirve</th><th>Plan gratuito</th></tr>
+    <tr>
+      <td><strong>Canva (con IA)</strong></td>
+      <td>Diseño grafico general, plantillas, y generacion de imagenes con IA integrada</td>
+      <td>Generaciones de IA limitadas por mes, suficiente para arrancar</td>
+    </tr>
+    <tr>
+      <td><strong>Freepik AI / Bing Image Creator</strong></td>
+      <td>Generacion de imagenes con IA como alternativa o complemento a Canva</td>
+      <td>Varias imagenes gratis por dia</td>
+    </tr>
+    <tr>
+      <td><strong>CapCut</strong></td>
+      <td>Edicion de video corto (reels, shorts, TikToks): cortes, subtitulos, musica</td>
+      <td>Version gratuita cubre la mayoria de lo que necesita alguien empezando</td>
+    </tr>
+    <tr>
+      <td><strong>Metricool</strong></td>
+      <td>Programar publicaciones para Instagram, TikTok, LinkedIn y mas desde un solo lugar</td>
+      <td>Plan gratuito cubre una cuenta por red social, suficiente para un freelancer</td>
+    </tr>
+  </table>
+
+  <div class="box">
+    <span class="box-label">No necesitas las cuatro el primer dia</span>
+    Empezá con Canva (cubre imagen y tiene generador de IA integrado) mas Metricool para programar. Sumá CapCut cuando quieras empezar a publicar video corto.
+  </div>
+</div>
+
+<div class="chapter">
+  <h1>03 · Identidad visual mínima, sin diseñador</h1>
+  <p class="lead">No necesitas un manual de marca — necesitas consistencia minima para que te reconozcan.</p>
+
+  <p>Con estas tres decisiones, tomadas una sola vez, alcanza:</p>
+  <ul>
+    <li><strong>Una paleta de 2-3 colores</strong>, siempre los mismos, en todo lo que publiques.</li>
+    <li><strong>Una tipografia principal</strong> para titulos, disponible en Canva.</li>
+    <li><strong>Una plantilla base reutilizable</strong> en Canva para cada tipo de publicacion (carrusel, imagen simple, cita) — la armas una vez y despues solo cambias el texto y la imagen.</li>
+  </ul>
+
+  <div class="box">
+    <span class="box-label">Por qué esto importa mas de lo que parece</span>
+    Alguien que ve tu contenido dos o tres veces con la misma estetica empieza a reconocerte antes de leer tu nombre. Eso es lo que construye confianza antes de la primera conversacion.
+  </div>
+</div>
+
+<div class="chapter">
+  <h1>04 · Generar imágenes con IA que sirvan de verdad</h1>
+  <p class="lead">La diferencia entre una imagen generica y una que realmente sirve para tu negocio esta en el prompt.</p>
+
+  <p>Un buen prompt para imagenes de negocio incluye: el tema central, el estilo visual (fotografico, ilustrado, minimalista), la composicion, y el uso de color acorde a tu paleta.</p>
+
+  <div class="prompt">
+    <span class="prompt-label">Prompt de ejemplo — flojo</span>Una imagen sobre programacion</div>
+
+  <div class="prompt">
+    <span class="prompt-label">Prompt de ejemplo — bueno</span>Ilustracion minimalista de un desarrollador trabajando en una laptop, estilo flat design, paleta de colores oscuros con un acento turquesa, fondo simple sin distracciones, orientacion cuadrada para post de Instagram</div>
+
+  <div class="callout-warning">
+    <strong>Ojo:</strong> generá siempre un par de variantes y elegí la que mejor respeta tu paleta de colores — la consistencia visual importa mas que cualquier imagen individual perfecta.
+  </div>
+</div>
+
+<div class="chapter">
+  <h1>05 · Video corto: estructura y edición rápida</h1>
+  <p class="lead">No hace falta producción — hace falta una estructura que funcione, repetida de forma consistente.</p>
+
+  <div class="flow-step">
+    <div class="flow-num">1</div>
+    <div class="flow-body">
+      <h3>Gancho (primeros 2-3 segundos)</h3>
+      <p>Una frase o pregunta que haga que la persona no siga scrolleando de largo. Es el segundo mas importante de todo el video.</p>
+    </div>
+  </div>
+
+  <div class="flow-step">
+    <div class="flow-num">2</div>
+    <div class="flow-body">
+      <h3>Desarrollo (el cuerpo del video)</h3>
+      <p>Un solo punto por video. Tratar de meter demasiado en 30-60 segundos hace que no se entienda nada.</p>
+    </div>
+  </div>
+
+  <div class="flow-step">
+    <div class="flow-num">3</div>
+    <div class="flow-body">
+      <h3>Cierre con una accion clara</h3>
+      <p>Que hacer despues de ver el video: seguir la cuenta, comentar, o escribirte por privado.</p>
+    </div>
+  </div>
+
+  <p>Para editar rapido en CapCut: cortá los silencios muertos, agregá subtitulos (la mayoria de la gente ve videos sin sonido), y usá musica de la libreria propia de la app para evitar problemas de derechos.</p>
+</div>
+
+<div class="chapter">
+  <h1>06 · Organizar todo: calendario de contenido</h1>
+  <p class="lead">Publicar sin plan es lo que hace que la mayoria abandone a las tres semanas.</p>
+
+  <p>La frecuencia ideal en la mayoria de las redes hoy es de <strong>4 a 5 publicaciones por semana</strong> — el algoritmo premia la consistencia mas que el volumen. Publicar 3 veces por semana de forma sostenida rinde mas que publicar todos los dias durante quince dias y despues desaparecer un mes.</p>
+
+  <p>La forma mas eficiente de sostener eso sin agotarte es <strong>reciclar contenido</strong>: una sola idea bien desarrollada puede convertirse en varios formatos.</p>
+
+  <div class="box">
+    <span class="box-label">Ejemplo de reciclado</span>
+    Un tema como "3 herramientas gratuitas que uso todas las semanas" puede ser: un carrusel de Instagram, un video corto explicando cada una, y varias stories mostrando el uso real de cada herramienta.
+  </div>
+
+  <p>Reservá un bloque fijo por semana (una tarde, por ejemplo) para planificar y crear contenido en lote, en vez de improvisar cada dia — es la unica forma realista de sostenerlo en el tiempo sin que se vuelva una carga diaria.</p>
+</div>
+
+<div class="chapter">
+  <h1>07 · Programar publicaciones sin perder el día</h1>
+  <p class="lead">Programar con anticipacion es lo que separa un sistema sostenible de estar todos los dias corriendo a publicar algo.</p>
+
+  <div class="flow-step">
+    <div class="flow-num">1</div>
+    <div class="flow-body">
+      <h3>Cargá el contenido de la semana en Metricool de una sola vez</h3>
+      <p>Usando el bloque de tiempo que reservaste (capitulo 6), programá todas las publicaciones de la semana en la misma sesion.</p>
+    </div>
+  </div>
+
+  <div class="flow-step">
+    <div class="flow-num">2</div>
+    <div class="flow-body">
+      <h3>Dejá que se publique solo</h3>
+      <p>Una vez programado, no necesitas estar presente en el momento exacto de publicacion.</p>
+    </div>
+  </div>
+
+  <div class="flow-step">
+    <div class="flow-num">3</div>
+    <div class="flow-body">
+      <h3>Reservá 10-15 minutos por dia para responder</h3>
+      <p>La parte que no se puede automatizar es la interaccion real — comentarios y mensajes. Ahi es donde efectivamente aparecen las conversaciones de negocio.</p>
+    </div>
+  </div>
+</div>
+
+<div class="chapter">
+  <h1>08 · Checklist final y tu primera semana</h1>
+
+  <ul class="checklist">
+    <li>Definiste tu paleta de colores y armaste al menos una plantilla base en Canva.</li>
+    <li>Generaste tus primeras imagenes con IA usando un prompt especifico, no generico.</li>
+    <li>Armaste un video corto siguiendo la estructura de gancho, desarrollo y cierre.</li>
+    <li>Planificaste el contenido de la semana en un bloque de tiempo fijo, no de forma improvisada.</li>
+    <li>Programaste las publicaciones de la semana de una sola vez en Metricool (u otra herramienta similar).</li>
+  </ul>
+
+  <div class="box">
+    <span class="box-label">Para arrancar esta semana</span>
+    No intentes hacer las cuatro cosas (imagen, video, calendario, programacion) perfectas desde el primer dia. Empezá por armar tu plantilla base en Canva y programar 3 publicaciones para la semana que viene — el sistema se afina con el uso, no antes de empezar.
+  </div>
+</div>
+
+</body>
+</html>

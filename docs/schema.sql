@@ -62,7 +62,7 @@ create table public.courses (
   slug text not null unique,
   title text not null,
   description text,
-  category text not null check (category in ('ajedrez', 'programacion_ia', 'estudio_ia', 'ingles', 'entrevistas')),
+  category text not null check (category in ('programacion_ia', 'estudio_ia', 'ingles', 'entrevistas', 'ventas_freelance')),
   price numeric(10, 2) not null,
   access_type text not null default 'individual' check (access_type in ('individual', 'subscription_only', 'both')),
   resource_url text,

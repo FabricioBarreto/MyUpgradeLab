@@ -31,11 +31,11 @@ export default async function NewCoursePage({
         <div className="space-y-1">
           <label htmlFor="category" className="text-sm font-medium text-neutral-700">Categoria</label>
           <select id="category" name="category" className="w-full rounded-md border border-neutral-300 px-3 py-2 text-sm focus:border-neutral-900 focus:outline-none">
-            <option value="ajedrez">Ajedrez</option>
             <option value="programacion_ia">Programacion / IA</option>
             <option value="estudio_ia">Estudio con IA</option>
             <option value="ingles">Ingles</option>
             <option value="entrevistas">Entrevistas de trabajo</option>
+            <option value="ventas_freelance">Negocio para freelancers y devs</option>
           </select>
         </div>
         <div className="space-y-1">

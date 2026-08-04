@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>Entrevistas de Trabajo para Developers</title>
+<style>
+  @page {
+    size: A4;
+    margin: 2.4cm 2.2cm 2.6cm 2.2cm;
+    @bottom-center {
+      content: "UpgradeLab — Entrevistas de trabajo para developers";
+      font-family: 'Helvetica', 'Arial', sans-serif;
+      font-size: 8pt;
+      color: #999;
+    }
+    @bottom-right {
+      content: counter(page);
+      font-family: 'Helvetica', 'Arial', sans-serif;
+      font-size: 8pt;
+      color: #999;
+    }
+  }
+  @page cover {
+    margin: 0;
+    @bottom-center { content: none; }
+    @bottom-right { content: none; }
+  }
+
+  * { box-sizing: border-box; }
+  body {
+    font-family: 'Helvetica', 'Arial', sans-serif;
+    color: #1a1a1a;
+    font-size: 10.5pt;
+    line-height: 1.55;
+  }
+
+  .cover {
+    page: cover;
+    height: 100vh;
+    width: 100%;
+    background: #171717;
+    color: #ffffff;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: 3cm 2.4cm;
+  }
+  .cover .brand { font-size: 14pt; font-weight: 700; letter-spacing: 0.02em; }
+  .cover .brand .dot { color: #5ec9c2; }
+  .cover .cover-main { margin-top: 6cm; }
+  .cover .kicker {
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    font-size: 9pt;
+    color: #5ec9c2;
+    margin-bottom: 0.6cm;
+  }
+  .cover h1 { font-size: 28pt; line-height: 1.15; margin: 0 0 0.5cm 0; font-weight: 700; color: #ffffff; }
+  .cover .subtitle { font-size: 12pt; color: #cfcfcf; max-width: 12cm; }
+  .cover .tools-row { margin-top: 1cm; display: flex; gap: 0.4cm; flex-wrap: wrap; }
+  .cover .tool-pill {
+    border: 1px solid #444;
+    border-radius: 999px;
+    padding: 0.18cm 0.5cm;
+    font-size: 9pt;
+    color: #e5e5e5;
+  }
+  .cover .footer-note {
+    font-size: 8.5pt;
+    color: #888;
+    border-top: 1px solid #333;
+    padding-top: 0.4cm;
+  }
+
+  h1 {
+    font-size: 19pt;
+    color: #171717;
+    margin: 0 0 0.5cm 0;
+    padding-bottom: 0.25cm;
+    border-bottom: 2px solid #171717;
+  }
+  h2 { font-size: 13.5pt; color: #171717; margin: 0.9cm 0 0.35cm 0; }
+  h3 { font-size: 11.5pt; color: #171717; margin: 0.6cm 0 0.25cm 0; }
+  p { margin: 0 0 0.35cm 0; text-align: left; }
+  ul, ol { margin: 0 0 0.4cm 0; padding-left: 0.5cm; }
+  li { margin-bottom: 0.18cm; }
+  strong { color: #171717; }
+
+  .chapter { page-break-before: always; }
+  .lead { font-size: 11.5pt; color: #444; margin-bottom: 0.6cm; }
+
+  .box {
+    background: #f2f9f8;
+    border-left: 3px solid #171717;
+    border-radius: 4px;
+    padding: 0.4cm 0.55cm;
+    margin: 0.4cm 0 0.5cm 0;
+  }
+  .box .box-label {
+    font-size: 8pt;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: #888;
+    margin-bottom: 0.15cm;
+    display: block;
+  }
+  .prompt {
+    background: #171717;
+    color: #f5f5f5;
+    border-radius: 4px;
+    padding: 0.4cm 0.55cm;
+    margin: 0.3cm 0 0.5cm 0;
+    font-family: 'Courier New', monospace;
+    font-size: 9pt;
+    line-height: 1.5;
+    white-space: pre-wrap;
+  }
+  .prompt .prompt-label {
+    display: block;
+    font-family: 'Helvetica', sans-serif;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    font-size: 7.5pt;
+    color: #5ec9c2;
+    margin-bottom: 0.15cm;
+  }
+
+  table.usecases {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 0.3cm 0 0.5cm 0;
+    font-size: 9.5pt;
+  }
+  table.usecases th {
+    background: #171717;
+    color: #fff;
+    text-align: left;
+    padding: 0.22cm 0.3cm;
+    font-size: 9pt;
+  }
+  table.usecases td {
+    border-bottom: 1px solid #e2e2e2;
+    padding: 0.22cm 0.3cm;
+    vertical-align: top;
+  }
+
+  .toc { page-break-before: always; }
+  .toc-item {
+    display: flex;
+    justify-content: space-between;
+    border-bottom: 1px dotted #ccc;
+    padding: 0.22cm 0;
+    font-size: 10.5pt;
+  }
+  .toc-item .num { color: #5ec9c2; font-weight: 700; margin-right: 0.3cm; }
+
+  .checklist { list-style: none; padding-left: 0; }
+  .checklist li { padding-left: 0.7cm; position: relative; }
+  .checklist li::before {
+    content: "✓";
+    position: absolute;
+    left: 0;
+    color: #171717;
+    font-weight: 700;
+  }
+
+  .flow-step { display: flex; gap: 0.4cm; margin-bottom: 0.4cm; }
+  .flow-step .flow-num {
+    flex: 0 0 0.9cm;
+    height: 0.9cm;
+    background: #171717;
+    color: #fff;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 11pt;
+    font-weight: 700;
+  }
+  .flow-step .flow-body { flex: 1; padding-top: 0.05cm; }
+  .flow-step .flow-body h3 { margin-top: 0; }
+
+  .callout-warning {
+    border: 1px solid #e0b400;
+    background: #fffaeb;
+    border-radius: 4px;
+    padding: 0.4cm 0.55cm;
+    margin: 0.4cm 0;
+    font-size: 9.5pt;
+  }
+
+  .glossary dt { font-weight: 700; color: #171717; margin-top: 0.3cm; }
+  .glossary dd { margin: 0.05cm 0 0 0; color: #333; }
+</style>
+</head>
+<body>
+
+<div class="cover">
+  <div class="brand">Upgrade<span class="dot">Lab</span></div>
+  <div class="cover-main">
+    <div class="kicker">Entrevistas de trabajo</div>
+    <h1>Entrevistas de trabajo para developers</h1>
+    <p class="subtitle">Como prepararte para el proceso completo: entrevistas tecnicas, preguntas de comportamiento, y negociacion — no solo resolver el ejercicio de codigo.</p>
+    <div class="tools-row">
+      <span class="tool-pill">Metodo STAR</span>
+      <span class="tool-pill">Entrevista tecnica</span>
+      <span class="tool-pill">Negociacion</span>
+    </div>
+  </div>
+  <div class="footer-note">UpgradeLab · Categoría: Entrevistas de trabajo</div>
+</div>
+
+<div class="toc">
+  <h1>Índice</h1>
+  <div class="toc-item"><span><span class="num">01</span>Introducción — el proceso hoy va mas alla de resolver algoritmos</span></div>
+  <div class="toc-item"><span><span class="num">02</span>Los tipos de entrevista que te vas a encontrar</span></div>
+  <div class="toc-item"><span><span class="num">03</span>El metodo STAR y tu banco de historias</span></div>
+  <div class="toc-item"><span><span class="num">04</span>Como hablar de tus proyectos sin sonar generico</span></div>
+  <div class="toc-item"><span><span class="num">05</span>La parte tecnica: que esperar y como practicar</span></div>
+  <div class="toc-item"><span><span class="num">06</span>Negociacion salarial: lo basico que hay que saber</span></div>
+  <div class="toc-item"><span><span class="num">07</span>Que preguntar vos al final de la entrevista</span></div>
+  <div class="toc-item"><span><span class="num">08</span>Checklist final y errores comunes</span></div>
+</div>
+
+<div class="chapter">
+  <h1>01 · Introducción</h1>
+  <p class="lead">El proceso de entrevista de un developer en 2026 va mucho mas alla de resolver un ejercicio en un pizarron virtual. Incluye entrevistas de comportamiento, evaluacion de como comunicas tus decisiones tecnicas, y cada vez mas, preguntas sobre como trabajas con herramientas de IA en tu dia a dia.</p>
+
+  <p>La mayoria de los developers se preparan solo para la parte tecnica — practican ejercicios de codigo y asumen que con eso alcanza. El problema es que en procesos con varios candidatos tecnicamente parejos, lo que termina definiendo quien recibe la oferta es todo lo demas: como contas tu experiencia, como respondes preguntas de comportamiento, y como manejas la conversacion de salario.</p>
+
+  <div class="box">
+    <span class="box-label">Qué vas a poder hacer al terminar esta guía</span>
+    Reconocer que tipo de entrevista te toca y prepararte especificamente para ella, responder preguntas de comportamiento con el metodo STAR sin improvisar, hablar de tus proyectos de forma concreta y memorable, y llegar a la conversacion de salario con una estrategia en vez de una esperanza.
+  </div>
+</div>
+
+<div class="chapter">
+  <h1>02 · Los tipos de entrevista que te vas a encontrar</h1>
+  <p class="lead">No todas las empresas evaluan igual. Saber que formato te espera cambia por completo como te preparas.</p>
+
+  <table class="usecases">
+    <tr><th>Formato</th><th>Como funciona</th><th>Como prepararte</th></tr>
+    <tr>
+      <td><strong>Live coding</strong></td>
+      <td>Resolves un ejercicio en tiempo real, compartiendo pantalla, mientras el entrevistador observa y a veces pregunta</td>
+      <td>Practicar pensando en voz alta, no solo resolviendo en silencio — te evaluan el proceso, no solo el resultado final</td>
+    </tr>
+    <tr>
+      <td><strong>Take-home / proyecto</strong></td>
+      <td>Te dan un ejercicio para resolver en tu tiempo, generalmente de unos dias, y despues lo revisan o te preguntan sobre el</td>
+      <td>Cuidar la calidad del codigo como si fuera a produccion: tests, README, decisiones documentadas — ahi se nota mas que en un ejercicio cronometrado</td>
+    </tr>
+    <tr>
+      <td><strong>System design</strong></td>
+      <td>Te piden disenar la arquitectura de un sistema (ej: "disena un acortador de URLs") sin escribir codigo real</td>
+      <td>Practicar pensar en voz alta sobre trade-offs (consistencia vs disponibilidad, base de datos, escalabilidad) mas que memorizar una solucion unica</td>
+    </tr>
+    <tr>
+      <td><strong>Comportamiento (behavioral)</strong></td>
+      <td>Preguntas sobre experiencias pasadas: conflictos, decisiones dificiles, fallas, trabajo en equipo</td>
+      <td>Tener historias preparadas de antemano con el metodo STAR (capitulo 3) — improvisar aca es lo que mas se nota</td>
+    </tr>
+  </table>
+
+  <div class="box">
+    <span class="box-label">Antes de la entrevista</span>
+    Si podes, preguntale a quien te contacto (RRHH o el recruiter) que formato vas a tener. La mayoria responde esto sin problema, y te ahorra prepararte a ciegas.
+  </div>
+</div>
+
+<div class="chapter">
+  <h1>03 · El método STAR y tu banco de historias</h1>
+  <p class="lead">STAR es el estandar de la industria para responder preguntas de comportamiento de forma estructurada, sin divagar.</p>
+
+  <ul>
+    <li><strong>Situación</strong> — el contexto: donde trabajabas, que proyecto era.</li>
+    <li><strong>Tarea</strong> — cual era tu responsabilidad especifica en esa situacion.</li>
+    <li><strong>Acción</strong> — que hiciste vos, concretamente. Usa "yo hice" en vez de "hicimos", incluso si fue trabajo en equipo — al entrevistador le interesa tu aporte especifico.</li>
+    <li><strong>Resultado</strong> — que paso despues, idealmente con un numero o impacto medible.</li>
+  </ul>
+
+  <div class="prompt">
+    <span class="prompt-label">Ejemplo de historia armada con STAR</span>Situacion: en mi ultimo trabajo, el proceso de deploy tardaba 40 minutos y fallaba seguido.
+Tarea: me pidieron investigar por que, sin que fuera formalmente mi responsabilidad.
+Accion: audite el pipeline, encontre que corriamos los tests de forma secuencial en vez de paralela, y propuse un cambio.
+Resultado: el deploy bajo a 12 minutos y las fallas por timeout desaparecieron casi por completo.</div>
+
+  <p>La recomendacion general es preparar entre <strong>6 y 12 historias</strong> de este tipo, cubriendo situaciones distintas: un conflicto con un companero, una falla propia, una decision tecnica dificil, un logro con impacto medible, un momento de trabajar bajo presion. Con ese banco armado, podes adaptar la misma historia a distintas preguntas en vez de improvisar cada vez.</p>
+</div>
+
+<div class="chapter">
+  <h1>04 · Como hablar de tus proyectos sin sonar genérico</h1>
+  <p class="lead">"Trabaje en el backend con Node y Postgres" no le dice nada a nadie. Hay una forma mas efectiva de contar lo mismo.</p>
+
+  <p>En vez de listar tecnologias, contá el problema que resolviste. La estructura que mejor funciona:</p>
+
+  <ol>
+    <li><strong>Que problema existia</strong> antes de que vos intervinieras.</li>
+    <li><strong>Que decidiste hacer</strong>, y por que — mostrando tu criterio, no solo tu ejecucion.</li>
+    <li><strong>Que resultado concreto</strong> tuvo, con numeros si los tenes (tiempo ahorrado, usuarios impactados, errores reducidos).</li>
+  </ol>
+
+  <div class="prompt">
+    <span class="prompt-label">Ejemplo — flojo</span>Desarrolle una API REST con Node.js y Express, conectada a una base de datos PostgreSQL.</div>
+
+  <div class="prompt">
+    <span class="prompt-label">Ejemplo — mejor</span>El equipo de ventas perdia tiempo cargando pedidos a mano en una planilla. Arme una API que centralizo ese proceso, con validaciones que antes no existian. Redujo los errores de carga en al menos la mitad, segun lo que reportaron ellos mismos al mes siguiente.</div>
+</div>
+
+<div class="chapter">
+  <h1>05 · La parte técnica: qué esperar y cómo practicar</h1>
+  <p class="lead">Las entrevistas tecnicas en 2026 van mas alla de ejercicios estilo LeetCode.</p>
+
+  <p>Temas frecuentes segun el tipo de rol:</p>
+  <ul>
+    <li><strong>Fundamentos generales</strong> — complejidad algoritmica (notacion Big O), estructuras de datos basicas.</li>
+    <li><strong>Backend / fullstack</strong> — HTTP, bases de datos SQL vs NoSQL, indices, transacciones, caching.</li>
+    <li><strong>Herramientas del dia a dia</strong> — control de versiones, contenedores (Docker), y cada vez mas, como usas herramientas de IA en tu flujo de trabajo real (ver la serie "Programar con IA" de UpgradeLab si necesitas reforzar esto).</li>
+  </ul>
+
+  <div class="box">
+    <span class="box-label">Como practicar sin perder la cabeza</span>
+    No hace falta resolver cientos de ejercicios sueltos. Es mas efectivo practicar poco pero explicando en voz alta tu razonamiento mientras resolves — es exactamente lo que te van a pedir en la entrevista real, y es una habilidad distinta a solo llegar a la respuesta correcta.
+  </div>
+</div>
+
+<div class="chapter">
+  <h1>06 · Negociación salarial</h1>
+  <p class="lead">Es la parte que mas developers evitan preparar, y la que mas impacto tiene en terminos concretos.</p>
+
+  <ul>
+    <li><strong>Investigá el rango de mercado antes de la conversacion.</strong> Tener un numero de referencia (por rol, seniority y region) te saca de negociar a ciegas.</li>
+    <li><strong>Evitá anclar la conversacion con un numero bajo.</strong> Si te preguntan tu expectativa antes de que ellos ofrezcan, dar un rango amplio basado en tu investigacion es mejor que tirar un numero al azar.</li>
+    <li><strong>Una oferta inicial no es la oferta final.</strong> Es normal (y esperado en la mayoria de los procesos) pedir un poco mas o pedir tiempo para pensarlo — rara vez una empresa retira una oferta por eso.</li>
+    <li><strong>Negociá el paquete completo, no solo el salario base</strong> — modalidad de trabajo, dias remotos, capacitacion, bonos.</li>
+  </ul>
+
+  <div class="prompt">
+    <span class="prompt-label">Guion util para pedir tiempo</span>Te agradezco mucho la propuesta. ¿Podemos coordinar para que te de una respuesta en dos o tres dias? Quiero poder evaluarla con calma.</div>
+</div>
+
+<div class="chapter">
+  <h1>07 · Qué preguntar vos al final de la entrevista</h1>
+  <p class="lead">Cuando te preguntan "¿vos tenes alguna pregunta?", decir que no es una oportunidad perdida — y a veces se nota como falta de interes real.</p>
+
+  <div class="prompt">
+    <span class="prompt-label">Preguntas utiles para hacer vos</span>¿Como es un dia tipico en este rol?
+¿Que evaluan para considerar que alguien tuvo un buen primer semestre en este puesto?
+¿Como maneja el equipo el trabajo tecnico pendiente (deuda tecnica) frente a las nuevas funcionalidades?
+¿Que herramientas de IA usa hoy el equipo en su flujo de trabajo diario?</div>
+
+  <p>Estas preguntas cumplen doble funcion: te dan informacion real para decidir si el trabajo te conviene, y le muestran a quien te entrevista que pensaste en serio sobre el puesto.</p>
+</div>
+
+<div class="chapter">
+  <h1>08 · Checklist final y errores comunes</h1>
+
+  <h3>Errores comunes</h3>
+  <ul>
+    <li><strong>Prepararse solo para lo tecnico</strong> y llegar a las preguntas de comportamiento a improvisar.</li>
+    <li><strong>Hablar en "nosotros" todo el tiempo</strong> en las respuestas de comportamiento, sin dejar clara tu contribucion especifica.</li>
+    <li><strong>Dar el primer numero de salario que se te ocurre</strong>, sin haber investigado el rango de mercado antes.</li>
+    <li><strong>No hacer preguntas al final</strong>, perdiendo la oportunidad de evaluar el puesto y de mostrar interes real.</li>
+  </ul>
+
+  <ul class="checklist">
+    <li>Sabés que tipo de entrevista te espera y te preparaste especificamente para ese formato.</li>
+    <li>Tenés entre 6 y 12 historias armadas con el metodo STAR.</li>
+    <li>Podés hablar de tus proyectos en terminos de problema resuelto, no solo de tecnologias usadas.</li>
+    <li>Investigaste el rango salarial de mercado antes de la entrevista.</li>
+    <li>Tenés preguntas preparadas para hacer vos al final.</li>
+  </ul>
+</div>
+
+</body>
+</html>

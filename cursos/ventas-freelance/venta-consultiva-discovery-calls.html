@@ -1,0 +1,407 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>Venta Consultiva para Developers y Freelancers</title>
+<style>
+  @page {
+    size: A4;
+    margin: 2.4cm 2.2cm 2.6cm 2.2cm;
+    @bottom-center {
+      content: "UpgradeLab — Venta consultiva para developers y freelancers";
+      font-family: 'Helvetica', 'Arial', sans-serif;
+      font-size: 8pt;
+      color: #999;
+    }
+    @bottom-right {
+      content: counter(page);
+      font-family: 'Helvetica', 'Arial', sans-serif;
+      font-size: 8pt;
+      color: #999;
+    }
+  }
+  @page cover {
+    margin: 0;
+    @bottom-center { content: none; }
+    @bottom-right { content: none; }
+  }
+
+  * { box-sizing: border-box; }
+  body {
+    font-family: 'Helvetica', 'Arial', sans-serif;
+    color: #1a1a1a;
+    font-size: 10.5pt;
+    line-height: 1.55;
+  }
+
+  .cover {
+    page: cover;
+    height: 100vh;
+    width: 100%;
+    background: #171717;
+    color: #ffffff;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: 3cm 2.4cm;
+  }
+  .cover .brand { font-size: 14pt; font-weight: 700; letter-spacing: 0.02em; }
+  .cover .brand .dot { color: #5ec9c2; }
+  .cover .cover-main { margin-top: 6cm; }
+  .cover .kicker {
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    font-size: 9pt;
+    color: #5ec9c2;
+    margin-bottom: 0.6cm;
+  }
+  .cover h1 { font-size: 27pt; line-height: 1.15; margin: 0 0 0.5cm 0; font-weight: 700; color: #ffffff; }
+  .cover .subtitle { font-size: 12pt; color: #cfcfcf; max-width: 12cm; }
+  .cover .tools-row { margin-top: 1cm; display: flex; gap: 0.4cm; flex-wrap: wrap; }
+  .cover .tool-pill {
+    border: 1px solid #444;
+    border-radius: 999px;
+    padding: 0.18cm 0.5cm;
+    font-size: 9pt;
+    color: #e5e5e5;
+  }
+  .cover .footer-note {
+    font-size: 8.5pt;
+    color: #888;
+    border-top: 1px solid #333;
+    padding-top: 0.4cm;
+  }
+
+  h1 {
+    font-size: 19pt;
+    color: #171717;
+    margin: 0 0 0.5cm 0;
+    padding-bottom: 0.25cm;
+    border-bottom: 2px solid #171717;
+  }
+  h2 { font-size: 13.5pt; color: #171717; margin: 0.9cm 0 0.35cm 0; }
+  h3 { font-size: 11.5pt; color: #171717; margin: 0.6cm 0 0.25cm 0; }
+  p { margin: 0 0 0.35cm 0; text-align: left; }
+  ul, ol { margin: 0 0 0.4cm 0; padding-left: 0.5cm; }
+  li { margin-bottom: 0.18cm; }
+  strong { color: #171717; }
+
+  .chapter { page-break-before: always; }
+  .lead { font-size: 11.5pt; color: #444; margin-bottom: 0.6cm; }
+
+  .box {
+    background: #f2f9f8;
+    border-left: 3px solid #171717;
+    border-radius: 4px;
+    padding: 0.4cm 0.55cm;
+    margin: 0.4cm 0 0.5cm 0;
+  }
+  .box .box-label {
+    font-size: 8pt;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: #888;
+    margin-bottom: 0.15cm;
+    display: block;
+  }
+  .prompt {
+    background: #171717;
+    color: #f5f5f5;
+    border-radius: 4px;
+    padding: 0.4cm 0.55cm;
+    margin: 0.3cm 0 0.5cm 0;
+    font-family: 'Courier New', monospace;
+    font-size: 9pt;
+    line-height: 1.5;
+    white-space: pre-wrap;
+  }
+  .prompt .prompt-label {
+    display: block;
+    font-family: 'Helvetica', sans-serif;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    font-size: 7.5pt;
+    color: #5ec9c2;
+    margin-bottom: 0.15cm;
+  }
+
+  table.usecases {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 0.3cm 0 0.5cm 0;
+    font-size: 9.5pt;
+  }
+  table.usecases th {
+    background: #171717;
+    color: #fff;
+    text-align: left;
+    padding: 0.22cm 0.3cm;
+    font-size: 9pt;
+  }
+  table.usecases td {
+    border-bottom: 1px solid #e2e2e2;
+    padding: 0.22cm 0.3cm;
+    vertical-align: top;
+  }
+
+  .toc { page-break-before: always; }
+  .toc-item {
+    display: flex;
+    justify-content: space-between;
+    border-bottom: 1px dotted #ccc;
+    padding: 0.22cm 0;
+    font-size: 10.5pt;
+  }
+  .toc-item .num { color: #5ec9c2; font-weight: 700; margin-right: 0.3cm; }
+
+  .checklist { list-style: none; padding-left: 0; }
+  .checklist li { padding-left: 0.7cm; position: relative; }
+  .checklist li::before {
+    content: "✓";
+    position: absolute;
+    left: 0;
+    color: #171717;
+    font-weight: 700;
+  }
+
+  .flow-step { display: flex; gap: 0.4cm; margin-bottom: 0.4cm; }
+  .flow-step .flow-num {
+    flex: 0 0 0.9cm;
+    height: 0.9cm;
+    background: #171717;
+    color: #fff;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 11pt;
+    font-weight: 700;
+  }
+  .flow-step .flow-body { flex: 1; padding-top: 0.05cm; }
+  .flow-step .flow-body h3 { margin-top: 0; }
+
+  .callout-warning {
+    border: 1px solid #e0b400;
+    background: #fffaeb;
+    border-radius: 4px;
+    padding: 0.4cm 0.55cm;
+    margin: 0.4cm 0;
+    font-size: 9.5pt;
+  }
+
+  .glossary dt { font-weight: 700; color: #171717; margin-top: 0.3cm; }
+  .glossary dd { margin: 0.05cm 0 0 0; color: #333; }
+</style>
+</head>
+<body>
+
+<div class="cover">
+  <div class="brand">Upgrade<span class="dot">Lab</span></div>
+  <div class="cover-main">
+    <div class="kicker">Ventas para freelancers y developers</div>
+    <h1>Venta consultiva: como vender sin sentir que vendés</h1>
+    <p class="subtitle">Para developers y freelancers que resuelven bien lo tecnico pero se estancan a la hora de conseguir y cerrar clientes. Como hacer las preguntas correctas antes de ofrecer nada.</p>
+    <div class="tools-row">
+      <span class="tool-pill">Discovery calls</span>
+      <span class="tool-pill">SPIN Selling</span>
+      <span class="tool-pill">Manejo de objeciones</span>
+    </div>
+  </div>
+  <div class="footer-note">UpgradeLab · Categoría: Ventas para freelancers y devs</div>
+</div>
+
+<div class="toc">
+  <h1>Índice</h1>
+  <div class="toc-item"><span><span class="num">01</span>Introducción — por que los developers venden mal</span></div>
+  <div class="toc-item"><span><span class="num">02</span>El mindset: vender es diagnosticar, no convencer</span></div>
+  <div class="toc-item"><span><span class="num">03</span>Antes de la llamada: investigar al prospecto</span></div>
+  <div class="toc-item"><span><span class="num">04</span>El framework SPIN, adaptado a lenguaje tecnico</span></div>
+  <div class="toc-item"><span><span class="num">05</span>La estructura de la discovery call, paso a paso</span></div>
+  <div class="toc-item"><span><span class="num">06</span>Errores comunes de developers vendiendo</span></div>
+  <div class="toc-item"><span><span class="num">07</span>De la llamada a la propuesta, sin que parezca un pitch</span></div>
+  <div class="toc-item"><span><span class="num">08</span>Objeciones comunes y checklist final</span></div>
+</div>
+
+<div class="chapter">
+  <h1>01 · Introducción</h1>
+  <p class="lead">Si desarrollás bien pero sentís que estas estancado, lo mas probable es que el problema no sea tecnico. Es que nadie te enseño a vender — y peor, a nadie le gusta la idea de "vender", asi que directamente lo evitan.</p>
+
+  <p>Los developers tienden a cometer siempre el mismo error: apenas alguien menciona un problema, saltan directo a la solucion tecnica. "Necesito una web" se convierte en un presupuesto de funcionalidades antes de entender para que la necesita esa persona, que pasa hoy sin ella, o cuanto vale realmente resolverlo. Esto no es un problema de habilidad tecnica — es un problema de <strong>secuencia</strong>: se ofrece antes de diagnosticar.</p>
+
+  <p>Esta guia no es un curso de "tecnicas de cierre" ni de discursos memorizados. Es un metodo para hacer las preguntas correctas, en el orden correcto, antes de ofrecer nada — lo que en ventas se llama <strong>venta consultiva</strong>. No se trata de convencer a nadie de nada: se trata de entender tan bien el problema del cliente que la solucion se vuelve obvia para los dos.</p>
+
+  <div class="box">
+    <span class="box-label">Qué vas a poder hacer al terminar esta guía</span>
+    Encarar una primera llamada con un cliente potencial sin improvisar, hacer preguntas que revelan el problema real (no el que el cliente cree tener), calificar si vale la pena seguir antes de cotizar, y pasar de la conversacion a una propuesta sin que se sienta un pitch forzado.
+  </div>
+</div>
+
+<div class="chapter">
+  <h1>02 · El mindset: vender es diagnosticar</h1>
+  <p class="lead">El cambio mas importante de esta guia no es una tecnica, es una forma distinta de pensar la primera conversacion con un cliente.</p>
+
+  <p>Vender, en el sentido en que lo vamos a usar aca, no es persuadir a alguien de comprar algo que no necesita. Es mas parecido a lo que ya sabes hacer todo el tiempo como developer: <strong>diagnosticar antes de proponer una solucion</strong>. Nadie empieza a programar sin entender primero que tiene que resolver el codigo — la primera llamada con un cliente deberia funcionar exactamente igual.</p>
+
+  <p>Una <strong>discovery call</strong> (llamada de descubrimiento) es, literalmente, eso: una conversacion diagnostica, no un pitch de ventas disfrazado. El objetivo no es convencer a la otra persona de que la contrate — es entender si hay un problema real, si vos sos la persona correcta para resolverlo, y si tiene sentido seguir adelante para los dos. A veces la respuesta honesta es que no.</p>
+
+  <div class="box">
+    <span class="box-label">Por que este cambio de mentalidad importa</span>
+    Cuando dejás de pensar "tengo que convencerlo" y empezas a pensar "tengo que entender si esto tiene sentido", la conversacion se relaja para los dos lados — y paradojicamente, es mucho mas efectiva para cerrar proyectos que valen la pena.
+  </div>
+</div>
+
+<div class="chapter">
+  <h1>03 · Antes de la llamada: investigar al prospecto</h1>
+  <p class="lead">La calidad de tus preguntas depende de cuanto sabes antes de empezar a preguntar.</p>
+
+  <p>Diez minutos de investigacion previa cambian por completo una discovery call. Antes de la llamada, conviene tener claro:</p>
+
+  <ul>
+    <li><strong>Que hace la empresa o la persona</strong>, y en que industria opera.</li>
+    <li><strong>Como llegaron a vos</strong> — recomendacion, contenido que publicaste, busqueda directa. Esto te dice que tan calificado viene el contacto.</li>
+    <li><strong>Cualquier contexto publico relevante</strong> — su web actual, su presencia online, senales de que estan creciendo o de que algo especifico dispar esta necesidad ahora.</li>
+  </ul>
+
+  <p>No se trata de investigar por investigar — se trata de no hacerle perder tiempo a nadie preguntando cosas que ya podrias saber, y de poder hacer preguntas mas especificas y relevantes desde el minuto uno.</p>
+
+  <div class="callout-warning">
+    <strong>Ojo:</strong> investigar de mas y llegar con ideas ya armadas de "la solucion" es tan malo como no investigar nada — te hace saltar directo a proponer antes de escuchar. La investigacion previa es para hacer mejores preguntas, no para reemplazarlas.
+  </div>
+</div>
+
+<div class="chapter">
+  <h1>04 · El framework SPIN, adaptado a lenguaje técnico</h1>
+  <p class="lead">SPIN es el framework de venta consultiva mas estudiado y usado desde hace decadas. Sus cuatro tipos de pregunta, en orden, llevan la conversacion de "cuentame que pasa" a "necesito que me ayudes a resolver esto".</p>
+
+  <h3>S — Situación</h3>
+  <p>Entender el contexto actual, sin asumir nada.</p>
+  <div class="prompt">
+    <span class="prompt-label">Guion de ejemplo</span>Contame como resuelven esto hoy. ¿Que herramientas o proceso usan actualmente?</div>
+
+  <h3>P — Problema</h3>
+  <p>Identificar friccion o dificultades concretas en esa situacion actual.</p>
+  <div class="prompt">
+    <span class="prompt-label">Guion de ejemplo</span>¿Que es lo que mas les cuesta o les hace perder tiempo de esa forma de trabajar hoy?</div>
+
+  <h3>I — Implicación</h3>
+  <p>Ampliar el costo real de no resolver ese problema — esta es la pregunta que mas suelen saltearse los developers, y la mas importante.</p>
+  <div class="prompt">
+    <span class="prompt-label">Guion de ejemplo</span>Si esto sigue igual los proximos seis meses, ¿que impacto tiene eso en el resto del equipo o del negocio?</div>
+
+  <h3>N — Necesidad-beneficio</h3>
+  <p>Hacer que sea el cliente quien articule el valor de resolverlo — no vos.</p>
+  <div class="prompt">
+    <span class="prompt-label">Guion de ejemplo</span>Si esto se resolviera, ¿que cambiaria concretamente para ustedes?</div>
+
+  <div class="box">
+    <span class="box-label">Por que funciona</span>
+    Cuando el cliente es quien pone en palabras el costo del problema y el valor de resolverlo, ya no hace falta que vos lo convenzas de nada — el mismo llego a esa conclusion.
+  </div>
+</div>
+
+<div class="chapter">
+  <h1>05 · La estructura de la discovery call, paso a paso</h1>
+  <p class="lead">Una discovery call de 30 minutos, con un objetivo claro en cada tramo.</p>
+
+  <div class="flow-step">
+    <div class="flow-num">1</div>
+    <div class="flow-body">
+      <h3>Rapport (2-3 min)</h3>
+      <p>Romper el hielo brevemente, sin alargarlo — el objetivo es que la otra persona se sienta comoda, no llenar tiempo.</p>
+    </div>
+  </div>
+
+  <div class="flow-step">
+    <div class="flow-num">2</div>
+    <div class="flow-body">
+      <h3>Contexto y confirmacion (3-5 min)</h3>
+      <p>Confirmar brevemente lo que ya investigaste y dejar que la otra persona corrija o agregue contexto.</p>
+    </div>
+  </div>
+
+  <div class="flow-step">
+    <div class="flow-num">3</div>
+    <div class="flow-body">
+      <h3>Descubrimiento con SPIN (12-15 min)</h3>
+      <p>El nucleo de la llamada: Situacion, Problema, Implicacion, Necesidad-beneficio, en ese orden. Aca es donde se hacen la mayoria de las preguntas.</p>
+    </div>
+  </div>
+
+  <div class="flow-step">
+    <div class="flow-num">4</div>
+    <div class="flow-body">
+      <h3>Calificar (5 min)</h3>
+      <p>Confirmar presupuesto aproximado, quien toma la decision final, y los plazos reales — sin esto, se puede armar una propuesta perfecta para alguien que nunca va a poder avanzar.</p>
+    </div>
+  </div>
+
+  <div class="flow-step">
+    <div class="flow-num">5</div>
+    <div class="flow-body">
+      <h3>Cierre y proximos pasos (3-5 min)</h3>
+      <p>Nunca terminar la llamada sin un proximo paso concreto y una fecha: "te mando la propuesta el jueves" es mucho mejor que "despues te escribo".</p>
+    </div>
+  </div>
+
+  <div class="prompt">
+    <span class="prompt-label">Guion util para calificar presupuesto sin sonar invasivo</span>Para armarte una propuesta que tenga sentido, ¿tienen ya un rango de presupuesto pensado para esto, o todavia lo estan evaluando?</div>
+</div>
+
+<div class="chapter">
+  <h1>06 · Errores comunes de developers vendiendo</h1>
+
+  <ul>
+    <li><strong>Saltar directo a la solucion tecnica.</strong> Empezar a hablar de stack, arquitectura o funcionalidades antes de haber entendido el problema real es la forma mas rapida de perder el control de la conversacion.</li>
+    <li><strong>Cotizar en la primera llamada.</strong> Dar un numero sin haber calificado presupuesto ni entendido el alcance completo casi siempre termina mal — o cotizas de mas, o de menos, y en ambos casos perdes.</li>
+    <li><strong>No calificar quien decide.</strong> Armar una propuesta detallada para alguien que despues tiene que "consultarlo con su socio" duplica el trabajo y diluye el impulso de la conversacion.</li>
+    <li><strong>Sobre-explicar la parte tecnica.</strong> El cliente casi nunca necesita entender como funciona la solucion por dentro — necesita entender que su problema se va a resolver.</li>
+    <li><strong>No preguntar por la implicacion del problema.</strong> Sin esa pregunta, el cliente nunca termina de sentir la urgencia real de resolverlo ahora.</li>
+  </ul>
+</div>
+
+<div class="chapter">
+  <h1>07 · De la llamada a la propuesta</h1>
+  <p class="lead">La transicion de la discovery call a la propuesta formal es donde mas se nota si la llamada anterior estuvo bien hecha.</p>
+
+  <p>Si el descubrimiento fue bueno, la propuesta no debería sonar a pitch — deberia sonar a resumen. La estructura mas efectiva es simple:</p>
+
+  <ol>
+    <li><strong>Reflejar el problema con sus propias palabras.</strong> Repetir lo que el cliente dijo sobre su situacion y su problema, para confirmar que escuchaste bien.</li>
+    <li><strong>Conectar ese problema con la implicacion que el mismo describio.</strong> El costo de no resolverlo, en sus propias palabras.</li>
+    <li><strong>Presentar la solucion como consecuencia logica</strong>, no como una lista de funcionalidades sueltas.</li>
+    <li><strong>Cerrar con un proximo paso claro</strong>, no con un "avisame que te parece".</li>
+  </ol>
+
+  <div class="prompt">
+    <span class="prompt-label">Guion de apertura para la propuesta</span>Como charlamos, hoy [resumen breve de la situacion]. Eso te esta generando [problema/implicacion que el cliente menciono]. Te armé una propuesta pensada especificamente para resolver eso.</div>
+</div>
+
+<div class="chapter">
+  <h1>08 · Objeciones comunes y checklist final</h1>
+
+  <h3>"Es muy caro"</h3>
+  <p>Rara vez es sobre el precio en si — casi siempre es sobre el valor percibido. Volver a la implicacion que el mismo cliente describio suele ser mas efectivo que bajar el precio.</p>
+  <div class="prompt">
+    <span class="prompt-label">Guion de ejemplo</span>Entiendo. Volviendo a lo que me contaste antes, ¿como estarias pensando resolver esto si no es conmigo?</div>
+
+  <h3>"Lo puedo hacer con IA / no-code"</h3>
+  <p>Es una objecion cada vez mas comun. No conviene entrar en la defensiva — conviene volver al problema de fondo (tiempo, criterio, mantenimiento) mas que a la tecnologia en si.</p>
+  <div class="prompt">
+    <span class="prompt-label">Guion de ejemplo</span>Totalmente valido. ¿Que tanto tiempo tenes disponible vos para armarlo y despues mantenerlo funcionando?</div>
+
+  <h3>"Necesito pensarlo"</h3>
+  <p>Suele significar que quedo alguna duda sin resolver, no necesariamente un no. Preguntar que falta es mejor que insistir.</p>
+  <div class="prompt">
+    <span class="prompt-label">Guion de ejemplo</span>Por supuesto. ¿Hay algo puntual que te quedo dando vueltas, para que pueda aclararlo ahora?</div>
+
+  <ul class="checklist">
+    <li>Investigaste al prospecto antes de la llamada.</li>
+    <li>Hiciste preguntas de Situacion, Problema, Implicacion y Necesidad-beneficio, en ese orden.</li>
+    <li>Calificaste presupuesto, quien decide, y los plazos.</li>
+    <li>Terminaste la llamada con un proximo paso concreto y una fecha.</li>
+    <li>Tu propuesta refleja las palabras del cliente, no una lista generica de funcionalidades.</li>
+  </ul>
+</div>
+
+</body>
+</html>

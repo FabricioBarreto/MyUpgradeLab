@@ -18,7 +18,7 @@ Extiende `auth.users` de Supabase con datos propios de la app.
 | slug | text | unique |
 | title | text | |
 | description | text | |
-| category | text | ajedrez, programacion_ia, estudio_ia, ingles, entrevistas |
+| category | text | programacion_ia, estudio_ia, ingles, entrevistas, ventas_freelance |
 | price | numeric(10,2) | precio individual |
 | access_type | text | 'individual' \| 'subscription_only' \| 'both' |
 | resource_url | text | link Cloudinary al PDF/curso |
