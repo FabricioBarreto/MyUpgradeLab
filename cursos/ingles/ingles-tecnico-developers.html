@@ -1,0 +1,403 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>Inglés Técnico para Developers</title>
+<style>
+  @page {
+    size: A4;
+    margin: 2.4cm 2.2cm 2.6cm 2.2cm;
+    @bottom-center {
+      content: "UpgradeLab — Inglés técnico para developers";
+      font-family: 'Helvetica', 'Arial', sans-serif;
+      font-size: 8pt;
+      color: #999;
+    }
+    @bottom-right {
+      content: counter(page);
+      font-family: 'Helvetica', 'Arial', sans-serif;
+      font-size: 8pt;
+      color: #999;
+    }
+  }
+  @page cover {
+    margin: 0;
+    @bottom-center { content: none; }
+    @bottom-right { content: none; }
+  }
+
+  * { box-sizing: border-box; }
+  body {
+    font-family: 'Helvetica', 'Arial', sans-serif;
+    color: #1a1a1a;
+    font-size: 10.5pt;
+    line-height: 1.55;
+  }
+
+  .cover {
+    page: cover;
+    height: 100vh;
+    width: 100%;
+    background: #171717;
+    color: #ffffff;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: 3cm 2.4cm;
+  }
+  .cover .brand { font-size: 14pt; font-weight: 700; letter-spacing: 0.02em; }
+  .cover .brand .dot { color: #5ec9c2; }
+  .cover .cover-main { margin-top: 6cm; }
+  .cover .kicker {
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    font-size: 9pt;
+    color: #5ec9c2;
+    margin-bottom: 0.6cm;
+  }
+  .cover h1 { font-size: 28pt; line-height: 1.15; margin: 0 0 0.5cm 0; font-weight: 700; color: #ffffff; }
+  .cover .subtitle { font-size: 12pt; color: #cfcfcf; max-width: 12cm; }
+  .cover .tools-row { margin-top: 1cm; display: flex; gap: 0.4cm; flex-wrap: wrap; }
+  .cover .tool-pill {
+    border: 1px solid #444;
+    border-radius: 999px;
+    padding: 0.18cm 0.5cm;
+    font-size: 9pt;
+    color: #e5e5e5;
+  }
+  .cover .footer-note {
+    font-size: 8.5pt;
+    color: #888;
+    border-top: 1px solid #333;
+    padding-top: 0.4cm;
+  }
+
+  h1 {
+    font-size: 19pt;
+    color: #171717;
+    margin: 0 0 0.5cm 0;
+    padding-bottom: 0.25cm;
+    border-bottom: 2px solid #171717;
+  }
+  h2 { font-size: 13.5pt; color: #171717; margin: 0.9cm 0 0.35cm 0; }
+  h3 { font-size: 11.5pt; color: #171717; margin: 0.6cm 0 0.25cm 0; }
+  p { margin: 0 0 0.35cm 0; text-align: left; }
+  ul, ol { margin: 0 0 0.4cm 0; padding-left: 0.5cm; }
+  li { margin-bottom: 0.18cm; }
+  strong { color: #171717; }
+
+  .chapter { page-break-before: always; }
+  .lead { font-size: 11.5pt; color: #444; margin-bottom: 0.6cm; }
+
+  .box {
+    background: #f2f9f8;
+    border-left: 3px solid #171717;
+    border-radius: 4px;
+    padding: 0.4cm 0.55cm;
+    margin: 0.4cm 0 0.5cm 0;
+  }
+  .box .box-label {
+    font-size: 8pt;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: #888;
+    margin-bottom: 0.15cm;
+    display: block;
+  }
+  .prompt {
+    background: #171717;
+    color: #f5f5f5;
+    border-radius: 4px;
+    padding: 0.4cm 0.55cm;
+    margin: 0.3cm 0 0.5cm 0;
+    font-family: 'Courier New', monospace;
+    font-size: 9pt;
+    line-height: 1.5;
+    white-space: pre-wrap;
+  }
+  .prompt .prompt-label {
+    display: block;
+    font-family: 'Helvetica', sans-serif;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    font-size: 7.5pt;
+    color: #5ec9c2;
+    margin-bottom: 0.15cm;
+  }
+
+  table.usecases {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 0.3cm 0 0.5cm 0;
+    font-size: 9.5pt;
+  }
+  table.usecases th {
+    background: #171717;
+    color: #fff;
+    text-align: left;
+    padding: 0.22cm 0.3cm;
+    font-size: 9pt;
+  }
+  table.usecases td {
+    border-bottom: 1px solid #e2e2e2;
+    padding: 0.22cm 0.3cm;
+    vertical-align: top;
+  }
+
+  .toc { page-break-before: always; }
+  .toc-item {
+    display: flex;
+    justify-content: space-between;
+    border-bottom: 1px dotted #ccc;
+    padding: 0.22cm 0;
+    font-size: 10.5pt;
+  }
+  .toc-item .num { color: #5ec9c2; font-weight: 700; margin-right: 0.3cm; }
+
+  .checklist { list-style: none; padding-left: 0; }
+  .checklist li { padding-left: 0.7cm; position: relative; }
+  .checklist li::before {
+    content: "✓";
+    position: absolute;
+    left: 0;
+    color: #171717;
+    font-weight: 700;
+  }
+
+  .flow-step { display: flex; gap: 0.4cm; margin-bottom: 0.4cm; }
+  .flow-step .flow-num {
+    flex: 0 0 0.9cm;
+    height: 0.9cm;
+    background: #171717;
+    color: #fff;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 11pt;
+    font-weight: 700;
+  }
+  .flow-step .flow-body { flex: 1; padding-top: 0.05cm; }
+  .flow-step .flow-body h3 { margin-top: 0; }
+
+  .callout-warning {
+    border: 1px solid #e0b400;
+    background: #fffaeb;
+    border-radius: 4px;
+    padding: 0.4cm 0.55cm;
+    margin: 0.4cm 0;
+    font-size: 9.5pt;
+  }
+
+  .glossary dt { font-weight: 700; color: #171717; margin-top: 0.3cm; }
+  .glossary dd { margin: 0.05cm 0 0 0; color: #333; }
+
+  table.vocab {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 0.3cm 0 0.5cm 0;
+    font-size: 9.5pt;
+  }
+  table.vocab th {
+    background: #f2f9f8;
+    color: #171717;
+    text-align: left;
+    padding: 0.2cm 0.3cm;
+    font-size: 9pt;
+    border-bottom: 2px solid #171717;
+  }
+  table.vocab td {
+    border-bottom: 1px solid #e2e2e2;
+    padding: 0.2cm 0.3cm;
+    vertical-align: top;
+  }
+</style>
+</head>
+<body>
+
+<div class="cover">
+  <div class="brand">Upgrade<span class="dot">Lab</span></div>
+  <div class="cover-main">
+    <div class="kicker">Inglés</div>
+    <h1>Inglés técnico para developers</h1>
+    <p class="subtitle">El inglés especifico que necesitás para trabajar remoto en dólares: code review, PRs, standups, y entrevistas técnicas — no gramática genérica.</p>
+    <div class="tools-row">
+      <span class="tool-pill">Code review</span>
+      <span class="tool-pill">Pull requests</span>
+      <span class="tool-pill">Entrevistas</span>
+    </div>
+  </div>
+  <div class="footer-note">UpgradeLab · Categoría: Inglés</div>
+</div>
+
+<div class="toc">
+  <h1>Índice</h1>
+  <div class="toc-item"><span><span class="num">01</span>Por qué el inglés técnico es tu multiplicador de ingresos</span></div>
+  <div class="toc-item"><span><span class="num">02</span>El inglés que realmente necesitás</span></div>
+  <div class="toc-item"><span><span class="num">03</span>Code review: dar y recibir feedback en inglés</span></div>
+  <div class="toc-item"><span><span class="num">04</span>Cómo escribir un buen PR o commit en inglés</span></div>
+  <div class="toc-item"><span><span class="num">05</span>Inglés para daily standups y reuniones de equipo</span></div>
+  <div class="toc-item"><span><span class="num">06</span>Inglés para entrevistas técnicas</span></div>
+  <div class="toc-item"><span><span class="num">07</span>Errores comunes de hispanohablantes</span></div>
+  <div class="toc-item"><span><span class="num">08</span>Cómo seguir practicando con IA + checklist</span></div>
+</div>
+
+<div class="chapter">
+  <h1>01 · Por qué el inglés técnico es tu multiplicador de ingresos</h1>
+  <p class="lead">De todas las habilidades que podrias mejorar este año, el ingles tecnico es probablemente la que tiene el retorno mas directo y medible.</p>
+
+  <p>El camino mas citado para developers argentinos que buscan trabajo remoto en dolares es siempre el mismo: dominar una tecnologia en demanda, armar un portfolio real, y <strong>tener el nivel de ingles necesario para atravesar el proceso de seleccion y trabajar en el dia a dia</strong>. Los sueldos remotos en dolares para developers arrancan alrededor de USD 1.000-2.000 en posiciones junior y superan largamente eso en roles semi-senior y senior — una diferencia que en la mayoria de los casos supera por mucho lo que se gana trabajando localmente en pesos.</p>
+
+  <p>La buena noticia es que no hace falta un ingles perfecto ni acento neutro. Hace falta un subconjunto especifico y acotado: el vocabulario y las frases que se usan todos los dias en un equipo de desarrollo. Eso es exactamente lo que cubre esta guia.</p>
+
+  <div class="box">
+    <span class="box-label">Qué vas a poder hacer al terminar esta guía</span>
+    Dar y recibir feedback en un code review sin sonar cortante ni ambiguo, escribir un PR claro en inglés, participar de un daily standup sin quedarte en blanco, manejar las frases mas comunes de una entrevista tecnica en ingles, y tener un metodo para seguir practicando por tu cuenta.
+  </div>
+</div>
+
+<div class="chapter">
+  <h1>02 · El inglés que realmente necesitás</h1>
+  <p class="lead">No es "aprender ingles" en abstracto — es dominar un contexto especifico y repetitivo.</p>
+
+  <p>El trabajo de un developer en ingles usa un rango de vocabulario mucho mas chico y predecible que una conversacion general. Las mismas 200-300 palabras y frases aparecen una y otra vez: en PRs, en tickets, en standups, en entrevistas. Por eso este enfoque funciona mejor que un curso de ingles general — te concentras en lo que realmente vas a usar, no en vocabulario que quiza nunca necesites.</p>
+
+  <table class="usecases">
+    <tr><th>Contexto</th><th>Que se repite</th></tr>
+    <tr><td><strong>Code review</strong></td><td>Un set chico de frases para pedir cambios, aprobar, y explicar el por que de una sugerencia</td></tr>
+    <tr><td><strong>Pull requests</strong></td><td>Una estructura fija: que cambia, por que, como probarlo</td></tr>
+    <tr><td><strong>Standups</strong></td><td>Tres preguntas que se repiten todos los dias, con respuestas cortas y predecibles</td></tr>
+    <tr><td><strong>Entrevistas</strong></td><td>Un puñado de preguntas tipicas que se repiten entre empresas</td></tr>
+  </table>
+
+  <div class="box">
+    <span class="box-label">Como usar esta guía</span>
+    No hace falta memorizar todo de una. Elegi el capitulo que mas te sirva ahora (por ejemplo, si tenes una entrevista pronto, andá directo al capitulo 6) y volvé a los demas cuando los necesites.
+  </div>
+</div>
+
+<div class="chapter">
+  <h1>03 · Code review: dar y recibir feedback en inglés</h1>
+  <p class="lead">El tono en ingles es distinto al espanol — frases que en espanol suenan neutras pueden sonar cortantes traducidas literalmente.</p>
+
+  <table class="vocab">
+    <tr><th>Para pedir un cambio</th><th>Ejemplo</th></tr>
+    <tr><td>Suave, como sugerencia</td><td>"Would it make sense to extract this into a separate function?"</td></tr>
+    <tr><td>Directo pero cordial</td><td>"Can we rename this variable to something more descriptive?"</td></tr>
+    <tr><td>Señalando un problema</td><td>"This might cause an issue if the array is empty — worth handling that case?"</td></tr>
+  </table>
+
+  <table class="vocab">
+    <tr><th>Para aprobar / responder</th><th>Ejemplo</th></tr>
+    <tr><td>Aprobar sin cambios</td><td>"Looks good to me" (abreviado: "LGTM")</td></tr>
+    <tr><td>Aprobar con comentarios menores</td><td>"LGTM, just a couple of minor comments"</td></tr>
+    <tr><td>Responder a un comentario</td><td>"Good catch, fixed in the latest commit"</td></tr>
+  </table>
+
+  <div class="callout-warning">
+    <strong>Ojo con la traduccion literal:</strong> "This is wrong" suena mucho mas duro en ingles que "esto esta mal" en espanol. Frases como "I think there might be an issue here" cumplen la misma funcion sin sonar agresivas.
+  </div>
+</div>
+
+<div class="chapter">
+  <h1>04 · Cómo escribir un buen PR o commit en inglés</h1>
+  <p class="lead">La estructura importa mas que la gramatica perfecta — un PR bien organizado se entiende aunque el ingles no sea impecable.</p>
+
+  <p>Estructura basica de un buen PR en ingles:</p>
+  <ol>
+    <li><strong>Título corto y descriptivo</strong>, en tiempo presente imperativo ("Fix login validation bug", no "Fixed" ni "Fixes").</li>
+    <li><strong>What changed</strong> — que cambia, en dos o tres lineas.</li>
+    <li><strong>Why</strong> — por que era necesario el cambio.</li>
+    <li><strong>How to test it</strong> — pasos concretos para verificar que funciona.</li>
+  </ol>
+
+  <div class="prompt">
+    <span class="prompt-label">Ejemplo de PR bien estructurado</span>Title: Fix cart total not updating after removing item
+
+What changed:
+The cart total was not recalculating when an item was removed. Added
+a recalculation step after every cart mutation.
+
+Why:
+Users reported seeing the old total after removing a product, which
+caused confusion at checkout.
+
+How to test it:
+1. Add two items to the cart
+2. Remove one item
+3. Confirm the total updates immediately</div>
+
+  <div class="box">
+    <span class="box-label">Vocabulario util para commits</span>
+    fix (arreglar un bug), add (agregar algo nuevo), update (actualizar algo existente), remove (eliminar), refactor (reordenar codigo sin cambiar comportamiento).
+  </div>
+</div>
+
+<div class="chapter">
+  <h1>05 · Inglés para daily standups y reuniones de equipo</h1>
+  <p class="lead">El daily standup usa las mismas tres preguntas todos los dias — una vez que tenes las frases, se vuelve automatico.</p>
+
+  <table class="vocab">
+    <tr><th>Pregunta</th><th>Frases utiles</th></tr>
+    <tr><td>¿Qué hiciste ayer?</td><td>"Yesterday I worked on...", "I finished...", "I made progress on..."</td></tr>
+    <tr><td>¿Qué vas a hacer hoy?</td><td>"Today I'm going to...", "I'll be working on...", "My plan is to..."</td></tr>
+    <tr><td>¿Tenés algún bloqueo?</td><td>"I'm blocked on...", "I'm waiting for feedback on...", "No blockers on my end"</td></tr>
+  </table>
+
+  <div class="prompt">
+    <span class="prompt-label">Ejemplo de standup completo</span>Yesterday I finished the login validation fix and opened a PR for review.
+Today I'll be working on the cart total bug.
+No blockers on my end right now.</div>
+
+  <p>Para reuniones mas largas, dos frases utiles para participar sin quedarte callado: "Can you go over that one more time?" (para pedir que repitan algo) y "Just to make sure I understood — you mean...?" (para confirmar que entendiste bien).</p>
+</div>
+
+<div class="chapter">
+  <h1>06 · Inglés para entrevistas técnicas</h1>
+  <p class="lead">Las mismas preguntas se repiten en la mayoria de las entrevistas en ingles — conocerlas de antemano saca mucha presion.</p>
+
+  <table class="vocab">
+    <tr><th>Pregunta tipica</th><th>Cómo estructurar la respuesta</th></tr>
+    <tr><td>"Tell me about yourself"</td><td>Rol actual, un logro concreto, por que te interesa esta posicion — en menos de un minuto</td></tr>
+    <tr><td>"Walk me through this project"</td><td>Que problema resolvia, tu rol especifico, resultado — igual que el metodo STAR (ver el curso de Entrevistas de trabajo)</td></tr>
+    <tr><td>"Why are you looking for a new role?"</td><td>Enfocado en lo que buscas, no en quejarte del trabajo actual: "I'm looking for more opportunities to work with..."</td></tr>
+    <tr><td>"Do you have any questions for us?"</td><td>Siempre tené 2-3 preparadas — no responder "no" nunca suma</td></tr>
+  </table>
+
+  <div class="box">
+    <span class="box-label">Si no entendiste una pregunta</span>
+    Es normal, y no resta puntos. Usá: "Sorry, could you rephrase that?" o "Just to clarify, are you asking about...?" — es mucho mejor que responder algo que no corresponde por miedo a preguntar de nuevo.
+  </div>
+</div>
+
+<div class="chapter">
+  <h1>07 · Errores comunes de hispanohablantes</h1>
+
+  <table class="vocab">
+    <tr><th>Error común</th><th>Correcto</th></tr>
+    <tr><td>"I have 25 years" (traducción literal de "tengo 25 años")</td><td>"I am 25 years old"</td></tr>
+    <tr><td>"Actually" para decir "actualmente"</td><td>"Actually" significa "en realidad" — para "actualmente" usá "currently"</td></tr>
+    <tr><td>"Library" pronunciado como "librería" en español</td><td>Se pronuncia distinto — presta atencion al escuchar contenido tecnico en ingles</td></tr>
+    <tr><td>"I am agree" (traducción literal de "estoy de acuerdo")</td><td>"I agree" (sin "am")</td></tr>
+    <tr><td>Evitar contracciones por sonar "mas formal"</td><td>En contextos de trabajo diario, "I'm", "don't", "it's" suenan mas naturales que las formas completas</td></tr>
+  </table>
+</div>
+
+<div class="chapter">
+  <h1>08 · Cómo seguir practicando con IA + checklist</h1>
+  <p class="lead">No hace falta un profesor particular para seguir mejorando — las herramientas de IA conversacional son un companero de practica disponible las 24 horas.</p>
+
+  <div class="prompt">
+    <span class="prompt-label">Prompt util para practicar</span>Quiero practicar ingles tecnico para una entrevista de developer. Hac de entrevistador, hazme preguntas de comportamiento y tecnicas en ingles, y al final corregime los errores mas importantes que hayas notado (no todos, solo los que mas afectan la claridad).</div>
+
+  <ul class="checklist">
+    <li>Tenés las frases basicas de code review (dar y recibir feedback) a mano.</li>
+    <li>Podés escribir un PR con la estructura: what changed, why, how to test it.</li>
+    <li>Manejás las tres preguntas del daily standup sin traducir mentalmente.</li>
+    <li>Practicaste al menos una vez las preguntas tipicas de entrevista en ingles.</li>
+    <li>Tenés un plan para seguir practicando de forma regular, no solo antes de una entrevista puntual.</li>
+  </ul>
+</div>
+
+</body>
+</html>

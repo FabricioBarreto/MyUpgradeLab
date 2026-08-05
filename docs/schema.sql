@@ -123,6 +123,14 @@ create table public.affiliate_referrals (
 
 create index affiliate_referrals_affiliate_id_idx on public.affiliate_referrals(affiliate_id);
 
+-- Si esta persona se registro a traves de un link de afiliado (?ref=CODE),
+-- guardamos que afiliado la trajo. Se setea una sola vez, en el signup, con
+-- el service role (bypassea RLS), y se usa despues para acreditar comision
+-- cuando se le aprueba una compra o se le activa la suscripcion. Va despues
+-- de la tabla affiliates porque depende de ella (orden de creacion).
+alter table public.profiles
+  add column referred_by_affiliate_id uuid references public.affiliates(id) on delete set null;
+
 -- ---------- course_progress ----------
 create table public.course_progress (
   id uuid primary key default gen_random_uuid(),

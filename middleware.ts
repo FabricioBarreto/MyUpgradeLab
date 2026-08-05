@@ -25,6 +25,19 @@ export async function middleware(request: NextRequest) {
 
   await supabase.auth.getUser()
 
+  // Programa de afiliados: si alguien llega con ?ref=CODE, lo guardamos en
+  // una cookie por 60 dias. El signup lee esta cookie para saber que
+  // afiliado lo trajo (ver src/lib/actions/auth.ts). No pisamos una cookie
+  // ya existente: gana el primer link que la persona clickeo.
+  const ref = request.nextUrl.searchParams.get('ref')
+  if (ref && !request.cookies.get('ul_ref')) {
+    supabaseResponse.cookies.set('ul_ref', ref, {
+      maxAge: 60 * 60 * 24 * 60,
+      path: '/',
+      sameSite: 'lax',
+    })
+  }
+
   return supabaseResponse
 }
 

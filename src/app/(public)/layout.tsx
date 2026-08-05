@@ -15,6 +15,9 @@ export default function PublicLayout({ children }: { children: React.ReactNode }
             <Link href="/cursos" className="hover:text-neutral-900">
               Cursos
             </Link>
+            <Link href="/sugerencias" className="hover:text-neutral-900">
+              Sugerencias
+            </Link>
             <Link href="/login" className="hover:text-neutral-900">
               Ingresar
             </Link>

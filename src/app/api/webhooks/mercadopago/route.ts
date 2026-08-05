@@ -4,6 +4,63 @@ import { WebhookSignatureValidator, InvalidWebhookSignatureError } from "mercado
 import { getMercadoPagoConfig, getMercadoPagoWebhookSecret } from "@/lib/mercadopago"
 import { createServiceClient } from "@/lib/supabase/service"
 import { sendPurchaseApprovedEmail, sendSubscriptionActiveEmail } from "@/lib/email"
+import { SUBSCRIPTION_PRICE } from "@/lib/constants"
+
+type ServiceClient = ReturnType<typeof createServiceClient>
+
+// Si el usuario que acaba de comprar/suscribirse fue traido por un afiliado
+// (profiles.referred_by_affiliate_id), le acreditamos su comision. Se llama
+// solo en la transicion a "recien aprobado", y chequea que no exista ya una
+// fila para este source_id antes de insertar — asi los reintentos de webhook
+// de Mercado Pago no duplican la comision.
+async function creditAffiliateCommission(
+  supabase: ServiceClient,
+  {
+    userId,
+    sourceType,
+    sourceId,
+    amount,
+  }: { userId: string; sourceType: "purchase" | "subscription"; sourceId: string; amount: number }
+) {
+  const { data: profile } = await supabase
+    .from("profiles")
+    .select("referred_by_affiliate_id")
+    .eq("id", userId)
+    .maybeSingle()
+
+  if (!profile?.referred_by_affiliate_id) return
+
+  const { data: affiliate } = await supabase
+    .from("affiliates")
+    .select("id, commission_rate, status")
+    .eq("id", profile.referred_by_affiliate_id)
+    .maybeSingle()
+
+  if (!affiliate || affiliate.status !== "approved") return
+
+  const { data: existingReferral } = await supabase
+    .from("affiliate_referrals")
+    .select("id")
+    .eq("source_id", sourceId)
+    .maybeSingle()
+
+  if (existingReferral) return
+
+  const commissionAmount = Math.round((amount * Number(affiliate.commission_rate)) / 100)
+
+  const { error } = await supabase.from("affiliate_referrals").insert({
+    affiliate_id: affiliate.id,
+    referred_user_id: userId,
+    source_type: sourceType,
+    source_id: sourceId,
+    commission_amount: commissionAmount,
+    status: "pending",
+  })
+
+  if (error) {
+    console.error("Error acreditando comision de afiliado", error)
+  }
+}
 
 // Los emails transaccionales nunca deben tirar abajo el webhook: si el envio
 // falla (SMTP caido, credenciales mal, etc.) lo logueamos y seguimos.
@@ -115,7 +172,7 @@ async function handleNotification(request: NextRequest) {
       // MP de un pago que ya estaba approved).
       const { data: existingPurchase } = await supabase
         .from("purchases")
-        .select("status, user_id, courses(title, resource_url)")
+        .select("status, user_id, amount, courses(title, resource_url)")
         .eq("id", purchaseId)
         .maybeSingle()
 
@@ -151,6 +208,13 @@ async function handleNotification(request: NextRequest) {
             })
           )
         }
+
+        await creditAffiliateCommission(supabase, {
+          userId: existingPurchase.user_id,
+          sourceType: "purchase",
+          sourceId: purchaseId,
+          amount: Number(existingPurchase.amount),
+        })
       }
     } else {
       const preapprovalClient = new PreApproval(getMercadoPagoConfig("suscripciones"))
@@ -189,6 +253,13 @@ async function handleNotification(request: NextRequest) {
         if (email) {
           await sendEmailSafely(() => sendSubscriptionActiveEmail({ to: email }))
         }
+
+        await creditAffiliateCommission(supabase, {
+          userId: existingSubscription.user_id,
+          sourceType: "subscription",
+          sourceId: subscriptionId,
+          amount: SUBSCRIPTION_PRICE,
+        })
       }
     }
 

@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>Software a Medida con IA para Negocios Locales</title>
+<style>
+  @page {
+    size: A4;
+    margin: 2.4cm 2.2cm 2.6cm 2.2cm;
+    @bottom-center {
+      content: "UpgradeLab — Software a medida con IA para negocios locales";
+      font-family: 'Helvetica', 'Arial', sans-serif;
+      font-size: 8pt;
+      color: #999;
+    }
+    @bottom-right {
+      content: counter(page);
+      font-family: 'Helvetica', 'Arial', sans-serif;
+      font-size: 8pt;
+      color: #999;
+    }
+  }
+  @page cover {
+    margin: 0;
+    @bottom-center { content: none; }
+    @bottom-right { content: none; }
+  }
+
+  * { box-sizing: border-box; }
+  body {
+    font-family: 'Helvetica', 'Arial', sans-serif;
+    color: #1a1a1a;
+    font-size: 10.5pt;
+    line-height: 1.55;
+  }
+
+  .cover {
+    page: cover;
+    height: 100vh;
+    width: 100%;
+    background: #171717;
+    color: #ffffff;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: 3cm 2.4cm;
+  }
+  .cover .brand { font-size: 14pt; font-weight: 700; letter-spacing: 0.02em; }
+  .cover .brand .dot { color: #5ec9c2; }
+  .cover .cover-main { margin-top: 6cm; }
+  .cover .kicker {
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    font-size: 9pt;
+    color: #5ec9c2;
+    margin-bottom: 0.6cm;
+  }
+  .cover h1 { font-size: 26pt; line-height: 1.15; margin: 0 0 0.5cm 0; font-weight: 700; color: #ffffff; }
+  .cover .subtitle { font-size: 12pt; color: #cfcfcf; max-width: 12cm; }
+  .cover .tools-row { margin-top: 1cm; display: flex; gap: 0.4cm; flex-wrap: wrap; }
+  .cover .tool-pill {
+    border: 1px solid #444;
+    border-radius: 999px;
+    padding: 0.18cm 0.5cm;
+    font-size: 9pt;
+    color: #e5e5e5;
+  }
+  .cover .footer-note {
+    font-size: 8.5pt;
+    color: #888;
+    border-top: 1px solid #333;
+    padding-top: 0.4cm;
+  }
+
+  h1 {
+    font-size: 19pt;
+    color: #171717;
+    margin: 0 0 0.5cm 0;
+    padding-bottom: 0.25cm;
+    border-bottom: 2px solid #171717;
+  }
+  h2 { font-size: 13.5pt; color: #171717; margin: 0.9cm 0 0.35cm 0; }
+  h3 { font-size: 11.5pt; color: #171717; margin: 0.6cm 0 0.25cm 0; }
+  p { margin: 0 0 0.35cm 0; text-align: left; }
+  ul, ol { margin: 0 0 0.4cm 0; padding-left: 0.5cm; }
+  li { margin-bottom: 0.18cm; }
+  strong { color: #171717; }
+
+  .chapter { page-break-before: always; }
+  .lead { font-size: 11.5pt; color: #444; margin-bottom: 0.6cm; }
+
+  .box {
+    background: #f2f9f8;
+    border-left: 3px solid #171717;
+    border-radius: 4px;
+    padding: 0.4cm 0.55cm;
+    margin: 0.4cm 0 0.5cm 0;
+  }
+  .box .box-label {
+    font-size: 8pt;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: #888;
+    margin-bottom: 0.15cm;
+    display: block;
+  }
+  .prompt {
+    background: #171717;
+    color: #f5f5f5;
+    border-radius: 4px;
+    padding: 0.4cm 0.55cm;
+    margin: 0.3cm 0 0.5cm 0;
+    font-family: 'Courier New', monospace;
+    font-size: 9pt;
+    line-height: 1.5;
+    white-space: pre-wrap;
+  }
+  .prompt .prompt-label {
+    display: block;
+    font-family: 'Helvetica', sans-serif;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    font-size: 7.5pt;
+    color: #5ec9c2;
+    margin-bottom: 0.15cm;
+  }
+
+  table.usecases {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 0.3cm 0 0.5cm 0;
+    font-size: 9.5pt;
+  }
+  table.usecases th {
+    background: #171717;
+    color: #fff;
+    text-align: left;
+    padding: 0.22cm 0.3cm;
+    font-size: 9pt;
+  }
+  table.usecases td {
+    border-bottom: 1px solid #e2e2e2;
+    padding: 0.22cm 0.3cm;
+    vertical-align: top;
+  }
+
+  .toc { page-break-before: always; }
+  .toc-item {
+    display: flex;
+    justify-content: space-between;
+    border-bottom: 1px dotted #ccc;
+    padding: 0.22cm 0;
+    font-size: 10.5pt;
+  }
+  .toc-item .num { color: #5ec9c2; font-weight: 700; margin-right: 0.3cm; }
+
+  .checklist { list-style: none; padding-left: 0; }
+  .checklist li { padding-left: 0.7cm; position: relative; }
+  .checklist li::before {
+    content: "✓";
+    position: absolute;
+    left: 0;
+    color: #171717;
+    font-weight: 700;
+  }
+
+  .flow-step { display: flex; gap: 0.4cm; margin-bottom: 0.4cm; }
+  .flow-step .flow-num {
+    flex: 0 0 0.9cm;
+    height: 0.9cm;
+    background: #171717;
+    color: #fff;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 11pt;
+    font-weight: 700;
+  }
+  .flow-step .flow-body { flex: 1; padding-top: 0.05cm; }
+  .flow-step .flow-body h3 { margin-top: 0; }
+
+  .callout-warning {
+    border: 1px solid #e0b400;
+    background: #fffaeb;
+    border-radius: 4px;
+    padding: 0.4cm 0.55cm;
+    margin: 0.4cm 0;
+    font-size: 9.5pt;
+  }
+
+  .glossary dt { font-weight: 700; color: #171717; margin-top: 0.3cm; }
+  .glossary dd { margin: 0.05cm 0 0 0; color: #333; }
+</style>
+</head>
+<body>
+
+<div class="cover">
+  <div class="brand">Upgrade<span class="dot">Lab</span></div>
+  <div class="cover-main">
+    <div class="kicker">Negocio para freelancers y devs</div>
+    <h1>Software a medida con IA para negocios locales</h1>
+    <p class="subtitle">Cómo construir y vender soluciones de software para negocios como talleres, peluquerías o estudios contables, usando herramientas de IA gratuitas — con un caso real de principio a fin.</p>
+    <div class="tools-row">
+      <span class="tool-pill">Caso: taller mecánico</span>
+      <span class="tool-pill">Herramientas gratuitas</span>
+      <span class="tool-pill">Discovery call</span>
+    </div>
+  </div>
+  <div class="footer-note">UpgradeLab · Categoría: Negocio para freelancers y devs</div>
+</div>
+
+<div class="toc">
+  <h1>Índice</h1>
+  <div class="toc-item"><span><span class="num">01</span>Introducción — de cobrar por hora a vender una solución</span></div>
+  <div class="toc-item"><span><span class="num">02</span>Elegir un nicho de negocio local</span></div>
+  <div class="toc-item"><span><span class="num">03</span>El caso: taller mecánico — mapeando el problema real</span></div>
+  <div class="toc-item"><span><span class="num">04</span>Construir la solución con herramientas de IA gratuitas</span></div>
+  <div class="toc-item"><span><span class="num">05</span>De la demo al cliente: la discovery call</span></div>
+  <div class="toc-item"><span><span class="num">06</span>Cómo cobrarlo</span></div>
+  <div class="toc-item"><span><span class="num">07</span>Replicar el método en otros rubros</span></div>
+  <div class="toc-item"><span><span class="num">08</span>Checklist y próximos pasos</span></div>
+</div>
+
+<div class="chapter">
+  <h1>01 · Introducción</h1>
+  <p class="lead">Hay una diferencia enorme entre "sé programar" y "tengo un negocio que ayuda a otros negocios a funcionar mejor". Este curso es sobre cruzar esa linea.</p>
+
+  <p>Esta guia conecta dos habilidades que ya trabajamos por separado en UpgradeLab: <strong>construir con IA</strong> (la serie Programar con IA) y <strong>vender de forma consultiva</strong> (Venta Consultiva). Aca las juntamos en un solo caso, de principio a fin: vas a ver como se identifica el problema real de un negocio, como se construye una solucion de software a medida usando herramientas de IA gratuitas, y como se la vende con una discovery call — sin necesitar ser un programador experimentado ni un vendedor nato.</p>
+
+  <p>El hilo conductor es un caso concreto: un <strong>taller mecanico</strong>. Vamos a mapear sus problemas reales (que trabajos priorizar, como armar y mandar presupuestos, como recordarle a los clientes el proximo service) y construir una solucion real para eso. El metodo se repite igual para cualquier otro rubro — al final vas a poder aplicarlo a peluquerias, estudios contables, gimnasios, o el negocio que se te cruce.</p>
+
+  <div class="box">
+    <span class="box-label">Qué vas a poder hacer al terminar esta guía</span>
+    Elegir un nicho de negocio concreto para especializarte, mapear sus problemas reales en una conversacion, construir una solucion funcional con herramientas de IA gratuitas, mostrarla en una discovery call conectando con el framework SPIN, y definir como cobrar por ese trabajo.
+  </div>
+</div>
+
+<div class="chapter">
+  <h1>02 · Elegir un nicho de negocio local</h1>
+  <p class="lead">"Le hago software a cualquiera" es mucho mas dificil de vender que "me especializo en resolver esto para talleres mecanicos".</p>
+
+  <p>Elegir un nicho especifico tiene ventajas concretas:</p>
+  <ul>
+    <li><strong>Podes reusar la solucion.</strong> Una vez que armaste el sistema para un taller, adaptarlo para el siguiente taller es mucho mas rapido que empezar de cero.</li>
+    <li><strong>Hablas el idioma del cliente.</strong> Si entendes como funciona un taller, la discovery call fluye distinto — ya sabes que preguntar.</li>
+    <li><strong>Te referencian dentro del mismo rubro.</strong> Un dueño de taller conoce a otros dueños de taller — el boca en boca funciona mejor dentro de un nicho que de forma generica.</li>
+  </ul>
+
+  <div class="box">
+    <span class="box-label">Como elegir tu nicho</span>
+    Pensa en negocios locales que conozcas de cerca (por un familiar, un conocido, un lugar que frecuentas) — tener un punto de entrada real hace mucho mas facil conseguir la primera conversacion.
+  </div>
+</div>
+
+<div class="chapter">
+  <h1>03 · El caso: taller mecánico — mapeando el problema real</h1>
+  <p class="lead">Antes de construir cualquier cosa, hay que entender que le pasa al negocio en el dia a dia. Esto es exactamente lo que ya vimos en Venta Consultiva: diagnosticar antes de ofrecer.</p>
+
+  <p>Conversando con el dueño de un taller mecanico tipico, aparecen problemas como estos:</p>
+
+  <table class="usecases">
+    <tr><th>Problema real</th><th>Como se manifiesta</th></tr>
+    <tr>
+      <td><strong>Orden de prioridad de trabajos</strong></td>
+      <td>No hay un sistema claro para saber que auto atender primero cuando hay varios esperando</td>
+    </tr>
+    <tr>
+      <td><strong>Presupuestos</strong></td>
+      <td>Se arman a mano o de memoria, se demoran en mandarse, y a veces se pierden en WhatsApp</td>
+    </tr>
+    <tr>
+      <td><strong>Recordatorio de service</strong></td>
+      <td>Nadie le avisa al cliente cuando le toca el proximo mantenimiento — se pierden clientes recurrentes por eso</td>
+    </tr>
+  </table>
+
+  <div class="prompt">
+    <span class="prompt-label">Preguntas de diagnostico (aplicando SPIN, ver Venta Consultiva)</span>Situacion: ¿Como manejan hoy el orden de los autos que entran al taller?
+Problema: ¿Que es lo que mas les hace perder tiempo de esa forma de trabajar?
+Implicacion: Si esto sigue igual, ¿cuantos clientes creen que se pierden por no hacer seguimiento de sus services?
+Necesidad-beneficio: Si esto se resolviera, ¿que cambiaria en el dia a dia del taller?</div>
+
+  <p>Con estas respuestas ya tenes el mapa completo de lo que hay que construir — no antes.</p>
+</div>
+
+<div class="chapter">
+  <h1>04 · Construir la solución con herramientas de IA gratuitas</h1>
+  <p class="lead">Con el problema mapeado, construir se vuelve mucho mas simple — vas a usar las mismas herramientas de la serie Programar con IA Nivel 1 (Bolt.new, Lovable, v0), aplicadas a este caso puntual.</p>
+
+  <div class="flow-step">
+    <div class="flow-num">1</div>
+    <div class="flow-body">
+      <h3>Definí las tres funciones minimas</h3>
+      <p>Basado en el diagnostico del capitulo anterior: una lista de trabajos con prioridad, un generador de presupuestos, y un sistema de recordatorios. Nada mas por ahora.</p>
+    </div>
+  </div>
+
+  <div class="flow-step">
+    <div class="flow-num">2</div>
+    <div class="flow-body">
+      <h3>Construí con un prompt basado en el diagnostico real</h3>
+      <p>Usa las respuestas concretas del cliente, no una descripcion generica.</p>
+    </div>
+  </div>
+
+  <div class="flow-step">
+    <div class="flow-num">3</div>
+    <div class="flow-body">
+      <h3>Iterá viendo el resultado</h3>
+      <p>Igual que en Programar con IA Nivel 1: mira lo que se genero antes de pedir el siguiente cambio.</p>
+    </div>
+  </div>
+
+  <div class="prompt">
+    <span class="prompt-label">Prompt inicial de ejemplo para este caso</span>Quiero un sistema simple para un taller mecanico. Tiene que permitir: cargar autos que entran con una prioridad (urgente, normal, puede esperar), armar un presupuesto por auto con lista de items y monto total, y marcar la fecha del proximo service para mandar un recordatorio. Estilo simple, pensado para que lo use el dueño del taller sin ayuda tecnica.</div>
+
+  <div class="callout-warning">
+    <strong>Ojo:</strong> el objetivo de esta primera version no es venderla terminada — es tener algo funcional para mostrar en la discovery call. El alcance final se define despues, con el cliente ya interesado (ver capitulo 5).
+  </div>
+</div>
+
+<div class="chapter">
+  <h1>05 · De la demo al cliente: la discovery call</h1>
+  <p class="lead">Ahora entra en juego todo lo que ya viste en Venta Consultiva — mostrar una demo funcionando cambia por completo la conversacion.</p>
+
+  <p>La diferencia entre vender una idea y vender algo que ya existe es enorme. En vez de describir lo que harias, le mostras al cliente una pantalla funcionando con datos parecidos a los suyos. Eso reduce la objecion mas comun ("no se si esto realmente me sirve") antes de que aparezca.</p>
+
+  <div class="prompt">
+    <span class="prompt-label">Guion para presentar la demo</span>Te arme algo basado en lo que charlamos la vez pasada: [mostrar pantalla]. Esto resuelve puntualmente el tema de [problema/implicacion que el cliente menciono]. Todavia es una primera version — quiero que me digas que le cambiarias antes de dejarla lista del todo.</div>
+
+  <p>Notá que la ultima frase invita al cliente a involucrarse en el ajuste final, lo cual lo acerca mucho mas a decir que si — ya se siente parte de la solucion, no solo alguien que la va a comprar.</p>
+</div>
+
+<div class="chapter">
+  <h1>06 · Cómo cobrarlo</h1>
+  <p class="lead">Hay dos modelos principales, y cada uno tiene sentido segun el caso.</p>
+
+  <table class="usecases">
+    <tr><th>Modelo</th><th>Cuándo tiene sentido</th></tr>
+    <tr>
+      <td><strong>Pago único</strong></td>
+      <td>El cliente quiere ser dueño de la solucion y no espera cambios frecuentes despues de la entrega</td>
+    </tr>
+    <tr>
+      <td><strong>Mensualidad por mantenimiento</strong></td>
+      <td>Incluye ajustes, soporte, y mejoras continuas — genera ingresos recurrentes en vez de un pago unico</td>
+    </tr>
+  </table>
+
+  <div class="box">
+    <span class="box-label">Recomendación</span>
+    Para negocios locales chicos, un modelo mixto suele funcionar bien: un pago inicial por la version funcional, mas una mensualidad chica por mantenimiento y soporte. Esto te da ingresos recurrentes sin depender de conseguir un cliente nuevo cada mes.
+  </div>
+</div>
+
+<div class="chapter">
+  <h1>07 · Replicar el método en otros rubros</h1>
+  <p class="lead">El proceso completo — diagnosticar, construir minimo viable, mostrar demo, vender, cobrar recurrente — se repite igual en cualquier negocio local.</p>
+
+  <table class="usecases">
+    <tr><th>Rubro</th><th>Problema típico a resolver</th></tr>
+    <tr><td>Peluquerías / barberías</td><td>Sistema de turnos con recordatorio automatico</td></tr>
+    <tr><td>Gimnasios</td><td>Seguimiento de vencimiento de cuotas y asistencia</td></tr>
+    <tr><td>Estudios contables</td><td>Seguimiento de vencimientos impositivos por cliente</td></tr>
+    <tr><td>Kioscos / almacenes</td><td>Control simple de stock y productos por vencer</td></tr>
+  </table>
+
+  <p>En todos los casos el metodo es el mismo: primero la conversacion de diagnostico, despues la construccion minima, despues la demo, despues la venta.</p>
+</div>
+
+<div class="chapter">
+  <h1>08 · Checklist y próximos pasos</h1>
+
+  <ul class="checklist">
+    <li>Elegiste un nicho de negocio local especifico para especializarte.</li>
+    <li>Mapeaste el problema real de un negocio con preguntas de diagnostico, no asumiendo la solucion.</li>
+    <li>Construiste una version funcional minima con herramientas de IA gratuitas.</li>
+    <li>Mostraste la demo en una conversacion real, conectando con el framework de Venta Consultiva.</li>
+    <li>Definiste como vas a cobrar: pago unico, mensualidad, o un modelo mixto.</li>
+  </ul>
+
+  <div class="box">
+    <span class="box-label">Siguiente paso</span>
+    Si todavia no tenes soltura con las herramientas de construccion, la serie <strong>Programar con IA</strong> (Niveles 1 a 3) profundiza en cada parte del proceso de construccion. Si queres afinar la conversacion de venta, <strong>Venta Consultiva</strong> desarrolla en detalle el framework SPIN y el manejo de objeciones que usamos aca de forma resumida.
+  </div>
+</div>
+
+</body>
+</html>

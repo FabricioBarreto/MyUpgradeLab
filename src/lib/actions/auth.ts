@@ -1,7 +1,36 @@
 ﻿'use server'
 
 import { createClient } from '@/lib/supabase/server'
+import { createServiceClient } from '@/lib/supabase/service'
+import { cookies } from 'next/headers'
 import { redirect } from 'next/navigation'
+
+// Si la persona llego con un link de afiliado (?ref=CODE, guardado como
+// cookie por el middleware), le asignamos ese afiliado en su profile. Usa el
+// service role porque en el momento del signup puede que todavia no haya
+// sesion (si "Confirm email" esta activado en el proyecto de Supabase) y la
+// escritura via RLS del usuario no funcionaria.
+async function attributeReferral(userId: string) {
+  const cookieStore = await cookies()
+  const ref = cookieStore.get('ul_ref')?.value
+  if (!ref) return
+
+  const service = createServiceClient()
+
+  const { data: affiliate } = await service
+    .from('affiliates')
+    .select('id, user_id, status')
+    .eq('code', ref)
+    .maybeSingle()
+
+  if (!affiliate || affiliate.status !== 'approved' || affiliate.user_id === userId) return
+
+  await service
+    .from('profiles')
+    .update({ referred_by_affiliate_id: affiliate.id })
+    .eq('id', userId)
+    .is('referred_by_affiliate_id', null)
+}
 
 export async function signUp(formData: FormData) {
   const email = formData.get('email') as string
@@ -25,6 +54,10 @@ export async function signUp(formData: FormData) {
 
   if (error) {
     redirect(`/register?error=${encodeURIComponent(error.message)}`)
+  }
+
+  if (data.user) {
+    await attributeReferral(data.user.id)
   }
 
   // Si el proyecto de Supabase tiene "Confirm email" desactivado, signUp ya

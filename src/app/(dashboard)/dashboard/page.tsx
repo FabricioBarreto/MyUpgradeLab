@@ -3,6 +3,7 @@ import { redirect } from "next/navigation"
 import { createClient } from "@/lib/supabase/server"
 import { signOut } from "@/lib/actions/auth"
 import { createSubscription } from "@/lib/actions/subscribe"
+import { markCourseCompleted } from "@/lib/actions/progress"
 import { CATEGORY_LABELS, categoryLabel, formatPrice } from "@/lib/format"
 import { COMMUNITY_LINKS } from "@/lib/community"
 
@@ -78,6 +79,17 @@ export default async function DashboardPage({
         .order("category", { ascending: true })
     : { data: null }
 
+  // Progreso: que cursos ya marco como completados, para mostrar el estado
+  // correcto (boton "Marcar como completado" vs. "Completado" + certificado).
+  const { data: progressRows } = await supabase
+    .from("course_progress")
+    .select("course_id, completed_at")
+    .eq("user_id", user.id)
+
+  const completedCourseIds = new Set(
+    (progressRows ?? []).filter((p) => p.completed_at).map((p) => p.course_id)
+  )
+
   return (
     <div className="mx-auto max-w-2xl px-4 py-16">
       <h1 className="text-2xl font-semibold text-neutral-900">Dashboard</h1>
@@ -146,14 +158,34 @@ export default async function DashboardPage({
                   <p className="font-medium text-neutral-900">{course.title}</p>
                   <p className="text-sm text-neutral-500">{categoryLabel(course.category)}</p>
                 </div>
-                {course.resource_url && (
-                  <Link
-                    href={`/dashboard/leer/${course.slug}`}
-                    className="text-sm font-medium text-neutral-900 hover:underline"
-                  >
-                    Leer
-                  </Link>
-                )}
+                <div className="flex items-center gap-3">
+                  {course.resource_url && (
+                    <Link
+                      href={`/dashboard/leer/${course.slug}`}
+                      className="text-sm font-medium text-neutral-900 hover:underline"
+                    >
+                      Leer
+                    </Link>
+                  )}
+                  {completedCourseIds.has(course.id) ? (
+                    <a
+                      href={`/api/cursos/${course.slug}/certificado`}
+                      className="text-sm font-medium text-teal-700 hover:underline"
+                    >
+                      Certificado
+                    </a>
+                  ) : (
+                    <form action={markCourseCompleted}>
+                      <input type="hidden" name="courseId" value={course.id} />
+                      <button
+                        type="submit"
+                        className="text-sm text-neutral-500 hover:text-neutral-900 hover:underline"
+                      >
+                        Marcar completado
+                      </button>
+                    </form>
+                  )}
+                </div>
               </div>
             ))}
           </div>
@@ -206,6 +238,26 @@ export default async function DashboardPage({
                         Descargar
                       </a>
                     )}
+                    {purchase.status === "approved" && course && (
+                      completedCourseIds.has(purchase.course_id) ? (
+                        <a
+                          href={`/api/cursos/${course.slug}/certificado`}
+                          className="text-sm font-medium text-teal-700 hover:underline"
+                        >
+                          Certificado
+                        </a>
+                      ) : (
+                        <form action={markCourseCompleted}>
+                          <input type="hidden" name="courseId" value={purchase.course_id} />
+                          <button
+                            type="submit"
+                            className="text-sm text-neutral-500 hover:text-neutral-900 hover:underline"
+                          >
+                            Marcar completado
+                          </button>
+                        </form>
+                      )
+                    )}
                   </div>
                 </div>
               )
@@ -247,6 +299,15 @@ export default async function DashboardPage({
           </div>
         </div>
       )}
+
+      <div className="mt-8 flex flex-col gap-2">
+        <Link href="/dashboard/afiliados" className="text-sm font-medium text-neutral-600 hover:text-neutral-900 hover:underline">
+          Programa de afiliados — ganá 30% por cada referido →
+        </Link>
+        <Link href="/sugerencias" className="text-sm font-medium text-neutral-600 hover:text-neutral-900 hover:underline">
+          Tenes una idea o sugerencia? Contanos →
+        </Link>
+      </div>
 
       <form action={signOut} className="mt-10">
         <button

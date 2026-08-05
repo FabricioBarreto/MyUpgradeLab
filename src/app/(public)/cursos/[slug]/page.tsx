@@ -28,6 +28,40 @@ export default async function CursoDetallePage({
 
   const canBuyIndividual = course.access_type === "individual" || course.access_type === "both"
 
+  // Si el usuario ya tiene acceso (compra aprobada de este curso, o
+  // suscripcion activa), no tiene sentido ofrecerle "Comprar" de nuevo —
+  // mismo criterio de acceso que en el dashboard y en el proxy de lectura.
+  const {
+    data: { user },
+  } = await supabase.auth.getUser()
+
+  let hasPurchase = false
+  let hasActiveSubscription = false
+
+  if (user) {
+    const [{ data: purchase }, { data: subscription }] = await Promise.all([
+      supabase
+        .from("purchases")
+        .select("id")
+        .eq("user_id", user.id)
+        .eq("course_id", course.id)
+        .eq("status", "approved")
+        .maybeSingle(),
+      supabase
+        .from("subscriptions")
+        .select("status")
+        .eq("user_id", user.id)
+        .order("created_at", { ascending: false })
+        .limit(1)
+        .maybeSingle(),
+    ])
+
+    hasPurchase = Boolean(purchase)
+    hasActiveSubscription = subscription?.status === "active"
+  }
+
+  const hasAccess = hasPurchase || hasActiveSubscription
+
   return (
     <div className="mx-auto max-w-3xl px-6 py-12">
       <Link href="/cursos" className="text-sm text-neutral-500 hover:text-neutral-900">
@@ -60,7 +94,28 @@ export default async function CursoDetallePage({
       )}
 
       <div className="mt-8 rounded-lg border border-neutral-200 bg-white p-6">
-        {canBuyIndividual ? (
+        {hasAccess ? (
+          <>
+            {hasPurchase ? (
+              <a
+                href={`/api/cursos/${slug}/leer`}
+                className="block w-full rounded-md bg-neutral-900 py-3 text-center text-sm font-medium text-white hover:bg-neutral-800"
+              >
+                Descargar PDF
+              </a>
+            ) : (
+              <Link
+                href={`/dashboard/leer/${slug}`}
+                className="block w-full rounded-md bg-neutral-900 py-3 text-center text-sm font-medium text-white hover:bg-neutral-800"
+              >
+                Leer curso
+              </Link>
+            )}
+            <p className="mt-3 text-center text-sm text-neutral-500">
+              Ya tenes acceso a este curso{hasPurchase ? "" : " por tu suscripcion"}.
+            </p>
+          </>
+        ) : canBuyIndividual ? (
           <form action={createCheckoutPreference}>
             <input type="hidden" name="courseId" value={course.id} />
             <input type="hidden" name="slug" value={slug} />
@@ -73,18 +128,14 @@ export default async function CursoDetallePage({
           </form>
         ) : (
           <>
-            <button
-              disabled
-              className="w-full cursor-not-allowed rounded-md bg-neutral-300 py-3 text-sm font-medium text-neutral-600"
+            <Link
+              href="/register"
+              className="block w-full rounded-md bg-neutral-900 py-3 text-center text-sm font-medium text-white hover:bg-neutral-800"
             >
-              Disponible por suscripcion — Proximamente
-            </button>
+              Suscribite para acceder
+            </Link>
             <p className="mt-3 text-center text-sm text-neutral-500">
-              La suscripcion mensual todavia no esta habilitada.{" "}
-              <Link href="/register" className="font-medium text-neutral-900 hover:underline">
-                Creá tu cuenta
-              </Link>{" "}
-              para enterarte apenas este disponible.
+              Este curso esta disponible solo por suscripcion mensual.
             </p>
           </>
         )}

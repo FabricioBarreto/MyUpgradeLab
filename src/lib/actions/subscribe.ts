@@ -5,11 +5,11 @@ import { PreApproval } from 'mercadopago'
 import type { PreApprovalRequest } from 'mercadopago/dist/clients/preApproval/commonTypes'
 import { createClient } from '@/lib/supabase/server'
 import { getMercadoPagoConfig } from '@/lib/mercadopago'
+import { SUBSCRIPTION_PRICE } from '@/lib/constants'
 
 // Regla de negocio definida en docs/MASTER.md: precio fijo de la suscripcion
 // mensual y 7 dias de prueba gratuita. Se revisa trimestralmente contra
 // inflacion (proceso manual, no automatizado).
-const SUBSCRIPTION_PRICE = 7999
 const FREE_TRIAL_DAYS = 7
 
 // Crea una suscripcion mensual sin plan asociado (ad-hoc) y de pago
