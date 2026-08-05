@@ -83,3 +83,31 @@ export async function sendSubscriptionActiveEmail(params: { to: string }): Promi
 
   await sendEmail(to, 'Tu suscripcion a UpgradeLab esta activa', html)
 }
+
+// Notifica al admin (SMTP_USER) cuando alguien envia el formulario de
+// "boton de arrepentimiento" (ver src/app/(public)/reembolsos). Cumple con
+// la Disposicion 954/2025: hay que informar un codigo de identificacion del
+// pedido de revocacion, lo generamos y se lo mandamos por el mismo medio.
+export async function sendArrepentimientoRequestEmail(params: {
+  code: string
+  requesterEmail: string
+  requesterName: string | null
+  reference: string | null
+  message: string | null
+}): Promise<void> {
+  const { code, requesterEmail, requesterName, reference, message } = params
+  const admin = process.env.SMTP_USER
+  if (!admin) return
+
+  const html = layout(
+    'Nuevo pedido de arrepentimiento / revocacion',
+    `<p><strong>Codigo:</strong> ${code}</p>
+     <p><strong>Email del comprador:</strong> ${requesterEmail}</p>
+     ${requesterName ? `<p><strong>Nombre:</strong> ${requesterName}</p>` : ''}
+     ${reference ? `<p><strong>Referencia de la compra:</strong> ${reference}</p>` : ''}
+     ${message ? `<p><strong>Mensaje:</strong> ${message}</p>` : '<p>Sin mensaje adicional.</p>'}
+     <p style="margin-top:16px;color:#666;">Responder dentro de los 5 dias habiles (Disposicion 954/2025).</p>`
+  )
+
+  await sendEmail(admin, `Pedido de arrepentimiento ${code}`, html)
+}

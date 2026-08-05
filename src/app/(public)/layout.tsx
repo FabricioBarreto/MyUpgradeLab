@@ -31,8 +31,25 @@ export default function PublicLayout({ children }: { children: React.ReactNode }
         </div>
       </header>
       <main className="flex-1">{children}</main>
-      <footer className="border-t border-neutral-200 bg-white py-6 text-center text-sm text-neutral-500">
-        UpgradeLab — {new Date().getFullYear()}
+      <footer className="border-t border-neutral-200 bg-white py-8 text-center text-sm text-neutral-500">
+        <nav className="flex flex-wrap items-center justify-center gap-x-6 gap-y-2 px-4">
+          <Link href="/terminos" className="hover:text-neutral-900">
+            Términos y Condiciones
+          </Link>
+          <Link href="/privacidad" className="hover:text-neutral-900">
+            Privacidad
+          </Link>
+          <Link href="/cookies" className="hover:text-neutral-900">
+            Cookies
+          </Link>
+          <Link href="/reembolsos" className="font-medium hover:text-neutral-900">
+            Botón de Arrepentimiento
+          </Link>
+          <Link href="/dashboard/afiliados" className="hover:text-neutral-900">
+            Afiliados
+          </Link>
+        </nav>
+        <p className="mt-4">UpgradeLab — {new Date().getFullYear()}</p>
       </footer>
     </div>
   )

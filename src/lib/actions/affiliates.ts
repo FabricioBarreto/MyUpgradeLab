@@ -50,3 +50,55 @@ export async function becomeAffiliate() {
 
   revalidatePath('/dashboard/afiliados')
 }
+
+// El propio afiliado carga o actualiza el alias/CBU al que le transferimos
+// la comision acumulada el dia de pago (proceso manual, ver docs/TASKS.md).
+export async function updatePayoutAlias(formData: FormData) {
+  const payoutAlias = (formData.get('payoutAlias') as string)?.trim()
+
+  const supabase = await createClient()
+  const {
+    data: { user },
+  } = await supabase.auth.getUser()
+
+  if (!user) return
+
+  await supabase
+    .from('affiliates')
+    .update({ payout_alias: payoutAlias || null })
+    .eq('user_id', user.id)
+
+  revalidatePath('/dashboard/afiliados')
+}
+
+// Accion de admin: marca como pagadas todas las comisiones pendientes de un
+// afiliado (pago mensual en lote, hecho a mano por transferencia). No hay
+// integracion de pagos automatica aca — esto solo registra que ya se le
+// transfirio, despues de que el admin hizo la transferencia real.
+export async function markAffiliatePaid(formData: FormData) {
+  const affiliateId = formData.get('affiliateId') as string
+  if (!affiliateId) return
+
+  const supabase = await createClient()
+  const {
+    data: { user },
+  } = await supabase.auth.getUser()
+
+  if (!user) return
+
+  const { data: profile } = await supabase
+    .from('profiles')
+    .select('role')
+    .eq('id', user.id)
+    .maybeSingle()
+
+  if (profile?.role !== 'admin') return
+
+  await supabase
+    .from('affiliate_referrals')
+    .update({ status: 'paid', paid_at: new Date().toISOString() })
+    .eq('affiliate_id', affiliateId)
+    .eq('status', 'pending')
+
+  revalidatePath('/admin/afiliados')
+}

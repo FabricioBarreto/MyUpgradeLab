@@ -119,6 +119,21 @@ export default async function CursoDetallePage({
           <form action={createCheckoutPreference}>
             <input type="hidden" name="courseId" value={course.id} />
             <input type="hidden" name="slug" value={slug} />
+            <label className="mb-3 flex items-start gap-2 text-xs text-neutral-500">
+              <input type="checkbox" required className="mt-0.5" />
+              <span>
+                Es un producto digital de acceso inmediato: al acceder al contenido, pierdo el
+                derecho de arrepentimiento (art. 1116 CCyC). Acepto los{" "}
+                <Link href="/terminos" className="underline hover:text-neutral-900">
+                  Términos y Condiciones
+                </Link>{" "}
+                y la{" "}
+                <Link href="/reembolsos" className="underline hover:text-neutral-900">
+                  Política de Reembolsos
+                </Link>
+                .
+              </span>
+            </label>
             <button
               type="submit"
               className="w-full rounded-md bg-neutral-900 py-3 text-sm font-medium text-white hover:bg-neutral-800"

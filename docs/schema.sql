@@ -106,6 +106,9 @@ create table public.affiliates (
   code text not null unique,
   commission_rate numeric(5, 2) not null default 30,
   status text not null default 'pending' check (status in ('pending', 'approved', 'rejected')),
+  -- Alias o CBU donde se le transfiere la comision. Lo carga el propio
+  -- afiliado desde /dashboard/afiliados (ver policy affiliates_update_own).
+  payout_alias text,
   created_at timestamptz not null default now()
 );
 
@@ -118,6 +121,9 @@ create table public.affiliate_referrals (
   source_id uuid not null,
   commission_amount numeric(10, 2) not null,
   status text not null default 'pending' check (status in ('pending', 'paid')),
+  -- Cuando el admin marca la comision como pagada (pago mensual en lote, ver
+  -- /admin/afiliados), se registra la fecha para tener un historial claro.
+  paid_at timestamptz,
   created_at timestamptz not null default now()
 );
 
@@ -196,11 +202,14 @@ create policy subscriptions_insert_own on public.subscriptions
 create policy subscriptions_admin_all on public.subscriptions
   for all using (public.is_admin());
 
--- affiliates: el afiliado ve/inserta lo suyo; admin ve todo.
+-- affiliates: el afiliado ve/inserta/edita lo suyo (edita para cargar su
+-- alias/CBU de cobro); admin ve y edita todo (para aprobar/rechazar, etc).
 create policy affiliates_select_own on public.affiliates
   for select using (auth.uid() = user_id);
 create policy affiliates_insert_own on public.affiliates
   for insert with check (auth.uid() = user_id);
+create policy affiliates_update_own on public.affiliates
+  for update using (auth.uid() = user_id);
 create policy affiliates_admin_all on public.affiliates
   for all using (public.is_admin());
 

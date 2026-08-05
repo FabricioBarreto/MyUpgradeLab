@@ -102,7 +102,7 @@ export default async function DashboardPage({
       <div className="mt-8 rounded-lg border border-neutral-200 bg-white p-4">
         <h2 className="text-lg font-medium text-neutral-900">Suscripcion</h2>
         {subscription ? (
-          <div className="mt-3 flex items-center justify-between">
+          <div className="mt-3">
             <span
               className={
                 subscription.status === "active"
@@ -115,7 +115,22 @@ export default async function DashboardPage({
               {SUBSCRIPTION_STATUS_LABELS[subscription.status] ?? subscription.status}
             </span>
             {(subscription.status === "cancelled" || subscription.status === "past_due") && (
-              <form action={createSubscription}>
+              <form action={createSubscription} className="mt-3">
+                <label className="mb-2 flex items-start gap-2 text-xs text-neutral-500">
+                  <input type="checkbox" required className="mt-0.5" />
+                  <span>
+                    Acepto los{" "}
+                    <Link href="/terminos" className="underline hover:text-neutral-900">
+                      Términos y Condiciones
+                    </Link>{" "}
+                    y entiendo que, al acceder al contenido, pierdo el derecho de arrepentimiento
+                    sobre ese período (ver{" "}
+                    <Link href="/reembolsos" className="underline hover:text-neutral-900">
+                      Política de Reembolsos
+                    </Link>
+                    ).
+                  </span>
+                </label>
                 <button
                   type="submit"
                   className="rounded-md bg-neutral-900 px-4 py-2 text-sm font-medium text-white hover:bg-neutral-800"
@@ -131,6 +146,21 @@ export default async function DashboardPage({
               Acceso completo a todo el catalogo, con 7 dias de prueba gratis.
             </p>
             <form action={createSubscription} className="mt-3">
+              <label className="mb-2 flex items-start gap-2 text-xs text-neutral-500">
+                <input type="checkbox" required className="mt-0.5" />
+                <span>
+                  Acepto los{" "}
+                  <Link href="/terminos" className="underline hover:text-neutral-900">
+                    Términos y Condiciones
+                  </Link>{" "}
+                  y entiendo que, al acceder al contenido, pierdo el derecho de arrepentimiento
+                  sobre ese período (ver{" "}
+                  <Link href="/reembolsos" className="underline hover:text-neutral-900">
+                    Política de Reembolsos
+                  </Link>
+                  ).
+                </span>
+              </label>
               <button
                 type="submit"
                 className="rounded-md bg-neutral-900 px-4 py-2 text-sm font-medium text-white hover:bg-neutral-800"

@@ -1,7 +1,7 @@
 import Link from "next/link"
 import { redirect } from "next/navigation"
 import { createClient } from "@/lib/supabase/server"
-import { becomeAffiliate } from "@/lib/actions/affiliates"
+import { becomeAffiliate, updatePayoutAlias } from "@/lib/actions/affiliates"
 import { formatPrice } from "@/lib/format"
 
 const REFERRAL_STATUS_LABELS: Record<string, string> = {
@@ -77,6 +77,7 @@ export default async function AfiliadosPage() {
       <h1 className="mt-4 text-2xl font-semibold text-neutral-900">Tu programa de afiliados</h1>
       <p className="mt-2 text-neutral-600">
         Comision: {affiliate.commission_rate}% en efectivo por cada compra o suscripcion aprobada.
+        Pagamos por transferencia el dia 10 de cada mes, sobre lo acumulado hasta ese momento.
       </p>
 
       <div className="mt-6 rounded-lg border border-neutral-200 bg-white p-4">
@@ -85,6 +86,33 @@ export default async function AfiliadosPage() {
           {referralLink}
         </p>
         <p className="mt-2 text-xs text-neutral-400">Codigo: {affiliate.code}</p>
+      </div>
+
+      <div className="mt-6 rounded-lg border border-neutral-200 bg-white p-4">
+        <p className="text-sm font-medium text-neutral-700">Alias o CBU para cobrar</p>
+        <p className="mt-1 text-xs text-neutral-500">
+          Lo necesitamos para poder transferirte tu comision el dia de pago.
+        </p>
+        <form action={updatePayoutAlias} className="mt-3 flex gap-2">
+          <input
+            type="text"
+            name="payoutAlias"
+            defaultValue={affiliate.payout_alias ?? ""}
+            placeholder="mi.alias.mp o CBU de 22 digitos"
+            className="w-full rounded-md border border-neutral-300 px-3 py-2 text-sm focus:border-neutral-900 focus:outline-none"
+          />
+          <button
+            type="submit"
+            className="shrink-0 rounded-md bg-neutral-900 px-4 py-2 text-sm font-medium text-white hover:bg-neutral-800"
+          >
+            Guardar
+          </button>
+        </form>
+        {!affiliate.payout_alias && (
+          <p className="mt-2 text-xs text-amber-600">
+            Todavia no cargaste un alias/CBU — no vamos a poder pagarte hasta que lo hagas.
+          </p>
+        )}
       </div>
 
       <div className="mt-6 grid grid-cols-2 gap-4">
