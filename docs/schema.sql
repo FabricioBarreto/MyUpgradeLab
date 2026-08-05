@@ -80,6 +80,11 @@ create table public.purchases (
   amount numeric(10, 2) not null,
   status text not null default 'pending' check (status in ('pending', 'approved', 'rejected', 'refunded')),
   mp_payment_id text,
+  -- Se setea la primera vez que se sirve el PDF a traves de
+  -- /api/cursos/[slug]/leer. Sirve como prueba objetiva de si la persona ya
+  -- accedio al contenido o no, para resolver pedidos de arrepentimiento
+  -- (excepcion del art. 1116 CCyC aplica solo si ya accedio).
+  first_accessed_at timestamptz,
   created_at timestamptz not null default now()
 );
 

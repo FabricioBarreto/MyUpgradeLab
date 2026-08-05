@@ -41,7 +41,7 @@ export async function GET(
   // Compra individual aprobada de este curso puntual.
   const { data: purchase } = await supabase
     .from('purchases')
-    .select('id, status')
+    .select('id, status, first_accessed_at')
     .eq('user_id', user.id)
     .eq('course_id', course.id)
     .eq('status', 'approved')
@@ -64,6 +64,18 @@ export async function GET(
       { error: 'No tenes acceso a este curso. Comprralo o suscribite para acceder.' },
       { status: 403 }
     )
+  }
+
+  // Prueba objetiva de acceso: si es una compra individual y todavia no
+  // habia accedido nunca, dejamos registrado el momento. Sirve para resolver
+  // pedidos de arrepentimiento (ver /reembolsos) sin depender de lo que diga
+  // la persona — si ya hay un first_accessed_at, la excepcion del art. 1116
+  // CCyC aplica y el pedido se puede rechazar con fundamento.
+  if (purchase && !purchase.first_accessed_at) {
+    await supabase
+      .from('purchases')
+      .update({ first_accessed_at: new Date().toISOString() })
+      .eq('id', purchase.id)
   }
 
   const publicId = extractRawPublicId(course.resource_url)

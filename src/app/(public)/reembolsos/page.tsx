@@ -58,6 +58,12 @@ export default async function ReembolsosPage({
           de 10 días, o si tenés un problema con tu suscripción, podés pedir la revocación con el
           formulario de abajo.
         </p>
+        <p>
+          Para resolver cada pedido de forma objetiva, nuestro sistema registra el momento exacto en
+          que se accede por primera vez al contenido de una compra. Si el registro muestra que ya
+          accediste, el pedido se rechaza con ese fundamento; si todavía no accediste, se resuelve a
+          tu favor.
+        </p>
       </Section>
 
       <Section title="Cómo se procesa tu pedido">
