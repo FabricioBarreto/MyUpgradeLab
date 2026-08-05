@@ -2,6 +2,7 @@
 
 import { createClient } from '@/lib/supabase/server'
 import { createServiceClient } from '@/lib/supabase/service'
+import { becomeAffiliate } from '@/lib/actions/affiliates'
 import { cookies } from 'next/headers'
 import { redirect } from 'next/navigation'
 
@@ -37,9 +38,19 @@ export async function signUp(formData: FormData) {
   const password = formData.get('password') as string
   const confirmPassword = formData.get('confirmPassword') as string
   const fullName = formData.get('fullName') as string
+  // Si viene de /register?intent=affiliate (link desde la landing publica
+  // /afiliados), damos de alta la cuenta como afiliado automaticamente y la
+  // mandamos directo a su panel, en vez de al dashboard de estudiante.
+  const intent = formData.get('intent') as string
+
+  const registerRedirect = (params: Record<string, string>) => {
+    const query = new URLSearchParams(params)
+    if (intent === 'affiliate') query.set('intent', 'affiliate')
+    redirect(`/register?${query.toString()}`)
+  }
 
   if (password !== confirmPassword) {
-    redirect(`/register?error=${encodeURIComponent('Las contraseñas no coinciden')}`)
+    registerRedirect({ error: 'Las contraseñas no coinciden' })
   }
 
   const supabase = await createClient()
@@ -53,7 +64,7 @@ export async function signUp(formData: FormData) {
   })
 
   if (error) {
-    redirect(`/register?error=${encodeURIComponent(error.message)}`)
+    registerRedirect({ error: error.message })
   }
 
   if (data.user) {
@@ -65,6 +76,10 @@ export async function signUp(formData: FormData) {
   // y podemos mandar directo al dashboard. Si sigue activado, no hay sesion
   // todavia y hay que esperar a que confirme por mail.
   if (data.session) {
+    if (intent === 'affiliate') {
+      await becomeAffiliate()
+      redirect('/dashboard/afiliados')
+    }
     redirect('/dashboard')
   }
 

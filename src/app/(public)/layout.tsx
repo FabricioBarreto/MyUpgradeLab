@@ -15,6 +15,9 @@ export default function PublicLayout({ children }: { children: React.ReactNode }
             <Link href="/cursos" className="hover:text-neutral-900">
               Cursos
             </Link>
+            <Link href="/afiliados" className="hover:text-neutral-900">
+              Afiliados
+            </Link>
             <Link href="/sugerencias" className="hover:text-neutral-900">
               Sugerencias
             </Link>
@@ -45,7 +48,7 @@ export default function PublicLayout({ children }: { children: React.ReactNode }
           <Link href="/reembolsos" className="font-medium hover:text-neutral-900">
             Botón de Arrepentimiento
           </Link>
-          <Link href="/dashboard/afiliados" className="hover:text-neutral-900">
+          <Link href="/afiliados" className="hover:text-neutral-900">
             Afiliados
           </Link>
         </nav>

@@ -4,16 +4,23 @@ import { signUp } from "@/lib/actions/auth"
 export default async function RegisterPage({
   searchParams,
 }: {
-  searchParams: Promise<{ error?: string }>
+  searchParams: Promise<{ error?: string; intent?: string }>
 }) {
   const params = await searchParams
+  const isAffiliate = params.intent === "affiliate"
 
   return (
     <div className="flex min-h-screen items-center justify-center bg-neutral-50 px-4">
       <div className="w-full max-w-sm space-y-6 rounded-lg border border-neutral-200 bg-white p-8 shadow-sm">
         <div className="space-y-1 text-center">
-          <h1 className="text-xl font-semibold text-neutral-900">Crear cuenta</h1>
-          <p className="text-sm text-neutral-500">Registrate en UpgradeLab</p>
+          <h1 className="text-xl font-semibold text-neutral-900">
+            {isAffiliate ? "Registrate como afiliado" : "Crear cuenta"}
+          </h1>
+          <p className="text-sm text-neutral-500">
+            {isAffiliate
+              ? "Creá tu cuenta para conseguir tu link y empezar a ganar comisiones."
+              : "Registrate en UpgradeLab"}
+          </p>
         </div>
 
         {params.error && (
@@ -23,6 +30,7 @@ export default async function RegisterPage({
         )}
 
         <form action={signUp} className="space-y-4">
+          {isAffiliate && <input type="hidden" name="intent" value="affiliate" />}
           <div className="space-y-1">
             <label htmlFor="fullName" className="text-sm font-medium text-neutral-700">
               Nombre completo
@@ -77,7 +85,7 @@ export default async function RegisterPage({
             type="submit"
             className="w-full rounded-md bg-neutral-900 py-2 text-sm font-medium text-white hover:bg-neutral-800"
           >
-            Crear cuenta
+            {isAffiliate ? "Crear cuenta y conseguir mi link" : "Crear cuenta"}
           </button>
         </form>
 
