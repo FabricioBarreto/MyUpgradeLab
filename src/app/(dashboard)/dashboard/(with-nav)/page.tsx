@@ -2,7 +2,6 @@ import Link from "next/link"
 import { redirect } from "next/navigation"
 import { createClient } from "@/lib/supabase/server"
 import { createSubscription } from "@/lib/actions/subscribe"
-import { markCourseCompleted } from "@/lib/actions/progress"
 import { CATEGORY_LABELS, categoryLabel, categoryBadgeClass, formatPrice } from "@/lib/format"
 import { COMMUNITY_LINKS } from "@/lib/community"
 
@@ -48,33 +47,6 @@ function TermsConsent() {
         ).
       </span>
     </label>
-  )
-}
-
-function CourseActionButton({
-  courseId,
-  isCompleted,
-}: {
-  courseId: string
-  isCompleted: boolean
-}) {
-  if (isCompleted) {
-    return (
-      <span className="rounded-md bg-teal-50 px-3 py-1.5 text-xs font-medium text-teal-700">
-        Completado ✓
-      </span>
-    )
-  }
-  return (
-    <form action={markCourseCompleted}>
-      <input type="hidden" name="courseId" value={courseId} />
-      <button
-        type="submit"
-        className="rounded-md border border-neutral-200 px-3 py-1.5 text-xs font-medium text-neutral-600 hover:bg-neutral-50"
-      >
-        Marcar completado
-      </button>
-    </form>
   )
 }
 
@@ -140,17 +112,6 @@ export default async function DashboardPage({
         .eq("is_active", true)
         .order("category", { ascending: true })
     : { data: null }
-
-  // Progreso: que cursos ya marco como completados, para mostrar el estado
-  // correcto (boton "Marcar como completado" vs. badge "Completado").
-  const { data: progressRows } = await supabase
-    .from("course_progress")
-    .select("course_id, completed_at")
-    .eq("user_id", user.id)
-
-  const completedCourseIds = new Set(
-    (progressRows ?? []).filter((p) => p.completed_at).map((p) => p.course_id)
-  )
 
   const displayName = profile?.full_name?.trim().split(" ")[0] || user.email?.split("@")[0] || "de nuevo"
 
@@ -244,10 +205,6 @@ export default async function DashboardPage({
                       Leer
                     </Link>
                   )}
-                  <CourseActionButton
-                    courseId={course.id}
-                    isCompleted={completedCourseIds.has(course.id)}
-                  />
                 </div>
               </div>
             ))}
@@ -299,22 +256,16 @@ export default async function DashboardPage({
                     </p>
                     <p className="mt-1 text-sm text-neutral-500">{formatPrice(purchase.amount)}</p>
                   </div>
-                  {purchase.status === "approved" && course && (
+                  {purchase.status === "approved" && course && course.resource_url && (
                     <div className="mt-4 flex flex-wrap items-center gap-2">
-                      {course.resource_url && (
-                        <a
-                          href={`/api/cursos/${course.slug}/leer`}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="rounded-md bg-neutral-900 px-3 py-1.5 text-xs font-medium text-white hover:bg-neutral-800"
-                        >
-                          Descargar
-                        </a>
-                      )}
-                      <CourseActionButton
-                        courseId={purchase.course_id}
-                        isCompleted={completedCourseIds.has(purchase.course_id)}
-                      />
+                      <a
+                        href={`/api/cursos/${course.slug}/leer`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="rounded-md bg-neutral-900 px-3 py-1.5 text-xs font-medium text-white hover:bg-neutral-800"
+                      >
+                        Descargar
+                      </a>
                     </div>
                   )}
                 </div>
