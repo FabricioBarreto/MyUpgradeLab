@@ -5,3 +5,12 @@
 // constante la necesitan tanto la accion de suscripcion como el webhook de
 // Mercado Pago (para calcular la comision de afiliados).
 export const SUBSCRIPTION_PRICE = 7999
+
+// NEXT_PUBLIC_APP_URL puede estar cargada con o sin barra final segun el
+// entorno (en Vercel quedo con barra final, ".../" — eso generaba links
+// rotos tipo "https://sitio.com//?ref=CODIGO", doble barra, en cualquier
+// lugar que hiciera `${appUrl}/algo`). Esta funcion normaliza sacando la
+// barra final, asi da lo mismo como este cargada la variable.
+export function getAppUrl(): string {
+  return (process.env.NEXT_PUBLIC_APP_URL ?? '').replace(/\/+$/, '')
+}

@@ -1,4 +1,5 @@
 import nodemailer from 'nodemailer'
+import { getAppUrl } from '@/lib/constants'
 
 let transporter: nodemailer.Transporter | null = null
 
@@ -61,7 +62,7 @@ export async function sendPurchaseApprovedEmail(params: {
   const { to, courseTitle, resourceUrl } = params
   const button = resourceUrl
     ? `<p style="margin:20px 0;"><a href="${resourceUrl}" style="background:#171717;color:#ffffff;text-decoration:none;padding:10px 20px;border-radius:6px;font-size:14px;display:inline-block;">Acceder al curso</a></p>`
-    : `<p>Ya podés acceder desde tu <a href="${process.env.NEXT_PUBLIC_APP_URL}/dashboard">dashboard</a>.</p>`
+    : `<p>Ya podés acceder desde tu <a href="${getAppUrl()}/dashboard">dashboard</a>.</p>`
 
   const html = layout(
     'Tu compra fue aprobada',
@@ -78,7 +79,7 @@ export async function sendSubscriptionActiveEmail(params: { to: string }): Promi
   const html = layout(
     'Tu suscripcion esta activa',
     `<p>Tu suscripcion mensual a UpgradeLab quedo activa. Ya tenés acceso a todo el catalogo.</p>
-     <p style="margin:20px 0;"><a href="${process.env.NEXT_PUBLIC_APP_URL}/cursos" style="background:#171717;color:#ffffff;text-decoration:none;padding:10px 20px;border-radius:6px;font-size:14px;display:inline-block;">Ver catalogo</a></p>`
+     <p style="margin:20px 0;"><a href="${getAppUrl()}/cursos" style="background:#171717;color:#ffffff;text-decoration:none;padding:10px 20px;border-radius:6px;font-size:14px;display:inline-block;">Ver catalogo</a></p>`
   )
 
   await sendEmail(to, 'Tu suscripcion a UpgradeLab esta activa', html)

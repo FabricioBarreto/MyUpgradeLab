@@ -5,7 +5,7 @@ import { PreApproval } from 'mercadopago'
 import type { PreApprovalRequest } from 'mercadopago/dist/clients/preApproval/commonTypes'
 import { createClient } from '@/lib/supabase/server'
 import { getMercadoPagoConfig } from '@/lib/mercadopago'
-import { SUBSCRIPTION_PRICE } from '@/lib/constants'
+import { SUBSCRIPTION_PRICE, getAppUrl } from '@/lib/constants'
 
 // Regla de negocio definida en docs/MASTER.md: precio fijo de la suscripcion
 // mensual y 7 dias de prueba gratuita. Se revisa trimestralmente contra
@@ -51,7 +51,7 @@ export async function createSubscription() {
     return
   }
 
-  const appUrl = process.env.NEXT_PUBLIC_APP_URL!
+  const appUrl = getAppUrl()
 
   let initPoint: string | undefined
 

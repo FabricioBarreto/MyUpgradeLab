@@ -3,6 +3,7 @@ import { redirect } from "next/navigation"
 import { createClient } from "@/lib/supabase/server"
 import { becomeAffiliate, updatePayoutAlias } from "@/lib/actions/affiliates"
 import { formatPrice } from "@/lib/format"
+import { getAppUrl } from "@/lib/constants"
 
 const REFERRAL_STATUS_LABELS: Record<string, string> = {
   pending: "Pendiente de pago",
@@ -58,8 +59,7 @@ export default async function AfiliadosPage() {
     .eq("affiliate_id", affiliate.id)
     .order("created_at", { ascending: false })
 
-  const appUrl = process.env.NEXT_PUBLIC_APP_URL ?? ""
-  const referralLink = `${appUrl}/?ref=${affiliate.code}`
+  const referralLink = `${getAppUrl()}/?ref=${affiliate.code}`
 
   const totalPending = (referrals ?? [])
     .filter((r) => r.status === "pending")

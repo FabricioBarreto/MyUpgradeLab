@@ -4,6 +4,7 @@ import { redirect } from 'next/navigation'
 import { Preference } from 'mercadopago'
 import { createClient } from '@/lib/supabase/server'
 import { getMercadoPagoConfig } from '@/lib/mercadopago'
+import { getAppUrl } from '@/lib/constants'
 
 // Crea una preferencia de Checkout Pro para la compra individual de un curso
 // y redirige al usuario al checkout hosteado de Mercado Pago.
@@ -51,7 +52,7 @@ export async function createCheckoutPreference(formData: FormData) {
     return
   }
 
-  const appUrl = process.env.NEXT_PUBLIC_APP_URL!
+  const appUrl = getAppUrl()
 
   let initPoint: string | undefined
 
