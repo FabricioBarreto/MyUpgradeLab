@@ -117,7 +117,7 @@ export default function TerminosPage() {
         <p>
           Cualquier usuario registrado puede sumarse al programa de afiliados y obtener un link de
           referido propio. Por cada compra individual o suscripción aprobada que se genere a través
-          de ese link, el afiliado gana una comisión en efectivo (30% por defecto, informada en su
+          de ese link, el afiliado gana una comisión en efectivo (40% por defecto, informada en su
           panel de afiliado) sobre el monto de la venta.
         </p>
         <p>

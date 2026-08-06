@@ -26,6 +26,12 @@ Los fuentes (HTML) y el PDF final de cada curso se guardan en `/cursos/<categori
 - [ ] Probar en produccion, despues del proximo deploy, que `/api/cursos/[slug]/leer` y `/dashboard/leer/[slug]` funcionen con una suscripcion y una compra reales (se verifico la logica a mano contra la base y contra Cloudinary, pero no dentro de la app corriendo — ver notas en Done del 28/07/2026).
 
 ## Done
+- [x] Comision de afiliados subida de 30% a 40% (04/08/2026). Cambiado el default de `affiliates.commission_rate` en `docs/schema.sql` (afecta afiliados nuevos) y todo el copy hardcodeado que mencionaba "30%": landing `/afiliados`, dashboard, pantalla de alta en `/dashboard/afiliados`, `/terminos` y docs internos (`MASTER.md`, `DATABASE.md`). Los lugares que ya leian `commission_rate` dinamicamente desde la base (webhook que calcula la comision, panel admin, panel del afiliado ya dado de alta) no necesitaron cambios de codigo — solo hace falta actualizar el dato. **Requiere SQL manual** para que aplique a los afiliados que ya existen (el cambio de default de la columna solo afecta altas nuevas):
+  ```sql
+  alter table public.affiliates alter column commission_rate set default 40;
+  update public.affiliates set commission_rate = 40;
+  ```
+  Nota: esto no toca `affiliate_referrals` ya generados — las comisiones de ventas pasadas quedan calculadas con el % que regia en ese momento, como corresponde (no se recalculan retroactivamente).
 - [x] `/afiliados`: gate explicito de Iniciar sesion / Registrarme en vez de un boton que decidia solo segun la sesion existente (04/08/2026). El usuario probo la pagina estando ya logueado y vio "Ir a mi panel de afiliado" en vez de una pantalla de login/registro — pidio que sea explicito. Cambiado:
   - `/afiliados` ahora siempre muestra dos botones claros: "Iniciar sesion" y "Registrarme como afiliado". Si hay sesion activa, se agrega ademas un atajo chico ("ir directo a tu panel") para no obligar a loguearse de nuevo.
   - Se agrego soporte de `redirect` en el login (`signIn` en `src/lib/actions/auth.ts` + campo oculto en `/login`): si entraste por "Iniciar sesion" desde `/afiliados`, despues de loguearte caes directo en `/dashboard/afiliados` en vez del dashboard generico. El link "Registrate" dentro de `/login` tambien respeta el contexto (te manda a `/register?intent=affiliate` si el redirect era al panel de afiliados).

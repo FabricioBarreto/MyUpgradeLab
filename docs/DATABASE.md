@@ -54,7 +54,7 @@ Compra individual (pago único vía Mercado Pago).
 | id | uuid | PK |
 | user_id | uuid | FK profiles, unique |
 | code | text | unique, código de referido |
-| commission_rate | numeric(5,2) | % pendiente definir negocio |
+| commission_rate | numeric(5,2) | % de comision, 40 por defecto |
 | status | text | pending \| approved \| rejected |
 | created_at | timestamptz | |
 

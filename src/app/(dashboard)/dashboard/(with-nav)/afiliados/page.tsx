@@ -35,7 +35,7 @@ export default async function AfiliadosPage() {
 
         <h1 className="mt-4 text-2xl font-semibold text-neutral-900">Programa de afiliados</h1>
         <p className="mt-2 text-neutral-600">
-          Recomenda UpgradeLab con tu link y ganá 30% de comision en efectivo por cada compra o
+          Recomenda UpgradeLab con tu link y ganá 40% de comision en efectivo por cada compra o
           suscripcion que se genere a traves tuyo.
         </p>
 

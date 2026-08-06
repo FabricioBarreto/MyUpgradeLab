@@ -109,7 +109,7 @@ create table public.affiliates (
   id uuid primary key default gen_random_uuid(),
   user_id uuid not null unique references public.profiles(id) on delete cascade,
   code text not null unique,
-  commission_rate numeric(5, 2) not null default 30,
+  commission_rate numeric(5, 2) not null default 40,
   status text not null default 'pending' check (status in ('pending', 'approved', 'rejected')),
   -- Alias o CBU donde se le transfiere la comision. Lo carga el propio
   -- afiliado desde /dashboard/afiliados (ver policy affiliates_update_own).

@@ -15,7 +15,7 @@ export default async function AfiliadosLandingPage() {
     <div className="mx-auto max-w-2xl px-6 py-16">
       <h1 className="text-2xl font-semibold text-neutral-900">Programa de Afiliados</h1>
       <p className="mt-3 text-neutral-600">
-        Recomendá UpgradeLab con tu link propio y ganá 30% de comisión en efectivo por cada compra
+        Recomendá UpgradeLab con tu link propio y ganá 40% de comisión en efectivo por cada compra
         o suscripción que se genere a través tuyo. No hace falta que compres nada — con crear tu
         cuenta ya podés generar tu link.
       </p>

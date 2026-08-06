@@ -32,11 +32,11 @@ UpgradeLab
 - Moneda: todos los precios se manejan en ARS (pesos argentinos), no en USD, porque el cobro es via Mercado Pago Argentina.
 - Precio suscripción mensual: $7.999 ARS/mes (referencia: por debajo de Netflix Estandar ~$21.000 y por encima de Spotify Individual ~$5.000, ajustado a que UpgradeLab es un catalogo mas chico y de nicho).
 - Precio PDFs individuales: $3.000-$8.000 ARS segun profundidad del curso (recursos simples en la parte baja, cursos mas extensos de programacion/IA en la parte alta). Definir precio por curso al cargarlo en el panel admin, siempre por debajo del valor de la suscripcion mensual.
-- Comisión de afiliados: 30% por venta (suscripcion o PDF individual).
+- Comisión de afiliados: 40% por venta (suscripcion o PDF individual).
 - Comisión recurrente o solo primer pago: recurrente, se paga mientras el referido mantenga la suscripcion activa (la tabla `affiliate_referrals` ya soporta esto via `source_id` apuntando a `subscriptions`).
 - Nota: falta confirmar el % de comisión exacto que cobra Mercado Pago Checkout Pro para Argentina antes de cerrar margenes finales (consultar panel de Mercado Pago).
 - Revisión de precios: cada 3 meses, revisar precio de suscripción y de PDFs contra IPC/dólar (inflación proyectada ~30% anual en 2026 erosiona precios fijos en pesos). No es automático, es una revisión manual del fundador.
-- Programa de afiliados/referidos con dos ramas: (1) afiliados/promotores — comisión en efectivo del 30%, pensado para alguien que promociona activamente como si fuera un ingreso; (2) referidos casuales — el amigo referido recibe un descuento (a definir %) en su primer pago, además de la comisión normal para quien lo invitó. La rama 2 requiere que el checkout de Mercado Pago soporte aplicar un descuento por código.
+- Programa de afiliados/referidos con dos ramas: (1) afiliados/promotores — comisión en efectivo del 40%, pensado para alguien que promociona activamente como si fuera un ingreso; (2) referidos casuales — el amigo referido recibe un descuento (a definir %) en su primer pago, además de la comisión normal para quien lo invitó. La rama 2 requiere que el checkout de Mercado Pago soporte aplicar un descuento por código.
 - Prueba gratuita de suscripción: 7 días sin cobrar (Mercado Pago Preapproval soporta `free_trial` en `auto_recurring`), en vez de cobrar desde el primer día. Se implementa junto con la integración de Suscripciones.
 
 ## Mercado Pago: dos apps separadas

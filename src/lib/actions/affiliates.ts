@@ -13,7 +13,7 @@ function randomCode(length = 6): string {
   return code
 }
 
-// Da de alta al usuario actual como afiliado (comision cash del 30%, fija
+// Da de alta al usuario actual como afiliado (comision cash del 40%, fija
 // por ahora — ver default de `commission_rate` en el schema). Se aprueba
 // automaticamente: no hay revision manual en esta primera version, ya que el
 // pago de comisiones es un proceso manual aparte y no hay riesgo de fraude
