@@ -91,16 +91,7 @@ export default function TerminosPage() {
         </p>
       </Section>
 
-      <Section title="6. Certificados de finalización">
-        <p>
-          Al marcar un curso como completado podés descargar un certificado de finalización. Este
-          certificado acredita que completaste el curso dentro de UpgradeLab: no es un título
-          oficial, no tiene validez académica ni está avalado por ningún organismo educativo público
-          o privado.
-        </p>
-      </Section>
-
-      <Section title="7. Reembolsos y derecho de arrepentimiento">
+      <Section title="6. Reembolsos y derecho de arrepentimiento">
         <p>
           Al tratarse de contenido digital de acceso o descarga inmediata, aplican excepciones
           específicas al derecho de arrepentimiento previsto en la Ley 24.240 y el Código Civil y
@@ -113,7 +104,7 @@ export default function TerminosPage() {
         </p>
       </Section>
 
-      <Section title="8. Programa de afiliados">
+      <Section title="7. Programa de afiliados">
         <p>
           Cualquier usuario registrado puede sumarse al programa de afiliados y obtener un link de
           referido propio. Por cada compra individual o suscripción aprobada que se genere a través
@@ -134,21 +125,21 @@ export default function TerminosPage() {
         </p>
       </Section>
 
-      <Section title="9. Cuenta de usuario">
+      <Section title="8. Cuenta de usuario">
         <p>
           Sos responsable de mantener la confidencialidad de tu contraseña y de toda actividad que
           ocurra en tu cuenta. Avisanos apenas detectes un uso no autorizado.
         </p>
       </Section>
 
-      <Section title="10. Modificaciones">
+      <Section title="9. Modificaciones">
         <p>
           Podemos actualizar estos Términos en cualquier momento. Los cambios rigen desde su
           publicación en esta página. Si el cambio es sustancial, vamos a avisarte por email.
         </p>
       </Section>
 
-      <Section title="11. Ley aplicable y jurisdicción">
+      <Section title="10. Ley aplicable y jurisdicción">
         <p>
           Estos Términos se rigen por las leyes de la República Argentina. Para cualquier
           controversia, las partes se someten a los tribunales ordinarios competentes, sin perjuicio
@@ -157,7 +148,7 @@ export default function TerminosPage() {
         </p>
       </Section>
 
-      <Section title="12. Contacto">
+      <Section title="11. Contacto">
         <p>
           Para consultas sobre estos Términos, escribinos a{" "}
           <a href={`mailto:${contactEmail}`} className="font-medium text-neutral-900 hover:underline">

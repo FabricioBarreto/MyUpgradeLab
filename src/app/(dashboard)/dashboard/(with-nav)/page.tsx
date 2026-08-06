@@ -53,21 +53,16 @@ function TermsConsent() {
 
 function CourseActionButton({
   courseId,
-  slug,
   isCompleted,
 }: {
   courseId: string
-  slug: string
   isCompleted: boolean
 }) {
   if (isCompleted) {
     return (
-      <a
-        href={`/api/cursos/${slug}/certificado`}
-        className="rounded-md bg-teal-50 px-3 py-1.5 text-xs font-medium text-teal-700 hover:bg-teal-100"
-      >
-        Certificado
-      </a>
+      <span className="rounded-md bg-teal-50 px-3 py-1.5 text-xs font-medium text-teal-700">
+        Completado ✓
+      </span>
     )
   }
   return (
@@ -147,7 +142,7 @@ export default async function DashboardPage({
     : { data: null }
 
   // Progreso: que cursos ya marco como completados, para mostrar el estado
-  // correcto (boton "Marcar como completado" vs. "Completado" + certificado).
+  // correcto (boton "Marcar como completado" vs. badge "Completado").
   const { data: progressRows } = await supabase
     .from("course_progress")
     .select("course_id, completed_at")
@@ -251,7 +246,6 @@ export default async function DashboardPage({
                   )}
                   <CourseActionButton
                     courseId={course.id}
-                    slug={course.slug}
                     isCompleted={completedCourseIds.has(course.id)}
                   />
                 </div>
@@ -319,7 +313,6 @@ export default async function DashboardPage({
                       )}
                       <CourseActionButton
                         courseId={purchase.course_id}
-                        slug={course.slug}
                         isCompleted={completedCourseIds.has(purchase.course_id)}
                       />
                     </div>

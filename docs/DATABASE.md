@@ -79,7 +79,7 @@ el progreso es binario, no un porcentaje.
 | user_id | uuid | FK profiles |
 | course_id | uuid | FK courses |
 | completed_at | timestamptz | null hasta que el usuario lo marca como completado |
-| certificate_url | text | link al certificado generado (Cloudinary), null hasta emitirse |
+| certificate_url | text | columna sin uso — la funcionalidad de certificado se saco (ver TASKS.md, 04/08/2026) |
 | created_at | timestamptz | |
 
 Unique (user_id, course_id).
