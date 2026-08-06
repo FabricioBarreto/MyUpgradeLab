@@ -70,17 +70,11 @@ Compra individual (pago único vía Mercado Pago).
 | status | text | pending \| paid |
 | created_at | timestamptz | |
 
-### course_progress
-Marca de "completado" por curso y usuario. Como los cursos no tienen lecciones internas (ver decision abajo),
-el progreso es binario, no un porcentaje.
-| Campo | Tipo | Notas |
-|---|---|---|
-| id | uuid | PK |
-| user_id | uuid | FK profiles |
-| course_id | uuid | FK courses |
-| completed_at | timestamptz | null hasta que el usuario lo marca como completado |
-| certificate_url | text | columna sin uso — la funcionalidad de certificado se saco (ver TASKS.md, 04/08/2026) |
-| created_at | timestamptz | |
+### course_progress — eliminada (04/08/2026)
+Existió brevemente (marca de "completado" por curso + certificado descargable), pero se sacó por decisión
+del fundador: la idea era que la persona compra el PDF y avanza a su ritmo, sin ningún tracking de si lo
+terminó o no. Tabla, policies y todo el código relacionado (certificado incluido) fueron removidos —
+ver TASKS.md (04/08/2026) para el detalle completo.
 
 Unique (user_id, course_id).
 
@@ -95,7 +89,7 @@ Unique (user_id, course_id).
 | created_at | timestamptz | |
 
 ## Decisiones tomadas por simplicidad
-- Cursos sin lecciones internas por ahora (un recurso único por curso). Por eso `course_progress` es binario (completado si/no) en vez de porcentaje.
+- Cursos sin lecciones internas por ahora (un recurso único por curso).
 - Afiliados: auto-registro con estado pending, aprobación manual queda para el panel admin.
 - Comisión de afiliados guardada por afiliado individual (no global), permite tasas distintas si hace falta.
 - Comunidad: no se modela en base de datos por ahora, es un link estatico a un grupo externo (WhatsApp/Discord) por categoria, mostrado en el dashboard.
@@ -126,7 +120,6 @@ Todas las tablas tienen RLS activado. Política general:
 - `courses`: lectura pública si `is_active = true`; escritura solo admin.
 - `purchases` / `subscriptions`: el usuario ve solo las suyas y puede insertar las suyas (`user_id = auth.uid()`); admin ve todas.
 - `affiliates` / `affiliate_referrals`: el afiliado ve solo lo suyo; admin ve todo.
-- `course_progress`: el usuario ve y edita solo lo suyo; admin ve todo.
 - `suggestions`: cualquiera puede insertar; solo admin puede leer/actualizar.
 
 ## Fix aplicado — RLS recursion (10/07/2026)

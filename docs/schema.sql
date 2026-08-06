@@ -142,17 +142,6 @@ create index affiliate_referrals_affiliate_id_idx on public.affiliate_referrals(
 alter table public.profiles
   add column referred_by_affiliate_id uuid references public.affiliates(id) on delete set null;
 
--- ---------- course_progress ----------
-create table public.course_progress (
-  id uuid primary key default gen_random_uuid(),
-  user_id uuid not null references public.profiles(id) on delete cascade,
-  course_id uuid not null references public.courses(id) on delete cascade,
-  completed_at timestamptz,
-  certificate_url text,
-  created_at timestamptz not null default now(),
-  unique (user_id, course_id)
-);
-
 -- ---------- suggestions ----------
 create table public.suggestions (
   id uuid primary key default gen_random_uuid(),
@@ -174,7 +163,6 @@ alter table public.purchases enable row level security;
 alter table public.subscriptions enable row level security;
 alter table public.affiliates enable row level security;
 alter table public.affiliate_referrals enable row level security;
-alter table public.course_progress enable row level security;
 alter table public.suggestions enable row level security;
 
 -- profiles: el usuario ve y edita su propio profile; admin ve todos.
@@ -224,16 +212,6 @@ create policy affiliate_referrals_select_own on public.affiliate_referrals
     exists (select 1 from public.affiliates a where a.id = affiliate_id and a.user_id = auth.uid())
   );
 create policy affiliate_referrals_admin_all on public.affiliate_referrals
-  for all using (public.is_admin());
-
--- course_progress: el usuario ve/edita lo suyo; admin ve todo.
-create policy course_progress_select_own on public.course_progress
-  for select using (auth.uid() = user_id);
-create policy course_progress_insert_own on public.course_progress
-  for insert with check (auth.uid() = user_id);
-create policy course_progress_update_own on public.course_progress
-  for update using (auth.uid() = user_id);
-create policy course_progress_admin_all on public.course_progress
   for all using (public.is_admin());
 
 -- suggestions: cualquiera inserta (incluso anonimo); solo admin lee/actualiza.

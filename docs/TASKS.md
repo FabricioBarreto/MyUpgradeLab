@@ -26,6 +26,15 @@ Los fuentes (HTML) y el PDF final de cada curso se guardan en `/cursos/<categori
 - [ ] Probar en produccion, despues del proximo deploy, que `/api/cursos/[slug]/leer` y `/dashboard/leer/[slug]` funcionen con una suscripcion y una compra reales (se verifico la logica a mano contra la base y contra Cloudinary, pero no dentro de la app corriendo — ver notas en Done del 28/07/2026).
 
 ## Done
+- [x] Se saco tambien el tracking de progreso / "Marcar como completado" (04/08/2026). Despues de sacar el certificado, el usuario pidio sacar esto tambien: la idea del negocio es que la persona descarga el PDF y avanza a su ritmo, sin que la plataforma trackee si lo termino o no. Se elimino:
+  - `src/lib/actions/progress.ts` (la accion `markCourseCompleted`) — borrado entero.
+  - El componente `CourseActionButton` y sus dos usos en `/dashboard` (mostraban "Marcar completado" / "Completado ✓") — los botones de Leer/Descargar quedan solos.
+  - La query a `course_progress` en `/dashboard`.
+  - La tabla `course_progress` completa (definicion + policies) sacada de `docs/schema.sql`, y anotada como eliminada en `docs/DATABASE.md`.
+  - **Requiere SQL manual** para borrarla de la base real (ya no la usa nada, incluye el `certificate_url` que habia quedado sin uso):
+    ```sql
+    drop table if exists public.course_progress;
+    ```
 - [x] Se saco la funcionalidad de certificado (04/08/2026). El usuario pidio removerlo por completo: le genero incomodidad y lo sintio contraproducente (una plataforma sin trayectoria emitiendo "certificados" puede sentirse como sobre-prometer, mas alla de que legalmente estaba cubierto con el disclaimer). Mi recomendacion coincidio: no es un diferencial fuerte para lo que se vende (contenido practico, no un papel), asi que mejor sacarlo que mantener algo que incomoda al fundador. Se elimino:
   - `src/lib/certificate.ts` (generador con pdf-lib) y `src/app/api/cursos/[slug]/certificado/route.ts` (la ruta que lo servia) — borrados.
   - Dependencia `pdf-lib` desinstalada de `package.json` (ya no la usa nada mas).
