@@ -4,7 +4,7 @@ import { signIn } from "@/lib/actions/auth"
 export default async function LoginPage({
   searchParams,
 }: {
-  searchParams: Promise<{ error?: string; message?: string }>
+  searchParams: Promise<{ error?: string; message?: string; redirect?: string }>
 }) {
   const params = await searchParams
 
@@ -28,6 +28,7 @@ export default async function LoginPage({
         )}
 
         <form action={signIn} className="space-y-4">
+          {params.redirect && <input type="hidden" name="redirect" value={params.redirect} />}
           <div className="space-y-1">
             <label htmlFor="email" className="text-sm font-medium text-neutral-700">
               Email
@@ -62,7 +63,10 @@ export default async function LoginPage({
 
         <p className="text-center text-sm text-neutral-500">
           No tenes cuenta?{" "}
-          <Link href="/register" className="font-medium text-neutral-900 hover:underline">
+          <Link
+            href={params.redirect === "/dashboard/afiliados" ? "/register?intent=affiliate" : "/register"}
+            className="font-medium text-neutral-900 hover:underline"
+          >
             Registrate
           </Link>
         </p>

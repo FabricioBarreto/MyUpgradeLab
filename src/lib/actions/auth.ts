@@ -89,16 +89,24 @@ export async function signUp(formData: FormData) {
 export async function signIn(formData: FormData) {
   const email = formData.get('email') as string
   const password = formData.get('password') as string
+  // Permite mandar a un destino puntual despues de loguearse (ej: alguien
+  // que entro por /afiliados y toco "Iniciar sesion" termina en su panel de
+  // afiliado, no en el dashboard generico). Solo se acepta una ruta interna
+  // (empieza con "/"), nunca una URL externa.
+  const redirectTo = formData.get('redirect') as string
+  const destination = redirectTo?.startsWith('/') ? redirectTo : '/dashboard'
 
   const supabase = await createClient()
 
   const { error } = await supabase.auth.signInWithPassword({ email, password })
 
   if (error) {
-    redirect(`/login?error=${encodeURIComponent(error.message)}`)
+    const query = new URLSearchParams({ error: error.message })
+    if (redirectTo) query.set('redirect', redirectTo)
+    redirect(`/login?${query.toString()}`)
   }
 
-  redirect('/dashboard')
+  redirect(destination)
 }
 
 export async function signOut() {

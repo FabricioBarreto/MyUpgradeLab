@@ -11,11 +11,6 @@ export default async function AfiliadosLandingPage() {
     data: { user },
   } = await supabase.auth.getUser()
 
-  // Si ya tiene cuenta, lo mandamos directo a su panel de afiliado (donde
-  // puede darse de alta si todavia no lo hizo). Si no tiene cuenta, el CTA
-  // lo manda a registrarse con intent=affiliate.
-  const ctaHref = user ? "/dashboard/afiliados" : "/register?intent=affiliate"
-
   return (
     <div className="mx-auto max-w-2xl px-6 py-16">
       <h1 className="text-2xl font-semibold text-neutral-900">Programa de Afiliados</h1>
@@ -45,15 +40,34 @@ export default async function AfiliadosLandingPage() {
       </div>
 
       <div className="mt-8 rounded-lg border border-neutral-200 bg-white p-6">
-        <Link
-          href={ctaHref}
-          className="block w-full rounded-md bg-neutral-900 py-3 text-center text-sm font-medium text-white hover:bg-neutral-800"
-        >
-          {user ? "Ir a mi panel de afiliado" : "Quiero ser afiliado"}
-        </Link>
-        <p className="mt-3 text-center text-xs text-neutral-500">
-          Desde tu panel vas a poder ver tu link, cuánto acumulaste y cuándo cobrás. Condiciones
-          completas en los{" "}
+        <p className="text-sm font-medium text-neutral-700">
+          Para ver tu link, cuánto acumulaste y cuándo cobrás, iniciá sesión o registrate:
+        </p>
+        <div className="mt-4 grid gap-3 sm:grid-cols-2">
+          <Link
+            href="/login?redirect=/dashboard/afiliados"
+            className="rounded-md border border-neutral-300 py-3 text-center text-sm font-medium text-neutral-900 hover:bg-neutral-50"
+          >
+            Iniciar sesión
+          </Link>
+          <Link
+            href="/register?intent=affiliate"
+            className="rounded-md bg-neutral-900 py-3 text-center text-sm font-medium text-white hover:bg-neutral-800"
+          >
+            Registrarme como afiliado
+          </Link>
+        </div>
+        {user && (
+          <p className="mt-4 text-center text-sm text-neutral-500">
+            Ya iniciaste sesión —{" "}
+            <Link href="/dashboard/afiliados" className="font-medium text-neutral-900 hover:underline">
+              ir directo a tu panel de afiliado
+            </Link>
+            .
+          </p>
+        )}
+        <p className="mt-4 text-center text-xs text-neutral-500">
+          Condiciones completas en los{" "}
           <Link href="/terminos" className="underline hover:text-neutral-900">
             Términos y Condiciones
           </Link>
