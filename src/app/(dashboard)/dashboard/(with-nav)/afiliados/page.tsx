@@ -1,4 +1,3 @@
-import Link from "next/link"
 import { redirect } from "next/navigation"
 import { createClient } from "@/lib/supabase/server"
 import { becomeAffiliate, updatePayoutAlias } from "@/lib/actions/affiliates"
@@ -28,18 +27,14 @@ export default async function AfiliadosPage() {
 
   if (!affiliate) {
     return (
-      <div className="mx-auto max-w-2xl px-4 py-16">
-        <Link href="/dashboard" className="text-sm text-neutral-500 hover:text-neutral-900">
-          ← Volver al dashboard
-        </Link>
-
-        <h1 className="mt-4 text-2xl font-semibold text-neutral-900">Programa de afiliados</h1>
+      <div className="mx-auto max-w-2xl px-4 py-8 sm:px-6 sm:py-12">
+        <h1 className="text-2xl font-semibold text-neutral-900 sm:text-3xl">Programa de afiliados</h1>
         <p className="mt-2 text-neutral-600">
           Recomenda UpgradeLab con tu link y ganá 40% de comision en efectivo por cada compra o
           suscripcion que se genere a traves tuyo.
         </p>
 
-        <div className="mt-8 rounded-lg border border-neutral-200 bg-white p-6">
+        <div className="mt-8 rounded-xl border border-neutral-200 bg-white p-6">
           <form action={becomeAffiliate}>
             <button
               type="submit"
@@ -69,18 +64,14 @@ export default async function AfiliadosPage() {
     .reduce((sum, r) => sum + Number(r.commission_amount), 0)
 
   return (
-    <div className="mx-auto max-w-2xl px-4 py-16">
-      <Link href="/dashboard" className="text-sm text-neutral-500 hover:text-neutral-900">
-        ← Volver al dashboard
-      </Link>
-
-      <h1 className="mt-4 text-2xl font-semibold text-neutral-900">Tu programa de afiliados</h1>
+    <div className="mx-auto max-w-2xl px-4 py-8 sm:px-6 sm:py-12">
+      <h1 className="text-2xl font-semibold text-neutral-900 sm:text-3xl">Tu programa de afiliados</h1>
       <p className="mt-2 text-neutral-600">
         Comision: {affiliate.commission_rate}% en efectivo por cada compra o suscripcion aprobada.
         Pagamos por transferencia el dia 10 de cada mes, sobre lo acumulado hasta ese momento.
       </p>
 
-      <div className="mt-6 rounded-lg border border-neutral-200 bg-white p-4">
+      <div className="mt-6 rounded-xl border border-neutral-200 bg-white p-4">
         <p className="text-sm font-medium text-neutral-700">Tu link para compartir</p>
         <p className="mt-2 break-all rounded-md bg-neutral-50 px-3 py-2 text-sm text-neutral-900">
           {referralLink}
@@ -88,12 +79,12 @@ export default async function AfiliadosPage() {
         <p className="mt-2 text-xs text-neutral-400">Codigo: {affiliate.code}</p>
       </div>
 
-      <div className="mt-6 rounded-lg border border-neutral-200 bg-white p-4">
+      <div className="mt-6 rounded-xl border border-neutral-200 bg-white p-4">
         <p className="text-sm font-medium text-neutral-700">Alias o CBU para cobrar</p>
         <p className="mt-1 text-xs text-neutral-500">
           Lo necesitamos para poder transferirte tu comision el dia de pago.
         </p>
-        <form action={updatePayoutAlias} className="mt-3 flex gap-2">
+        <form action={updatePayoutAlias} className="mt-3 flex flex-col gap-2 sm:flex-row">
           <input
             type="text"
             name="payoutAlias"
@@ -116,17 +107,17 @@ export default async function AfiliadosPage() {
       </div>
 
       <div className="mt-6 grid grid-cols-2 gap-4">
-        <div className="rounded-lg border border-neutral-200 bg-white p-4 text-center">
+        <div className="rounded-xl border border-neutral-200 bg-white p-4 text-center">
           <p className="text-xs text-neutral-500">Pendiente de cobro</p>
           <p className="mt-1 text-xl font-semibold text-neutral-900">{formatPrice(totalPending)}</p>
         </div>
-        <div className="rounded-lg border border-neutral-200 bg-white p-4 text-center">
+        <div className="rounded-xl border border-neutral-200 bg-white p-4 text-center">
           <p className="text-xs text-neutral-500">Ya cobrado</p>
           <p className="mt-1 text-xl font-semibold text-neutral-900">{formatPrice(totalPaid)}</p>
         </div>
       </div>
 
-      <div className="mt-8">
+      <div className="mt-10">
         <h2 className="text-lg font-medium text-neutral-900">Referidos</h2>
 
         {referrals && referrals.length > 0 ? (
@@ -134,7 +125,7 @@ export default async function AfiliadosPage() {
             {referrals.map((r) => (
               <div
                 key={r.id}
-                className="flex items-center justify-between rounded-lg border border-neutral-200 bg-white p-4"
+                className="flex items-center justify-between rounded-xl border border-neutral-200 bg-white p-4"
               >
                 <div>
                   <p className="font-medium text-neutral-900">
