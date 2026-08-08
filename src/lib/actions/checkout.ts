@@ -73,7 +73,10 @@ export async function createCheckoutPreference(formData: FormData) {
           email: user.email,
         },
         back_urls: {
-          success: `${appUrl}/checkout/success`,
+          // Le pasamos id/titulo/monto por query string para poder disparar
+          // el evento GA4 "purchase" en /checkout/success sin tener que
+          // volver a consultar la base (ver TrackConversion).
+          success: `${appUrl}/checkout/success?type=curso&id=${course.id}&title=${encodeURIComponent(course.title)}&amount=${course.price}`,
           pending: `${appUrl}/checkout/pending`,
           failure: `${appUrl}/checkout/failure`,
         },

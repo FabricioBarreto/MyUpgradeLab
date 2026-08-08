@@ -30,6 +30,31 @@ Los fuentes (HTML) y el PDF final de cada curso se guardan en `/cursos/<categori
 - [ ] Probar en produccion, despues del proximo deploy, que `/api/cursos/[slug]/leer` y `/dashboard/leer/[slug]` funcionen con una suscripcion y una compra reales (se verifico la logica a mano contra la base y contra Cloudinary, pero no dentro de la app corriendo — ver notas en Done del 28/07/2026).
 
 ## Done
+- [x] Eventos de conversion en GA4: begin_checkout / purchase / subscribe (08/08/2026). Hasta ahora
+  GA4 solo medía vistas de página — sin esto, al arrancar a promocionar no se iba a poder saber qué
+  canal realmente convierte. Se agrego:
+  - `src/lib/gtag.ts`: helper `trackEvent(name, params)` que llama a `window.gtag` si esta cargado
+    (no rompe nada si falta `NEXT_PUBLIC_GA_ID`).
+  - `src/components/tracked-submit-button.tsx`: wrapper cliente para el boton de submit dentro de
+    los `<form action={serverAction}>` de compra/suscripcion (son Server Components, no pueden tener
+    onClick directo) — dispara `begin_checkout` en el click y deja que el submit siga normal. Usado en
+    el boton "Comprar" de `cursos/[slug]/page.tsx` y en "Suscribirme"/"Suscribirme de nuevo" del
+    dashboard.
+  - `src/components/track-conversion.tsx`: dispara un evento una sola vez al montar (useEffect + ref),
+    pensado para la pagina de confirmacion.
+  - `checkout.ts`: la `back_urls.success` de Checkout Pro ahora lleva `?type=curso&id=&title=&amount=`
+    para poder armar el evento `purchase` sin volver a consultar la base.
+  - `subscribe.ts`: el `back_url` del Preapproval (antes iba directo a `/dashboard`) ahora apunta a
+    `/checkout/success?type=suscripcion` — Preapproval no tiene back_urls separadas por resultado como
+    Preference, asi que se reusa la misma pagina de exito.
+  - `checkout/success/page.tsx`: pasa a ser un Server Component que lee `searchParams` y renderiza uno
+    de dos mensajes (compra vs suscripcion), montando `<TrackConversion>` con el evento correspondiente.
+  - Nota de confiabilidad: para compra individual, llegar a `/checkout/success` ya implica pago
+    aprobado (Checkout Pro usa `auto_return: 'approved'`), asi que el evento es confiable. Para
+    suscripcion no hay esa garantia tan estricta (Preapproval no distingue back_url por resultado), asi
+    que se cuenta como conversion por llegar a esa pantalla — el webhook sigue siendo la unica fuente de
+    verdad para dar acceso real, esto es solo para medir marketing.
+  - Verificado con `tsc --noEmit` y `npm run lint`, ambos limpios.
 - [x] Pase de diseño: hero, tarjetas y confianza en el pago (08/08/2026):
   - Hero de la home: antes era solo texto centrado sobre blanco. Se agregaron manchas de color
     suaves de fondo (mismos tonos que el logo) y la marca en chevron como watermark grande — sin

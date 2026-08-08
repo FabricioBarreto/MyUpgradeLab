@@ -5,6 +5,14 @@ import { createSubscription } from "@/lib/actions/subscribe"
 import { CATEGORY_LABELS, categoryLabel, categoryBadgeClass, formatPrice } from "@/lib/format"
 import { COMMUNITY_LINKS } from "@/lib/community"
 import { PaymentBadge } from "@/components/payment-badge"
+import { TrackedSubmitButton } from "@/components/tracked-submit-button"
+import { SUBSCRIPTION_PRICE } from "@/lib/constants"
+
+const SUBSCRIBE_EVENT_PARAMS = {
+  currency: "ARS",
+  value: SUBSCRIPTION_PRICE,
+  items: [{ item_id: "suscripcion_mensual", item_name: "Suscripcion mensual" }],
+}
 
 const PURCHASE_STATUS_LABELS: Record<string, string> = {
   pending: "Pendiente",
@@ -158,12 +166,13 @@ export default async function DashboardPage({
           (subscription.status === "cancelled" || subscription.status === "past_due") && (
             <form action={createSubscription} className="mt-4 max-w-md">
               <TermsConsent />
-              <button
-                type="submit"
+              <TrackedSubmitButton
                 className="rounded-md bg-neutral-900 px-4 py-2 text-sm font-medium text-white hover:bg-neutral-800"
+                eventName="begin_checkout"
+                eventParams={SUBSCRIBE_EVENT_PARAMS}
               >
                 Suscribirme de nuevo
-              </button>
+              </TrackedSubmitButton>
               <PaymentBadge align="start" />
             </form>
           )
@@ -174,12 +183,13 @@ export default async function DashboardPage({
             </p>
             <form action={createSubscription} className="mt-3">
               <TermsConsent />
-              <button
-                type="submit"
+              <TrackedSubmitButton
                 className="rounded-md bg-neutral-900 px-4 py-2 text-sm font-medium text-white hover:bg-neutral-800"
+                eventName="begin_checkout"
+                eventParams={SUBSCRIBE_EVENT_PARAMS}
               >
                 Suscribirme
-              </button>
+              </TrackedSubmitButton>
               <PaymentBadge align="start" />
             </form>
           </div>

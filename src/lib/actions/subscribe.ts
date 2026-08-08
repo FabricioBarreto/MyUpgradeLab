@@ -69,7 +69,11 @@ export async function createSubscription() {
       reason: 'Suscripcion mensual UpgradeLab',
       external_reference: subscription.id,
       payer_email: user.email,
-      back_url: `${appUrl}/dashboard`,
+      // A diferencia de Preference, Preapproval no tiene back_urls separadas
+      // por resultado (approved/pending/failure) — usamos la misma pagina de
+      // exito que la compra individual, distinguida por type=suscripcion,
+      // para poder disparar el evento GA4 "subscribe" (ver checkout/success).
+      back_url: `${appUrl}/checkout/success?type=suscripcion`,
       status: 'pending',
       auto_recurring: {
         frequency: 1,

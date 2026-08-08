@@ -5,6 +5,7 @@ import { createClient } from "@/lib/supabase/server"
 import { accessTypeLabel, categoryLabel, formatPrice } from "@/lib/format"
 import { createCheckoutPreference } from "@/lib/actions/checkout"
 import { PaymentBadge } from "@/components/payment-badge"
+import { TrackedSubmitButton } from "@/components/tracked-submit-button"
 
 // Titulo/descripcion/imagen por curso: sin esto, compartir el link de un
 // curso puntual (WhatsApp, LinkedIn, el propio programa de afiliados) mostraba
@@ -170,12 +171,17 @@ export default async function CursoDetallePage({
                 .
               </span>
             </label>
-            <button
-              type="submit"
+            <TrackedSubmitButton
               className="w-full rounded-md bg-neutral-900 py-3 text-sm font-medium text-white hover:bg-neutral-800"
+              eventName="begin_checkout"
+              eventParams={{
+                currency: "ARS",
+                value: Number(course.price),
+                items: [{ item_id: course.id, item_name: course.title }],
+              }}
             >
               Comprar — {formatPrice(course.price)}
-            </button>
+            </TrackedSubmitButton>
             <PaymentBadge />
           </form>
         ) : (

@@ -46,8 +46,8 @@ export default function LandingPage() {
             Aprende mas rapido, con recursos que van al grano
           </h1>
           <p className="mx-auto mt-4 max-w-2xl text-lg text-neutral-600">
-            Cursos y recursos de programacion con IA, tecnicas de estudio, ingles, entrevistas de
-            trabajo y negocio para freelancers. Comprá lo que necesitás una vez, o suscribite y accedé a todo.
+            Cursos programación con IA, técnicas de estudio, inglés, entrevistas de trabajo,
+            negocio para freelancers y más. Comprá lo que necesitás una vez, o suscribite y accedé a todo.
           </p>
           <div className="mt-8 flex justify-center gap-4">
             <Link
