@@ -29,7 +29,8 @@ export default async function DashboardWithNavLayout({
     <div className="min-h-screen bg-neutral-50">
       <header className="sticky top-0 z-20 border-b border-neutral-200 bg-white/95 backdrop-blur">
         <div className="mx-auto flex max-w-5xl items-center justify-between gap-4 px-4 py-3 sm:px-6">
-          <Link href="/dashboard" className="shrink-0 text-lg font-semibold text-neutral-900">
+          <Link href="/dashboard" className="flex shrink-0 items-center gap-2 text-lg font-semibold text-neutral-900">
+            <Image src="/logo-upgradelab.svg" alt="" width={28} height={28} className="rounded-md" />
             Upgrade<span className="text-teal-600">Lab</span>
           </Link>
 

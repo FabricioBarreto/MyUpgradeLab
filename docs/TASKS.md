@@ -30,6 +30,20 @@ Los fuentes (HTML) y el PDF final de cada curso se guardan en `/cursos/<categori
 - [ ] Probar en produccion, despues del proximo deploy, que `/api/cursos/[slug]/leer` y `/dashboard/leer/[slug]` funcionen con una suscripcion y una compra reales (se verifico la logica a mano contra la base y contra Cloudinary, pero no dentro de la app corriendo — ver notas en Done del 28/07/2026).
 
 ## Done
+- [x] Pase de diseño: hero, tarjetas y confianza en el pago (08/08/2026):
+  - Hero de la home: antes era solo texto centrado sobre blanco. Se agregaron manchas de color
+    suaves de fondo (mismos tonos que el logo) y la marca en chevron como watermark grande — sin
+    depender de una ilustracion nueva que quede desactualizada.
+  - Tarjetas de curso en `/cursos` y en el dashboard: badge de categoria en color (reusando
+    `categoryBadgeClass`, antes solo en el dashboard, ahora tambien en el catalogo publico),
+    sombra y efecto de elevacion al pasar el mouse, separador antes del precio.
+  - `src/components/payment-badge.tsx`: sello chico "Pago 100% seguro, procesado por Mercado
+    Pago" con icono de candado, agregado debajo de los tres botones de pago (compra individual en
+    `/cursos/[slug]`, suscribirme y suscribirme de nuevo en el dashboard).
+- [x] Logo integrado en el sitio (08/08/2026): favicon regenerado desde `logo-upgradelab.svg` (antes era
+  el icono default de Next.js) y el icono agregado junto al wordmark de texto en el header, tanto publico
+  (`(public)/layout.tsx`) como del dashboard (`(dashboard)/dashboard/(with-nav)/layout.tsx`). Hasta ahora
+  el logo solo se usaba en la Comunidad de WhatsApp, no en el sitio.
 - [x] Comunidad de WhatsApp cargada (08/08/2026): se creó "MyUpgradeLab" (Comunidad de WhatsApp, con
   logo propio — ver `public/logo-upgradelab.png`/`.svg`, marca en el verde azulado de las tapas de los
   cursos) y se cargó el link en `src/lib/community.ts`, repetido en las 5 categorías porque hoy es una

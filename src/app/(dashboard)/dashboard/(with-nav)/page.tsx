@@ -4,6 +4,7 @@ import { createClient } from "@/lib/supabase/server"
 import { createSubscription } from "@/lib/actions/subscribe"
 import { CATEGORY_LABELS, categoryLabel, categoryBadgeClass, formatPrice } from "@/lib/format"
 import { COMMUNITY_LINKS } from "@/lib/community"
+import { PaymentBadge } from "@/components/payment-badge"
 
 const PURCHASE_STATUS_LABELS: Record<string, string> = {
   pending: "Pendiente",
@@ -163,6 +164,7 @@ export default async function DashboardPage({
               >
                 Suscribirme de nuevo
               </button>
+              <PaymentBadge align="start" />
             </form>
           )
         ) : (
@@ -178,6 +180,7 @@ export default async function DashboardPage({
               >
                 Suscribirme
               </button>
+              <PaymentBadge align="start" />
             </form>
           </div>
         )}
@@ -194,7 +197,7 @@ export default async function DashboardPage({
             {subscribedCourses.map((course) => (
               <div
                 key={course.id}
-                className="flex flex-col justify-between rounded-xl border border-neutral-200 bg-white p-4"
+                className="flex flex-col justify-between rounded-xl border border-neutral-200 bg-white p-4 shadow-sm transition-all hover:-translate-y-0.5 hover:shadow-md"
               >
                 <div>
                   <span
@@ -238,7 +241,7 @@ export default async function DashboardPage({
               return (
                 <div
                   key={purchase.id}
-                  className="flex flex-col justify-between rounded-xl border border-neutral-200 bg-white p-4"
+                  className="flex flex-col justify-between rounded-xl border border-neutral-200 bg-white p-4 shadow-sm transition-all hover:-translate-y-0.5 hover:shadow-md"
                 >
                   <div>
                     <div className="flex items-center justify-between gap-2">

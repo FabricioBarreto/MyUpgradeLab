@@ -1,7 +1,7 @@
 import Link from "next/link"
 import type { Metadata } from "next"
 import { createClient } from "@/lib/supabase/server"
-import { CATEGORY_LABELS, categoryLabel, formatPrice } from "@/lib/format"
+import { CATEGORY_LABELS, categoryLabel, categoryBadgeClass, formatPrice } from "@/lib/format"
 
 export const metadata: Metadata = {
   title: "Catálogo de cursos",
@@ -68,18 +68,27 @@ export default async function CursosPage({
           <Link
             key={course.id}
             href={`/cursos/${course.slug}`}
-            className="flex flex-col rounded-lg border border-neutral-200 bg-white p-5 transition-colors hover:border-neutral-400"
+            className="group flex flex-col rounded-xl border border-neutral-200 bg-white p-5 shadow-sm transition-all hover:-translate-y-0.5 hover:border-neutral-300 hover:shadow-md"
           >
-            <span className="text-xs font-medium uppercase tracking-wide text-neutral-400">
+            <span
+              className={`inline-block w-fit rounded-full px-2.5 py-1 text-xs font-medium ${categoryBadgeClass(course.category)}`}
+            >
               {categoryLabel(course.category)}
             </span>
-            <h3 className="mt-1 font-medium text-neutral-900">{course.title}</h3>
+            <h3 className="mt-3 font-medium leading-snug text-neutral-900 group-hover:text-neutral-700">
+              {course.title}
+            </h3>
             {course.description && (
               <p className="mt-2 line-clamp-2 text-sm text-neutral-500">{course.description}</p>
             )}
-            <span className="mt-4 text-lg font-semibold text-neutral-900">
-              {formatPrice(course.price)}
-            </span>
+            <div className="mt-4 flex items-center justify-between border-t border-neutral-100 pt-4">
+              <span className="text-lg font-semibold text-neutral-900">
+                {formatPrice(course.price)}
+              </span>
+              <span className="text-sm font-medium text-neutral-400 group-hover:text-neutral-900">
+                Ver más →
+              </span>
+            </div>
           </Link>
         ))}
 
