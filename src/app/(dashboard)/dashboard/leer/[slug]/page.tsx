@@ -1,4 +1,5 @@
 import Link from "next/link"
+import Image from "next/image"
 import { redirect, notFound } from "next/navigation"
 import { createClient } from "@/lib/supabase/server"
 import { addChapterIds } from "@/lib/toc"
@@ -50,7 +51,11 @@ export default async function LeerCursoPage({
       <div className="flex h-screen flex-col">
         <div className="flex items-center justify-between border-b border-neutral-200 bg-white px-4 py-3">
           <div>
-            <Link href="/dashboard" className="text-sm text-neutral-500 hover:text-neutral-900">
+            <Link
+              href="/dashboard"
+              className="flex items-center gap-1.5 text-sm text-neutral-500 hover:text-neutral-900"
+            >
+              <Image src="/logo-upgradelab.svg" alt="" width={18} height={18} className="rounded" />
               ← Volver al dashboard
             </Link>
             <p className="mt-0.5 text-sm font-medium text-neutral-900">{course.title}</p>
@@ -99,7 +104,11 @@ export default async function LeerCursoPage({
       <ReadingProgress />
 
       <div className="sticky top-0 z-10 flex items-center justify-between border-b border-neutral-200 bg-white/95 px-4 py-3 backdrop-blur">
-        <Link href="/dashboard" className="text-sm text-neutral-500 hover:text-neutral-900">
+        <Link
+          href="/dashboard"
+          className="flex items-center gap-1.5 text-sm text-neutral-500 hover:text-neutral-900"
+        >
+          <Image src="/logo-upgradelab.svg" alt="" width={18} height={18} className="rounded" />
           ← Volver al dashboard
         </Link>
         <span className="text-xs text-neutral-400">{user.email}</span>

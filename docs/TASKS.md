@@ -50,6 +50,10 @@ Los fuentes (HTML) y el PDF final de cada curso se guardan en `/cursos/<categori
     simplemente no se muestra — no rompe nada.
   - Verificado con `tsc --noEmit`, `npm run lint`, y un test manual del extractor de capitulos contra
     contenido real de un curso.
+  - Ajuste post-entrega: la pagina vive fuera de `(with-nav)` a proposito (lectura sin distracciones, sin
+    el menu de Dashboard/Catalogo/Afiliados/Sugerencias), pero se noto que faltaba el logo — se agrego el
+    isotipo junto al link "Volver al dashboard" en ambos headers (con `content_html` y en el fallback de
+    iframe/PDF) para mantener identidad de marca sin meter el navbar completo.
 - [x] Eventos de conversion en GA4: begin_checkout / purchase / subscribe (08/08/2026). Hasta ahora
   GA4 solo medía vistas de página — sin esto, al arrancar a promocionar no se iba a poder saber qué
   canal realmente convierte. Se agrego:
