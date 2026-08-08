@@ -1,7 +1,7 @@
 # TASKS — UpgradeLab
 
 ## Convencion: donde viven los archivos de los cursos
-Los fuentes (HTML) y el PDF final de cada curso se guardan en `/cursos/<categoria>/<slug-del-nivel-o-curso>.html|.pdf` (28/07/2026, reorganizado desde archivos sueltos en la raiz). El PDF servido a los compradores vive en Cloudinary (carpeta `courses/`, ver `resource_url` en la tabla `courses` de Supabase) — la copia en `/cursos` es solo el original de referencia para editar o resubir. Estructura actual:
+Los fuentes (HTML) y el PDF final de cada curso se guardan en `/cursos/<categoria>/<slug-del-nivel-o-curso>.html|.pdf` (28/07/2026, reorganizado desde archivos sueltos en la raiz). El PDF servido a los compradores vive en Cloudinary (carpeta `courses/`, ver `resource_url` en la tabla `courses` de Supabase) — la copia en `/cursos` es el original de referencia para editar o resubir el PDF. **Desde el 08/08/2026 este `.html` cumple un segundo rol**: es tambien la fuente de la que se deriva `courses.content_html` (lo que lee quien accede por suscripcion, ver "Lectura de cursos por suscripcion en HTML" en Done). Si se edita el contenido de un curso, conviene actualizar este `.html` fuente y regenerar ambos (el PDF para la compra individual, y el `content_html` en Supabase para la suscripcion) para que no queden desincronizados. `estudiar-con-ia-notebooklm-claude-nano-banana` es la unica excepcion: nunca tuvo un `.html` fuente guardado, solo el PDF (su `content_html` se reconstruyo extrayendo texto del PDF, no de una fuente HTML real). Estructura actual:
 - `cursos/estudio-ia/estudiar-con-ia-notebooklm-claude-nano-banana.pdf`
 - `cursos/programacion-ia/nivel-1-fundamentos.html` + `.pdf`
 - `cursos/programacion-ia/nivel-2-flujos-de-trabajo.html` + `.pdf`
@@ -22,11 +22,46 @@ Los fuentes (HTML) y el PDF final de cada curso se guardan en `/cursos/<categori
 - [ ] Revision legal profesional de `/terminos`, `/privacidad`, `/cookies` y `/reembolsos` (04/08/2026) — Claude redacto un borrador razonable basado en la normativa vigente (Ley 24.240, Codigo Civil y Comercial art. 1116, Ley 25.326, Disposicion 954/2025), pero no es abogado. Antes de promocionar fuerte la pagina conviene que un abogado lo revise, en particular la exclusion del derecho de arrepentimiento (si esta mal redactada, no protege).
 
 ## In Progress
+- [ ] Probar en produccion la lectura por suscripcion en HTML (ver detalle completo en Done, 08/08/2026)
+  con una cuenta que tenga suscripcion activa, una vez deployado.
 - [ ] Precio de suscripcion bajado TEMPORALMENTE a $200 (04/08/2026, `src/lib/constants.ts`) para poder probar un pago real de punta a punta en produccion sin arriesgar $7.999 reales. **Volver a 7999 despues de la prueba** — buscar el comentario "TEMPORAL" en `constants.ts`. Ojo: la suscripcion tiene 7 dias de prueba gratis (`FREE_TRIAL_DAYS` en `subscribe.ts`), asi que con la config actual el primer cobro real no sale el mismo dia que te suscribis, sale recien despues del trial — si querés validar que el cobro en si funciona hoy mismo, avisame y bajo tambien el trial a 0 por el mismo rato.
-- [ ] Integracion Mercado Pago (Suscripciones) — incluir periodo de prueba de 7 dias (free_trial en preapproval). App "MyUpgradeLab" creada en panel MP (16/07/2026), credenciales de prueba cargadas. Codigo implementado (16/07/2026): `subscribe.ts` (preapproval ad-hoc + free_trial), webhook extendido para `subscription_preapproval`, boton de suscripcion en dashboard. Falta: completar un pago de prueba real con la cuenta compradora de test, hecho a mano via el navegador (no vía API, ver errores previos de sandbox). Mientras tanto, se activo a mano en la base la fila de suscripcion pendiente (`90ceee82-...`, la unica existente) para poder seguir desarrollando el area de cursos incluidos en suscripcion sin depender del pago real — ver comando SQL en el historial, `mp_subscription_id = 'MANUAL-TEST-OVERRIDE'` marca que no vino de un pago real.
+- [x] ~~Integracion Mercado Pago (Suscripciones) — incluir periodo de prueba de 7 dias~~ — superado, ver
+  Done (08/08/2026): se saco el `free_trial`, la suscripcion ya no tiene periodo de prueba. La integracion
+  en si (preapproval ad-hoc, webhook, boton de suscripcion) esta completa y probada con un pago real.
 - [ ] Probar en produccion, despues del proximo deploy, que `/api/cursos/[slug]/leer` y `/dashboard/leer/[slug]` funcionen con una suscripcion y una compra reales (se verifico la logica a mano contra la base y contra Cloudinary, pero no dentro de la app corriendo — ver notas en Done del 28/07/2026).
 
 ## Done
+- [x] Lectura de cursos por suscripcion en HTML en vez de PDF (08/08/2026). Se agrego `courses.content_html`
+  (texto, nullable) y se reescribio `dashboard/leer/[slug]` para que, si el curso tiene `content_html`
+  cargado, la persona lo lea como articulo dentro de la propia UI (sin boton de descarga, con marca de
+  agua de su email, y con `right-click` bloqueado en el area de lectura como deterrente liviano) en vez
+  del PDF embebido de antes. La compra individual sigue siendo PDF descargable como siempre
+  (`/api/cursos/[slug]/leer`), eso no cambio — ver "Formato de los cursos" en MASTER.md para la regla de
+  negocio completa. Se armo el panel admin para cargar/editar el HTML (`/admin/courses/new` y la pagina
+  nueva `/admin/courses/[id]/edit`, que no existia hasta ahora), sanitizado con `sanitize-html` antes de
+  guardar (`src/lib/sanitize.ts`).
+
+  Los 9 cursos existentes se migraron en dos pasadas: primero se probo extrayendo texto de los PDFs con
+  un script en Python (pdfplumber, clasificando por tamaño/negrita de fuente) porque parecia que no habia
+  otra fuente — pero despues se encontro que 8 de los 9 cursos sí tenían su `.html` original guardado en
+  `/cursos` (el mismo que se usa para generar el PDF, ver la convencion al principio de este archivo), que
+  da un resultado mucho mas fiel (tablas, listas numeradas, definiciones, todo con su semantica real en
+  vez de reconstruida a partir del layout del PDF). Se reconvirtieron esos 8 desde su `.html` fuente con
+  un segundo script (BeautifulSoup) y se resubieron. Solo `estudiar-con-ia-notebooklm-claude-nano-banana`
+  quedo con la version extraida del PDF, porque nunca tuvo un `.html` fuente guardado.
+
+  Estado final: columna creada en Supabase, los 9 cursos tienen `content_html` cargado (verificado por
+  API). Falta probar la lectura en produccion con una cuenta con suscripcion activa, una vez deployado
+  (ver In Progress).
+- [x] Se saco el trial gratuito de 7 dias de la suscripcion (08/08/2026). El usuario probo un pago real de
+  suscripcion y penso que no habia llegado a Mercado Pago; la causa real era que `.env.local` (archivo
+  viejo, no es el que usa produccion) todavia tenia credenciales `TEST-`, mientras que `.env` (el vigente)
+  ya tenia credenciales `APP_USR-` de produccion en ambas apps (Checkout y Suscripciones) — el pago de
+  hecho funciono, la confusion fue de diagnostico. Ademas, con `free_trial` activo el primer cobro real no
+  sale hasta que termina el periodo de prueba (MP solo crea una autorizacion, no un pago), lo que sumaba
+  confusion a la hora de verificar. Se saco `FREE_TRIAL_DAYS` de `subscribe.ts`: ahora el `Preapproval` se
+  crea sin `free_trial`, el cobro sale desde el primer dia. Actualizado tambien el texto del dashboard y
+  `MASTER.md`.
 - [x] Se saco tambien el tracking de progreso / "Marcar como completado" (04/08/2026). Despues de sacar el certificado, el usuario pidio sacar esto tambien: la idea del negocio es que la persona descarga el PDF y avanza a su ritmo, sin que la plataforma trackee si lo termino o no. Se elimino:
   - `src/lib/actions/progress.ts` (la accion `markCourseCompleted`) — borrado entero.
   - El componente `CourseActionButton` y sus dos usos en `/dashboard` (mostraban "Marcar completado" / "Completado ✓") — los botones de Leer/Descargar quedan solos.

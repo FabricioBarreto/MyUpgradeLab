@@ -14,3 +14,119 @@ body {
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
 }
+
+/* Tipografia para el contenido HTML de los cursos (lectura por suscripcion,
+   ver src/app/(dashboard)/dashboard/leer/[slug]/page.tsx). No usamos el
+   plugin @tailwindcss/typography (no esta instalado), asi que estas reglas
+   reemplazan a las clases "prose". */
+.course-article {
+  line-height: 1.7;
+  color: #262626;
+  user-select: text;
+}
+.course-article h2 {
+  margin-top: 2.5rem;
+  margin-bottom: 1rem;
+  font-size: 1.375rem;
+  font-weight: 600;
+  color: #171717;
+  border-top: 1px solid #f0f0f0;
+  padding-top: 2rem;
+}
+.course-article h2:first-child {
+  border-top: none;
+  padding-top: 0;
+  margin-top: 0;
+}
+.course-article h3 {
+  margin-top: 1.75rem;
+  margin-bottom: 0.5rem;
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: #171717;
+}
+.course-article h4 {
+  margin-top: 1.5rem;
+  margin-bottom: 0.375rem;
+  font-size: 1rem;
+  font-weight: 600;
+  color: #171717;
+}
+.course-article p,
+.course-article ul,
+.course-article ol,
+.course-article table {
+  margin-bottom: 1rem;
+}
+.course-article p.label {
+  margin-top: 1.25rem;
+  margin-bottom: 0.5rem;
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  color: #737373;
+}
+.course-article p.bullet,
+.course-article ul li {
+  margin-left: 0;
+  padding-left: 1.25rem;
+  position: relative;
+}
+.course-article p.bullet::before {
+  content: "•";
+  position: absolute;
+  left: 0.25rem;
+  color: #a3a3a3;
+}
+.course-article ul.checklist {
+  list-style: none;
+  padding: 0;
+  margin: 1rem 0;
+  border: 1px solid #e5e5e5;
+  border-radius: 0.5rem;
+  overflow: hidden;
+}
+.course-article ul.checklist li {
+  padding: 0.6rem 0.9rem 0.6rem 2.25rem;
+  border-bottom: 1px solid #f0f0f0;
+  font-size: 0.9rem;
+}
+.course-article ul.checklist li:last-child {
+  border-bottom: none;
+}
+.course-article ul.checklist li::before {
+  content: "✓";
+  position: absolute;
+  margin-left: -1.5rem;
+  color: #16a34a;
+  font-weight: 700;
+}
+.course-article pre {
+  margin-bottom: 1rem;
+  padding: 0.9rem 1rem;
+  background: #171717;
+  color: #f5f5f5;
+  border-radius: 0.5rem;
+  overflow-x: auto;
+  font-size: 0.8125rem;
+  line-height: 1.5;
+}
+.course-article pre code {
+  font-family: var(--font-mono, ui-monospace, monospace);
+}
+.course-article table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.875rem;
+}
+.course-article th,
+.course-article td {
+  border: 1px solid #e5e5e5;
+  padding: 0.5rem 0.7rem;
+  text-align: left;
+  vertical-align: top;
+}
+.course-article th {
+  background: #fafafa;
+  font-weight: 600;
+}

@@ -66,6 +66,11 @@ create table public.courses (
   price numeric(10, 2) not null,
   access_type text not null default 'individual' check (access_type in ('individual', 'subscription_only', 'both')),
   resource_url text,
+  -- Version HTML del contenido (08/08/2026): la lectura por suscripcion ya no
+  -- muestra el PDF (ver DATABASE.md) — se renderiza este campo como articulo
+  -- dentro de la propia UI. resource_url se mantiene aparte porque la compra
+  -- individual sigue entregando el PDF descargable de siempre.
+  content_html text,
   cover_image_url text,
   is_active boolean not null default true,
   created_at timestamptz not null default now(),

@@ -27,6 +27,8 @@ Acá está el hallazgo más importante para el modelo de negocio: los cursos con
 No hace falta construir cohortes en vivo desde el día uno, pero sí conviene incorporar señales de progreso: barra de avance por curso, algo simple de "continuá donde quedaste", y certificado automático al terminar (los certificados están documentados como un incentivo de finalización real, no solo un adorno). Un canal de comunidad simple (un grupo de WhatsApp o Discord por categoría, aunque sea sin moderación intensiva) ya achica bastante la brecha de retención frente a un PDF que se descarga y se olvida.
 
 > **Nota (04/08/2026):** se implementaron el certificado y el tracking de progreso ("marcar como completado"), y despues se sacaron los dos por decision del fundador — la idea del negocio es que la persona compra el PDF y avanza a su ritmo, sin que la plataforma trackee ni certifique nada. El resto del razonamiento de esta seccion (comunidad) sigue vigente.
+>
+> **Nota (08/08/2026):** la afirmacion de "vender PDFs sueltos" ya no aplica al camino de suscripcion — desde esta fecha, quien accede por suscripcion lee el curso como pagina web dentro de la plataforma (`content_html`), no un PDF descargable. El cambio se hizo por otra razon (que no quede una copia del archivo una vez cancelada la suscripcion), pero de paso corta el formato "se descarga y se olvida" para ese camino. La compra individual si sigue siendo PDF, porque ahi la persona pago por poseerlo. El resto del diagnostico (falta de señales de progreso, retencion, comunidad) sigue vigente igual — pasar de PDF a HTML no resuelve por si solo el problema de finalizacion/retencion que describe esta seccion.
 
 ## Afiliados: dos programas distintos, no uno
 

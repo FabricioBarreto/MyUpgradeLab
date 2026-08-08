@@ -21,7 +21,8 @@ Extiende `auth.users` de Supabase con datos propios de la app.
 | category | text | programacion_ia, estudio_ia, ingles, entrevistas, ventas_freelance |
 | price | numeric(10,2) | precio individual |
 | access_type | text | 'individual' \| 'subscription_only' \| 'both' |
-| resource_url | text | link Cloudinary al PDF/curso |
+| resource_url | text | link Cloudinary al PDF/curso (entrega en compra individual) |
+| content_html | text | version HTML del curso (08/08/2026), se muestra en la lectura por suscripcion en vez del PDF — ver seccion Mercado Pago/lectura mas abajo |
 | cover_image_url | text | |
 | is_active | boolean | default true |
 | created_at / updated_at | timestamptz | |
@@ -114,6 +115,29 @@ Supabase con service role (`src/lib/supabase/service.ts`), porque el webhook no 
   autenticado crear su propia fila (`user_id = auth.uid()`). La documentacion de RLS solo confirma
   lectura ("el usuario ve solo las suyas"); si no existe la policy de insert, el checkout va a fallar
   silenciosamente al crear la purchase.
+
+## Lectura de cursos: PDF vs HTML (08/08/2026)
+Hay dos formas de entregar el contenido, segun como se accedio:
+- **Compra individual** (`purchases`): siempre PDF descargable, via `/api/cursos/[slug]/leer`
+  (proxy que nunca expone la URL de Cloudinary, dispara `Content-Disposition: attachment`).
+  La persona pago por poseerlo.
+- **Suscripcion activa**: si el curso tiene `content_html` cargado, `dashboard/leer/[slug]`
+  renderiza ese HTML como articulo dentro de la propia UI (sanitizado con `sanitize-html`,
+  ver `src/lib/sanitize.ts`) — nunca se ofrece descarga. Si el curso todavia no tiene
+  `content_html` (migracion en curso), se cae al comportamiento viejo: el mismo PDF pero
+  embebido inline en un iframe. El chequeo de acceso (compra aprobada o suscripcion activa)
+  se hace en el propio server component antes de renderizar.
+
+El campo se carga desde el panel admin (`/admin/courses/new` y `/admin/courses/[id]/edit`,
+textarea de HTML crudo). Los 9 cursos existentes al momento de este cambio se migraron a partir
+del `.html` fuente que ya existia en `/cursos/<categoria>/<slug>.html` para 8 de los 9 (el mismo
+que se usa para generar el PDF — ver convencion en `TASKS.md`), limpiado con un script para sacar
+el markup de impresion (portada, indice, CSS de paginado) y quedarse solo con el contenido. El
+noveno curso (`estudiar-con-ia-notebooklm-claude-nano-banana`) no tenia `.html` fuente guardado,
+asi que su `content_html` se reconstruyo extrayendo el texto directamente del PDF. Si se edita el
+contenido de un curso a futuro, conviene actualizar el `.html` fuente en `/cursos` y regenerar
+tanto el PDF (Cloudinary) como el `content_html` (Supabase) desde ahi, para que no queden
+desincronizados.
 
 ## RLS (Row Level Security)
 Todas las tablas tienen RLS activado. Política general:

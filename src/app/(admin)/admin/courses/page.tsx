@@ -61,6 +61,9 @@ export default async function AdminCoursesPage({
                 </td>
                 <td className="px-4 py-3">
                   <div className="flex items-center justify-end gap-4">
+                    <Link href={`/admin/courses/${course.id}/edit`} className="text-sm text-neutral-600 hover:text-neutral-900 hover:underline">
+                      Editar
+                    </Link>
                     <form action={toggleCourseActive}>
                       <input type="hidden" name="id" value={course.id} />
                       <input type="hidden" name="isActive" value={String(course.is_active)} />

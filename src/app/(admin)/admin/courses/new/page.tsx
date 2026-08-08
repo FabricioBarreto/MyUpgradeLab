@@ -51,8 +51,14 @@ export default async function NewCoursePage({
           </select>
         </div>
         <div className="space-y-1">
-          <label htmlFor="resourceUrl" className="text-sm font-medium text-neutral-700">Link del recurso (Cloudinary)</label>
+          <label htmlFor="resourceUrl" className="text-sm font-medium text-neutral-700">Link del recurso (Cloudinary, PDF)</label>
           <input id="resourceUrl" name="resourceUrl" type="url" className="w-full rounded-md border border-neutral-300 px-3 py-2 text-sm focus:border-neutral-900 focus:outline-none" />
+          <p className="text-xs text-neutral-400">Es lo que se descarga en la compra individual.</p>
+        </div>
+        <div className="space-y-1">
+          <label htmlFor="contentHtml" className="text-sm font-medium text-neutral-700">Contenido HTML (lectura por suscripción)</label>
+          <textarea id="contentHtml" name="contentHtml" rows={10} className="w-full rounded-md border border-neutral-300 px-3 py-2 font-mono text-xs focus:border-neutral-900 focus:outline-none" placeholder="<h2>...</h2><p>...</p>" />
+          <p className="text-xs text-neutral-400">Opcional. Si lo cargás, quien accede por suscripción lee esta versión en la web en vez del PDF. Etiquetas permitidas: h1-h4, p, ul/ol/li, table, pre/code, a, strong/em.</p>
         </div>
         <button type="submit" className="w-full rounded-md bg-neutral-900 py-2 text-sm font-medium text-white hover:bg-neutral-800">
           Crear curso

@@ -160,7 +160,7 @@ export default async function DashboardPage({
         ) : (
           <div className="mt-4 max-w-md">
             <p className="text-sm text-neutral-600">
-              Acceso completo a todo el catálogo, con 7 días de prueba gratis.
+              Acceso completo a todo el catálogo mientras la suscripción esté activa.
             </p>
             <form action={createSubscription} className="mt-3">
               <TermsConsent />
@@ -197,7 +197,7 @@ export default async function DashboardPage({
                   <p className="mt-2 font-medium leading-snug text-neutral-900">{course.title}</p>
                 </div>
                 <div className="mt-4 flex flex-wrap items-center gap-2">
-                  {course.resource_url && (
+                  {(course.resource_url || course.content_html) && (
                     <Link
                       href={`/dashboard/leer/${course.slug}`}
                       className="rounded-md bg-neutral-900 px-3 py-1.5 text-xs font-medium text-white hover:bg-neutral-800"

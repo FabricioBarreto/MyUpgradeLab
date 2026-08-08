@@ -8,9 +8,9 @@ import { getMercadoPagoConfig } from '@/lib/mercadopago'
 import { SUBSCRIPTION_PRICE, getAppUrl } from '@/lib/constants'
 
 // Regla de negocio definida en docs/MASTER.md: precio fijo de la suscripcion
-// mensual y 7 dias de prueba gratuita. Se revisa trimestralmente contra
-// inflacion (proceso manual, no automatizado).
-const FREE_TRIAL_DAYS = 7
+// mensual, sin periodo de prueba gratuita (se probo con 7 dias y se saco por
+// decision del fundador, 08/08/2026 — el cobro se hace desde el primer dia).
+// Se revisa trimestralmente contra inflacion (proceso manual, no automatizado).
 
 // Crea una suscripcion mensual sin plan asociado (ad-hoc) y de pago
 // pendiente: Mercado Pago devuelve un init_point y el usuario completa el
@@ -76,10 +76,6 @@ export async function createSubscription() {
         frequency_type: 'months',
         transaction_amount: SUBSCRIPTION_PRICE,
         currency_id: 'ARS',
-        free_trial: {
-          frequency: FREE_TRIAL_DAYS,
-          frequency_type: 'days',
-        },
       },
     } as PreApprovalRequest
 
