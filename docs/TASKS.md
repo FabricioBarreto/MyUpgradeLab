@@ -30,6 +30,26 @@ Los fuentes (HTML) y el PDF final de cada curso se guardan en `/cursos/<categori
 - [ ] Probar en produccion, despues del proximo deploy, que `/api/cursos/[slug]/leer` y `/dashboard/leer/[slug]` funcionen con una suscripcion y una compra reales (se verifico la logica a mano contra la base y contra Cloudinary, pero no dentro de la app corriendo — ver notas en Done del 28/07/2026).
 
 ## Done
+- [x] Rediseño de la pagina lectora de cursos (08/08/2026), pendiente desde el pase de diseño anterior
+  ("mas adelante le daria un mejor diseño, todo parece muy simple"). Se agrego:
+  - `src/lib/toc.ts`: extrae los capitulos (h2) del `content_html` de un curso y les inyecta un `id` al
+    propio HTML para poder hacer scroll-to-anchor. Los cursos ya vienen con h2 numerados ("01 · ...",
+    "02 · ..."), asi que el label de cada capitulo sale directo del heading.
+  - `src/components/chapter-nav.tsx`: tabla de contenidos fija a la izquierda en pantallas grandes (antes
+    ese espacio quedaba vacio), con scroll-spy via IntersectionObserver que resalta el capitulo que se
+    esta leyendo.
+  - `src/components/reading-progress.tsx`: barra fina fija arriba de la pagina que se va llenando con el
+    scroll — señal simple de "cuanto falta" en cursos largos.
+  - `dashboard/leer/[slug]/page.tsx`: layout en dos columnas en desktop (TOC + articulo), usa el margen
+    que antes quedaba vacio en pantallas grandes. En mobile la tabla de contenidos se oculta y queda igual
+    que antes.
+  - `globals.css`: `scroll-margin-top` en `.course-article h2` para que el anchor jump no quede tapado por
+    el header sticky.
+  - Si un curso no tiene ningun h2 (caso limite: `estudiar-con-ia-notebooklm-claude-nano-banana`, cuyo
+    `content_html` se reconstruyo del PDF y puede no tener la misma estructura), la tabla de contenidos
+    simplemente no se muestra — no rompe nada.
+  - Verificado con `tsc --noEmit`, `npm run lint`, y un test manual del extractor de capitulos contra
+    contenido real de un curso.
 - [x] Eventos de conversion en GA4: begin_checkout / purchase / subscribe (08/08/2026). Hasta ahora
   GA4 solo medía vistas de página — sin esto, al arrancar a promocionar no se iba a poder saber qué
   canal realmente convierte. Se agrego:

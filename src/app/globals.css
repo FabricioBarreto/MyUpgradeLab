@@ -32,6 +32,7 @@ body {
   color: #171717;
   border-top: 1px solid #f0f0f0;
   padding-top: 2rem;
+  scroll-margin-top: 5rem;
 }
 .course-article h2:first-child {
   border-top: none;

@@ -1,6 +1,9 @@
 import Link from "next/link"
 import { redirect, notFound } from "next/navigation"
 import { createClient } from "@/lib/supabase/server"
+import { addChapterIds } from "@/lib/toc"
+import { ChapterNav } from "@/components/chapter-nav"
+import { ReadingProgress } from "@/components/reading-progress"
 
 // Pagina "lectora". Desde 08/08/2026 el acceso por suscripcion ya no muestra
 // el PDF (ni siquiera embebido): si el curso tiene `content_html` cargado,
@@ -87,8 +90,14 @@ export default async function LeerCursoPage({
     redirect(`/cursos/${slug}?error=${encodeURIComponent("No tenes acceso a este curso todavia")}`)
   }
 
+  // Capitulos (h2) para la tabla de contenidos de la barra lateral — se les
+  // inyecta un id al propio HTML para poder hacer scroll-to-anchor.
+  const { html: contentHtml, chapters } = addChapterIds(course.content_html)
+
   return (
     <div className="min-h-screen bg-white">
+      <ReadingProgress />
+
       <div className="sticky top-0 z-10 flex items-center justify-between border-b border-neutral-200 bg-white/95 px-4 py-3 backdrop-blur">
         <Link href="/dashboard" className="text-sm text-neutral-500 hover:text-neutral-900">
           ← Volver al dashboard
@@ -96,14 +105,18 @@ export default async function LeerCursoPage({
         <span className="text-xs text-neutral-400">{user.email}</span>
       </div>
 
-      <article className="course-article mx-auto max-w-2xl px-6 py-10 sm:py-14">
-        <h1 className="mb-8 text-2xl font-semibold text-neutral-900 sm:text-3xl">{course.title}</h1>
-        <div dangerouslySetInnerHTML={{ __html: course.content_html }} />
+      <div className="mx-auto flex max-w-5xl gap-12 px-6 py-10 sm:py-14">
+        <ChapterNav chapters={chapters} />
 
-        <p className="mt-16 border-t border-neutral-100 pt-6 text-center text-xs text-neutral-300">
-          UpgradeLab · acceso de {user.email} · uso personal, no redistribuible
-        </p>
-      </article>
+        <article className="course-article min-w-0 max-w-2xl flex-1">
+          <h1 className="mb-8 text-2xl font-semibold text-neutral-900 sm:text-3xl">{course.title}</h1>
+          <div dangerouslySetInnerHTML={{ __html: contentHtml }} />
+
+          <p className="mt-16 border-t border-neutral-100 pt-6 text-center text-xs text-neutral-300">
+            UpgradeLab · acceso de {user.email} · uso personal, no redistribuible
+          </p>
+        </article>
+      </div>
 
       {/* Deterrente liviano contra copia casual: bloquea el menu contextual
           (click derecho) en el area de lectura. No impide seleccionar texto
