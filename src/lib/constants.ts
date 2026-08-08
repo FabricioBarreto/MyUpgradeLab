@@ -4,10 +4,10 @@
 // un archivo 'use server' solo puede exportar funciones async, y esta
 // constante la necesitan tanto la accion de suscripcion como el webhook de
 // Mercado Pago (para calcular la comision de afiliados).
-// TEMPORAL (04/08/2026): bajado a 200 para probar un pago real de
-// suscripcion en produccion. Volver a 7999 despues de la prueba — ver nota
-// en docs/TASKS.md.
-export const SUBSCRIPTION_PRICE = 200
+// Bajado TEMPORALMENTE a 200 el 04/08/2026 para probar un pago real de
+// suscripcion en produccion sin arriesgar $7.999 reales. Vuelto a la
+// normalidad el 08/08/2026, prueba ya completada.
+export const SUBSCRIPTION_PRICE = 7999
 
 // NEXT_PUBLIC_APP_URL puede estar cargada con o sin barra final segun el
 // entorno (en Vercel quedo con barra final, ".../" — eso generaba links

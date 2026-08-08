@@ -44,7 +44,7 @@ export default async function SugerenciasPage({
 
         <div>
           <label htmlFor="email" className="block text-sm font-medium text-neutral-700">
-            Email (opcional, por si queremos responderte)
+            Email (opcional, por si querés que te respondamos)
           </label>
           <input
             id="email"

@@ -24,13 +24,40 @@ Los fuentes (HTML) y el PDF final de cada curso se guardan en `/cursos/<categori
 ## In Progress
 - [ ] Probar en produccion la lectura por suscripcion en HTML (ver detalle completo en Done, 08/08/2026)
   con una cuenta que tenga suscripcion activa, una vez deployado.
-- [ ] Precio de suscripcion bajado TEMPORALMENTE a $200 (04/08/2026, `src/lib/constants.ts`) para poder probar un pago real de punta a punta en produccion sin arriesgar $7.999 reales. **Volver a 7999 despues de la prueba** — buscar el comentario "TEMPORAL" en `constants.ts`. Ojo: la suscripcion tiene 7 dias de prueba gratis (`FREE_TRIAL_DAYS` en `subscribe.ts`), asi que con la config actual el primer cobro real no sale el mismo dia que te suscribis, sale recien despues del trial — si querés validar que el cobro en si funciona hoy mismo, avisame y bajo tambien el trial a 0 por el mismo rato.
-- [x] ~~Integracion Mercado Pago (Suscripciones) — incluir periodo de prueba de 7 dias~~ — superado, ver
+ [x] ~~Integracion Mercado Pago (Suscripciones) — incluir periodo de prueba de 7 dias~~ — superado, ver
   Done (08/08/2026): se saco el `free_trial`, la suscripcion ya no tiene periodo de prueba. La integracion
   en si (preapproval ad-hoc, webhook, boton de suscripcion) esta completa y probada con un pago real.
 - [ ] Probar en produccion, despues del proximo deploy, que `/api/cursos/[slug]/leer` y `/dashboard/leer/[slug]` funcionen con una suscripcion y una compra reales (se verifico la logica a mano contra la base y contra Cloudinary, pero no dentro de la app corriendo — ver notas en Done del 28/07/2026).
 
 ## Done
+- [x] Comunidad de WhatsApp cargada (08/08/2026): se creó "MyUpgradeLab" (Comunidad de WhatsApp, con
+  logo propio — ver `public/logo-upgradelab.png`/`.svg`, marca en el verde azulado de las tapas de los
+  cursos) y se cargó el link en `src/lib/community.ts`, repetido en las 5 categorías porque hoy es una
+  sola comunidad para todo el catálogo, no una por categoría. El dashboard se actualizó para deduplicar
+  por URL (`communityEntries` en vez de `communityCategories`) — sin esto, un suscriptor con acceso a
+  todo el catálogo iba a ver la misma tarjeta de "Unirme" repetida cinco veces. Cuando se abra un grupo
+  específico por categoría (empezando por Programación/IA, ver la nota en `community.ts`), alcanza con
+  cambiar esa entrada individual.
+- [x] Programación/IA como punta de lanza en el homepage (08/08/2026): seccion propia destacada
+  (fondo oscuro, badge "Recomendado para empezar") entre el hero y el resto de las categorias, que
+  antes se mostraban todas igual de prominentes. Decision tomada en `docs/ANALISIS-MERCADO.md`
+  (mayor demanda, ya tiene 3 niveles armados). El resto del catalogo sigue accesible debajo, sin
+  quitar categorias, solo bajandoles jerarquia visual.
+- [x] SEO/previews sociales y analytics (08/08/2026):
+  - `generateMetadata` en `cursos/[slug]/page.tsx`: titulo, descripcion e imagen (si el curso tiene
+    `cover_image_url`) por curso, en vez de la preview generica de "UpgradeLab" para todos los links.
+    `metadataBase` agregado en `layout.tsx` (via `getAppUrl()`) para que las URLs de Open Graph salgan
+    absolutas — sin esto WhatsApp/LinkedIn arman mal la preview.
+  - `src/components/analytics.tsx`: Google Analytics (GA4) y Meta Pixel, cada uno se activa solo si esta
+    cargada la env var correspondiente (`NEXT_PUBLIC_GA_ID`, `NEXT_PUBLIC_META_PIXEL_ID`) — no hace falta
+    tocar codigo para prenderlos, alcanza con cargarlas en Vercel y redeployar. **Pendiente del usuario**:
+    crear la propiedad GA4 / el pixel de Meta y pasar los IDs.
+  - Nota de cumplimiento: no hay banner de consentimiento antes de cargar estos scripts (se cargan
+    directo si la env var esta puesta). Practica comun en Argentina, pero si se quiere ser mas estricto
+    con Ley 25.326 despues, lo prolijo seria no montar `<Analytics />` hasta que la persona acepte.
+- [x] Precios vueltos a la normalidad (08/08/2026): `SUBSCRIPTION_PRICE` en `constants.ts` de 200 a 7999.
+  El precio del curso de prueba (`programar-con-ia-nivel-1-fundamentos`) ya estaba en 4000 (revertido por
+  el usuario directamente en la base). Prueba de pago real de punta a punta completada — quedo cerrado.
 - [x] Lectura de cursos por suscripcion en HTML en vez de PDF (08/08/2026). Se agrego `courses.content_html`
   (texto, nullable) y se reescribio `dashboard/leer/[slug]` para que, si el curso tiene `content_html`
   cargado, la persona lo lea como articulo dentro de la propia UI (sin boton de descarga, con marca de

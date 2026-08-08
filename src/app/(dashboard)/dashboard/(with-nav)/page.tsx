@@ -98,9 +98,17 @@ export default async function DashboardPage({
     ? new Set(Object.keys(CATEGORY_LABELS))
     : purchasedCategories
 
-  const communityCategories = Object.keys(COMMUNITY_LINKS).filter((category) =>
-    accessibleCategories.has(category)
-  )
+  // Agrupamos por URL, no por categoria: hoy varias categorias comparten la
+  // misma Comunidad de WhatsApp (ver community.ts), y sin esto un suscriptor
+  // con acceso a todo el catalogo veria la misma tarjeta de "Unirme"
+  // repetida una vez por categoria.
+  const communityLinksByUrl = new Map<string, string[]>()
+  for (const category of Object.keys(COMMUNITY_LINKS)) {
+    const url = COMMUNITY_LINKS[category]
+    if (!url || !accessibleCategories.has(category)) continue
+    communityLinksByUrl.set(url, [...(communityLinksByUrl.get(url) ?? []), category])
+  }
+  const communityEntries = Array.from(communityLinksByUrl.entries())
 
   // Con suscripcion activa el acceso es a todo el catalogo, no solo a lo
   // que aparece en `purchases` (esa tabla es historial de compras
@@ -283,21 +291,23 @@ export default async function DashboardPage({
       </section>
 
       {/* Comunidad */}
-      {communityCategories.length > 0 && (
+      {communityEntries.length > 0 && (
         <section className="mt-10">
           <h2 className="text-lg font-medium text-neutral-900">Comunidad</h2>
           <p className="mt-1 text-sm text-neutral-500">
-            Sumate al grupo de las categorías a las que tenés acceso.
+            Sumate a la comunidad de las categorías a las que tenés acceso.
           </p>
           <div className="mt-4 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
-            {communityCategories.map((category) => (
+            {communityEntries.map(([url, categories]) => (
               <div
-                key={category}
+                key={url}
                 className="flex items-center justify-between rounded-xl border border-neutral-200 bg-white p-4"
               >
-                <span className="font-medium text-neutral-900">{categoryLabel(category)}</span>
+                <span className="font-medium text-neutral-900">
+                  {categories.length > 1 ? "UpgradeLab" : categoryLabel(categories[0])}
+                </span>
                 <a
-                  href={COMMUNITY_LINKS[category]}
+                  href={url}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="rounded-md bg-neutral-900 px-3 py-1.5 text-sm font-medium text-white hover:bg-neutral-800"

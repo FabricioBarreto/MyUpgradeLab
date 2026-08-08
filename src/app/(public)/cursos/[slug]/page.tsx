@@ -1,8 +1,43 @@
 import Link from "next/link"
 import { notFound } from "next/navigation"
+import type { Metadata } from "next"
 import { createClient } from "@/lib/supabase/server"
 import { accessTypeLabel, categoryLabel, formatPrice } from "@/lib/format"
 import { createCheckoutPreference } from "@/lib/actions/checkout"
+
+// Titulo/descripcion/imagen por curso: sin esto, compartir el link de un
+// curso puntual (WhatsApp, LinkedIn, el propio programa de afiliados) mostraba
+// siempre la misma preview generica de "UpgradeLab" para todos los cursos.
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ slug: string }>
+}): Promise<Metadata> {
+  const { slug } = await params
+  const supabase = await createClient()
+  const { data: course } = await supabase
+    .from("courses")
+    .select("title, description, cover_image_url, category")
+    .eq("slug", slug)
+    .eq("is_active", true)
+    .maybeSingle()
+
+  if (!course) {
+    return { title: "Curso no encontrado" }
+  }
+
+  const description =
+    course.description?.trim() ||
+    `${categoryLabel(course.category)} · Curso de UpgradeLab, disponible por compra individual o suscripcion.`
+  const images = course.cover_image_url ? [{ url: course.cover_image_url }] : undefined
+
+  return {
+    title: course.title,
+    description,
+    openGraph: { title: course.title, description, images },
+    twitter: { title: course.title, description, images },
+  }
+}
 
 export default async function CursoDetallePage({
   params,

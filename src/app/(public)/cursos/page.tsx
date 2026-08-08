@@ -1,6 +1,12 @@
 import Link from "next/link"
+import type { Metadata } from "next"
 import { createClient } from "@/lib/supabase/server"
 import { CATEGORY_LABELS, categoryLabel, formatPrice } from "@/lib/format"
+
+export const metadata: Metadata = {
+  title: "Catálogo de cursos",
+  description: "Programación con IA, estudio con IA, inglés, entrevistas de trabajo y negocio para freelancers. Compra individual o suscripción mensual.",
+}
 
 export default async function CursosPage({
   searchParams,
