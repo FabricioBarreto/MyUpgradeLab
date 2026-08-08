@@ -1,4 +1,5 @@
 import Link from "next/link"
+import Image from "next/image"
 import { createClient } from "@/lib/supabase/server"
 import { signOut } from "@/lib/actions/auth"
 
@@ -23,7 +24,8 @@ export default async function PublicLayout({ children }: { children: React.React
     <div className="flex min-h-screen flex-col bg-neutral-50">
       <header className="sticky top-0 z-20 border-b border-neutral-200 bg-white/95 backdrop-blur">
         <div className="mx-auto flex max-w-5xl items-center justify-between gap-4 px-4 py-4 sm:px-6">
-          <Link href="/" className="shrink-0 text-lg font-semibold text-neutral-900">
+          <Link href="/" className="flex shrink-0 items-center gap-2 text-lg font-semibold text-neutral-900">
+            <Image src="/logo-upgradelab.svg" alt="" width={28} height={28} className="rounded-md" />
             Upgrade<span className="text-teal-600">Lab</span>
           </Link>
 
