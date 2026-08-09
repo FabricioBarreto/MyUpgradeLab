@@ -30,6 +30,20 @@ Los fuentes (HTML) y el PDF final de cada curso se guardan en `/cursos/<categori
 - [ ] Probar en produccion, despues del proximo deploy, que `/api/cursos/[slug]/leer` y `/dashboard/leer/[slug]` funcionen con una suscripcion y una compra reales (se verifico la logica a mano contra la base y contra Cloudinary, pero no dentro de la app corriendo — ver notas en Done del 28/07/2026).
 
 ## Done
+- [x] Aprovechar el espacio vacio de la pagina lectora en pantallas grandes (09/08/2026). El fundador
+  reporto que, despues del rediseño anterior, seguia quedando mucho espacio libre. Se agrego:
+  - `src/components/course-sidebar.tsx`: barra lateral derecha (solo desktop, `lg:block`) con tres
+    bloques — categoria/tipo de acceso del curso, CTA a la comunidad de WhatsApp de esa categoria (si
+    existe), y "Segui explorando" con hasta 3 cursos a los que el usuario ya tiene acceso (mismo
+    criterio que en el dashboard: todas las categorias si esta suscripto, o las de sus compras
+    aprobadas si no). Si no tiene acceso a mas cursos y no esta suscripto, muestra en su lugar un CTA
+    para suscribirse — usa el espacio para cross-sell/upsell, no solo relleno visual.
+  - `leer/[slug]/page.tsx`: el contenedor paso de `max-w-5xl` a `max-w-7xl` y el articulo de `max-w-2xl`
+    a `max-w-3xl` para acomodar las tres columnas (tabla de contenidos + articulo + barra lateral). En
+    mobile/tablet la barra lateral se oculta y el bloque "Segui explorando" se muestra en su lugar,
+    embebido al final del articulo (`lg:hidden` en uno, `lg:block` en el otro, para no duplicar el
+    mismo contenido en desktop).
+  - Verificado con `tsc --noEmit` y `npm run lint`.
 - [x] Rediseño de la pagina lectora de cursos (08/08/2026), pendiente desde el pase de diseño anterior
   ("mas adelante le daria un mejor diseño, todo parece muy simple"). Se agrego:
   - `src/lib/toc.ts`: extrae los capitulos (h2) del `content_html` de un curso y les inyecta un `id` al
@@ -50,10 +64,14 @@ Los fuentes (HTML) y el PDF final de cada curso se guardan en `/cursos/<categori
     simplemente no se muestra — no rompe nada.
   - Verificado con `tsc --noEmit`, `npm run lint`, y un test manual del extractor de capitulos contra
     contenido real de un curso.
-  - Ajuste post-entrega: la pagina vive fuera de `(with-nav)` a proposito (lectura sin distracciones, sin
-    el menu de Dashboard/Catalogo/Afiliados/Sugerencias), pero se noto que faltaba el logo — se agrego el
-    isotipo junto al link "Volver al dashboard" en ambos headers (con `content_html` y en el fallback de
-    iframe/PDF) para mantener identidad de marca sin meter el navbar completo.
+  - Ajuste post-entrega (08/08/2026): primero se probo solo agregar el logo junto al link "Volver al
+    dashboard", manteniendo la pagina fuera de `(with-nav)` (pensada como lectura "sin distracciones"). El
+    fundador prefirio el navbar completo, asi que se movio `leer/[slug]/page.tsx` adentro de `(with-nav)`
+    (la URL no cambia, las carpetas entre parentesis no afectan la ruta) para que comparta el header de
+    siempre (logo, menu, email, cerrar sesion). Se saco el header propio con logo duplicado/sticky de la
+    pagina (quedaba pisando al de `(with-nav)`, ambos con `position: sticky; top: 0`) y se dejo solo un
+    link simple "Volver al dashboard" arriba del articulo, mismo patron que en `cursos/[slug]/page.tsx`.
+    `ReadingProgress` paso a `z-30` para quedar por encima del header del layout.
 - [x] Eventos de conversion en GA4: begin_checkout / purchase / subscribe (08/08/2026). Hasta ahora
   GA4 solo medía vistas de página — sin esto, al arrancar a promocionar no se iba a poder saber qué
   canal realmente convierte. Se agrego:
