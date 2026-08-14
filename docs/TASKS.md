@@ -22,14 +22,14 @@ Los fuentes (HTML) y el PDF final de cada curso se guardan en `/cursos/<categori
 - [ ] Revision legal profesional de `/terminos`, `/privacidad`, `/cookies` y `/reembolsos` (04/08/2026) — Claude redacto un borrador razonable basado en la normativa vigente (Ley 24.240, Codigo Civil y Comercial art. 1116, Ley 25.326, Disposicion 954/2025), pero no es abogado. Antes de promocionar fuerte la pagina conviene que un abogado lo revise, en particular la exclusion del derecho de arrepentimiento (si esta mal redactada, no protege).
 
 ## In Progress
-- [ ] Probar en produccion la lectura por suscripcion en HTML (ver detalle completo en Done, 08/08/2026)
-  con una cuenta que tenga suscripcion activa, una vez deployado.
  [x] ~~Integracion Mercado Pago (Suscripciones) — incluir periodo de prueba de 7 dias~~ — superado, ver
   Done (08/08/2026): se saco el `free_trial`, la suscripcion ya no tiene periodo de prueba. La integracion
   en si (preapproval ad-hoc, webhook, boton de suscripcion) esta completa y probada con un pago real.
-- [ ] Probar en produccion, despues del proximo deploy, que `/api/cursos/[slug]/leer` y `/dashboard/leer/[slug]` funcionen con una suscripcion y una compra reales (se verifico la logica a mano contra la base y contra Cloudinary, pero no dentro de la app corriendo — ver notas en Done del 28/07/2026).
 
 ## Done
+- [x] Verificado en produccion el flujo completo de lectura (14/08/2026): suscripcion activa lee el HTML
+  en `/dashboard/leer/[slug]` sin poder descargar, y compra individual descarga el PDF correctamente via
+  `/api/cursos/[slug]/leer`. Cierra la migracion del 08/08/2026 y el proxy armado el 28/07/2026.
 - [x] Aprovechar el espacio vacio de la pagina lectora en pantallas grandes (09/08/2026). El fundador
   reporto que, despues del rediseño anterior, seguia quedando mucho espacio libre. Se agrego:
   - `src/components/course-sidebar.tsx`: barra lateral derecha (solo desktop, `lg:block`) con tres
