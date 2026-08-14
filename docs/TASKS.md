@@ -30,6 +30,14 @@ Los fuentes (HTML) y el PDF final de cada curso se guardan en `/cursos/<categori
   en si (preapproval ad-hoc, webhook, boton de suscripcion) esta completa y probada con un pago real.
 
 ## Done
+- [x] Periodo de espera de 30 dias antes de habilitar el pago de una comision (14/08/2026). Antes,
+  cualquier comision recien generada (`affiliate_referrals.status = pending`) aparecia lista para pagar
+  de inmediato en `/admin/afiliados`. Ahora solo se muestra y se puede pagar lo que ya paso
+  `AFFILIATE_PAYOUT_HOLD_DAYS` (30, en `src/lib/constants.ts`) desde que se genero — reduce el riesgo de
+  pagarle comision a un afiliado sobre una venta que despues se reembolsa. Lo que todavia esta en espera
+  no se muestra de ninguna forma (ni un monto aparte informativo) por decision del fundador; aparece solo,
+  sin ninguna accion manual, una vez que cumple los 30 dias. `markAffiliatePaid` ahora primero busca cuales
+  filas ya maduraron y solo actualiza esas (antes actualizaba todo lo pendiente de una).
 - [x] Pago de comisiones a afiliados con fecha y comprobante, mas borrado automatico a los 30 dias
   (14/08/2026). El pago en si sigue siendo manual (transferencia real por fuera del sitio) — se automatizo
   el registro, no el movimiento de dinero (se descarto integrar una API de pagos real por riesgo/costo
