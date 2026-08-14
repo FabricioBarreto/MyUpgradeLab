@@ -27,3 +27,38 @@ export function getSignedAuthenticatedPdfUrl(publicId: string): string {
 }
 
 export { cloudinary }
+
+// Comprobantes de pago a afiliados: se suben como `authenticated` (privados,
+// igual que los PDFs de cursos) porque son datos sensibles (numero de
+// operacion, monto, a veces datos bancarios visibles en la captura). No son
+// permanentes: se borran a los 30 dias (ver /api/cron/expire-affiliate-proofs)
+// para no acumular data de baja utilidad a largo plazo en Cloudinary. Siempre
+// se suben como imagen (captura/foto), nunca PDF.
+export async function uploadAffiliatePaymentProof(
+  fileBuffer: Buffer,
+  affiliateId: string
+): Promise<{ publicId: string }> {
+  const result = await cloudinary.uploader.upload(
+    `data:application/octet-stream;base64,${fileBuffer.toString('base64')}`,
+    {
+      resource_type: 'image',
+      type: 'authenticated',
+      folder: 'affiliate-proofs',
+      public_id: `${affiliateId}-${Date.now()}`,
+    }
+  )
+  return { publicId: result.public_id }
+}
+
+export function getSignedProofUrl(publicId: string): string {
+  return cloudinary.url(publicId, {
+    resource_type: 'image',
+    type: 'authenticated',
+    sign_url: true,
+    secure: true,
+  })
+}
+
+export async function deleteAffiliatePaymentProof(publicId: string) {
+  await cloudinary.uploader.destroy(publicId, { resource_type: 'image', type: 'authenticated' })
+}
