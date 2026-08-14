@@ -17,3 +17,11 @@ export const SUBSCRIPTION_PRICE = 7999
 export function getAppUrl(): string {
   return (process.env.NEXT_PUBLIC_APP_URL ?? '').replace(/\/+$/, '')
 }
+
+// Periodo de espera antes de que una comision de afiliado quede habilitada
+// para pago (ver docs/TASKS.md, 14/08/2026). Una venta genera la comision
+// de inmediato con status 'pending', pero no se muestra como pagable hasta
+// que pasan estos dias — para reducir el riesgo de pagar comision sobre una
+// venta que despues se reembolsa (excepcion del art. 1116 CCyC solo cubre
+// hasta que la persona accede al contenido, pero igual da margen de reaccion).
+export const AFFILIATE_PAYOUT_HOLD_DAYS = 30

@@ -1,28 +1,41 @@
 import { createClient } from "@/lib/supabase/server";
 import { markAffiliatePaid } from "@/lib/actions/affiliates";
 import { formatPrice } from "@/lib/format";
+import { AFFILIATE_PAYOUT_HOLD_DAYS } from "@/lib/constants";
 
 export default async function AdminAfiliadosPage() {
   const supabase = await createClient();
 
   const { data: affiliates } = await supabase
     .from("affiliates")
-    .select("*, affiliate_referrals(commission_amount, status)")
+    .select("*, affiliate_referrals(commission_amount, status, created_at)")
     .order("created_at", { ascending: false });
+
+  const holdCutoff = new Date();
+  holdCutoff.setDate(holdCutoff.getDate() - AFFILIATE_PAYOUT_HOLD_DAYS);
 
   const rows = (affiliates ?? []).map((a) => {
     const referrals = (a.affiliate_referrals ?? []) as {
       commission_amount: number;
       status: string;
+      created_at: string;
     }[];
+    // Solo cuenta como "pendiente para pagar" lo que ya paso el periodo de
+    // espera (ver AFFILIATE_PAYOUT_HOLD_DAYS). Lo pendiente que todavia no
+    // madura no se muestra ni se suma aca — aparece solo (y automaticamente,
+    // sin ninguna accion manual) una vez que cumple los 30 dias.
     const totalPending = referrals
-      .filter((r) => r.status === "pending")
+      .filter(
+        (r) => r.status === "pending" && new Date(r.created_at) <= holdCutoff,
+      )
       .reduce((sum, r) => sum + Number(r.commission_amount), 0);
     const totalPaid = referrals
       .filter((r) => r.status === "paid")
       .reduce((sum, r) => sum + Number(r.commission_amount), 0);
     return { ...a, totalPending, totalPaid, referralCount: referrals.length };
   });
+
+  rows.sort((a, b) => b.totalPending - a.totalPending);
 
   const grandTotalPending = rows.reduce((sum, r) => sum + r.totalPending, 0);
 
