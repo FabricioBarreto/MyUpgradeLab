@@ -17,15 +17,35 @@ Los fuentes (HTML) y el PDF final de cada curso se guardan en `/cursos/<categori
 - [ ] Dashboard "segui donde quedaste" — descartado por decision del fundador junto con el tracking de progreso en general (ver Done, 04/08/2026): la idea del negocio es que la persona avanza a su ritmo sin que la plataforma trackee nada.
 - [ ] Revision trimestral de precios (proceso de negocio, no requiere codigo — ver regla en MASTER.md)
 - [ ] Comision de afiliados en renovaciones de suscripcion: hoy solo se acredita una vez, cuando la suscripcion pasa a `active` por primera vez — no en cada cobro mensual recurrente, porque el webhook solo trackea el estado del preapproval (no cada pago individual del cobro recurrente). Si se quiere comision mes a mes, hay que engancharse a los eventos de pago recurrente de MP, no solo al de autorizacion inicial.
-- [ ] Revisar si conviene mover el pago de comisiones de afiliados de "manual" (transferencia aparte, marcando `affiliate_referrals.status = 'paid'` a mano) a algo mas automatizado, si el volumen lo justifica.
 - [ ] Revision legal profesional de `/terminos`, `/privacidad`, `/cookies` y `/reembolsos` (04/08/2026) — Claude redacto un borrador razonable basado en la normativa vigente (Ley 24.240, Codigo Civil y Comercial art. 1116, Ley 25.326, Disposicion 954/2025), pero no es abogado. Antes de promocionar fuerte la pagina conviene que un abogado lo revise, en particular la exclusion del derecho de arrepentimiento (si esta mal redactada, no protege).
 
 ## In Progress
+- [ ] Probar de punta a punta el pago de comisiones con comprobante (14/08/2026, ver detalle en Done): subir
+  un comprobante real desde `/admin/afiliados`, confirmar que aparece en Cloudinary como `authenticated`,
+  simular el vencimiento a 30 dias en Supabase y confirmar que `/api/cron/expire-affiliate-proofs` lo borra.
+  Falta tambien cargar `CRON_SECRET` en las Environment Variables de Vercel (Production) — sin eso el cron
+  no corre en produccion aunque el codigo ya este deployado.
  [x] ~~Integracion Mercado Pago (Suscripciones) — incluir periodo de prueba de 7 dias~~ — superado, ver
   Done (08/08/2026): se saco el `free_trial`, la suscripcion ya no tiene periodo de prueba. La integracion
   en si (preapproval ad-hoc, webhook, boton de suscripcion) esta completa y probada con un pago real.
 
 ## Done
+- [x] Pago de comisiones a afiliados con fecha y comprobante, mas borrado automatico a los 30 dias
+  (14/08/2026). El pago en si sigue siendo manual (transferencia real por fuera del sitio) — se automatizo
+  el registro, no el movimiento de dinero (se descarto integrar una API de pagos real por riesgo/costo
+  desproporcionado al volumen actual). Se agrego:
+  - `affiliate_referrals.proof_url` y `.proof_uploaded_at` (nuevas columnas).
+  - `src/lib/cloudinary.ts`: subida/lectura/borrado del comprobante como recurso `authenticated`
+    (privado), igual patron que los PDFs de cursos. Siempre imagen (captura/foto), nunca PDF.
+  - `markAffiliatePaid` (`src/lib/actions/affiliates.ts`): ahora acepta fecha de pago editable
+    (por defecto hoy) y un comprobante opcional; sigue pagando todo el pendiente del afiliado en
+    un solo lote, con un unico comprobante para ese lote (no por comision individual).
+  - `/admin/afiliados`: formulario con input de fecha y de archivo junto al boton de marcar pagado.
+  - `src/app/api/cron/expire-affiliate-proofs/route.ts` + `vercel.json`: cron diario (06:00 UTC) que
+    borra de Cloudinary los comprobantes con mas de 30 dias y limpia las columnas en la base —
+    `paid_at` nunca se borra, solo el archivo adjunto. Protegido con `CRON_SECRET`.
+  - Pendiente antes de dar esto por cerrado del todo: probar el flujo real y cargar `CRON_SECRET`
+    en Vercel — ver In Progress.
 - [x] Comunidad de WhatsApp confirmada como unica y general, no por categoria (14/08/2026). El link real
   (`WHATSAPP_COMMUNITY` en `src/lib/community.ts`) ya estaba cargado en las 5 categorias desde el 08/08/2026 —
   faltaba solo tildar esta tarea. Ademas, se descarta la idea (mencionada en un comentario del propio
