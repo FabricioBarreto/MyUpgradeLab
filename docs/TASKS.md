@@ -14,7 +14,6 @@ Los fuentes (HTML) y el PDF final de cada curso se guardan en `/cursos/<categori
 
 ## To Do
 - [ ] Rama de descuento del programa de afiliados (doble beneficio para el referido casual) — depende de agregar soporte de cupon en el checkout (`coupon_code` en la preferencia de Mercado Pago). La rama de comision cash ya esta hecha, ver Done (04/08/2026).
-- [ ] Cargar los links reales de WhatsApp/Discord en `src/lib/community.ts` (el codigo y el UI del dashboard ya estan listos, ver Done)
 - [ ] Dashboard "segui donde quedaste" — descartado por decision del fundador junto con el tracking de progreso en general (ver Done, 04/08/2026): la idea del negocio es que la persona avanza a su ritmo sin que la plataforma trackee nada.
 - [ ] Revision trimestral de precios (proceso de negocio, no requiere codigo — ver regla en MASTER.md)
 - [ ] Comision de afiliados en renovaciones de suscripcion: hoy solo se acredita una vez, cuando la suscripcion pasa a `active` por primera vez — no en cada cobro mensual recurrente, porque el webhook solo trackea el estado del preapproval (no cada pago individual del cobro recurrente). Si se quiere comision mes a mes, hay que engancharse a los eventos de pago recurrente de MP, no solo al de autorizacion inicial.
@@ -27,6 +26,11 @@ Los fuentes (HTML) y el PDF final de cada curso se guardan en `/cursos/<categori
   en si (preapproval ad-hoc, webhook, boton de suscripcion) esta completa y probada con un pago real.
 
 ## Done
+- [x] Comunidad de WhatsApp confirmada como unica y general, no por categoria (14/08/2026). El link real
+  (`WHATSAPP_COMMUNITY` en `src/lib/community.ts`) ya estaba cargado en las 5 categorias desde el 08/08/2026 —
+  faltaba solo tildar esta tarea. Ademas, se descarta la idea (mencionada en un comentario del propio
+  archivo) de abrir un grupo separado por categoria empezando por Programacion/IA: decision del fundador
+  de mantener una sola comunidad general para todo el catalogo.
 - [x] Verificado en produccion el flujo completo de lectura (14/08/2026): suscripcion activa lee el HTML
   en `/dashboard/leer/[slug]` sin poder descargar, y compra individual descarga el PDF correctamente via
   `/api/cursos/[slug]/leer`. Cierra la migracion del 08/08/2026 y el proxy armado el 28/07/2026.
