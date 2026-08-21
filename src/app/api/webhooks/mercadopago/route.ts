@@ -10,9 +10,10 @@ type ServiceClient = ReturnType<typeof createServiceClient>
 
 // Si el usuario que acaba de comprar/suscribirse fue traido por un afiliado
 // (profiles.referred_by_affiliate_id), le acreditamos su comision. Se llama
-// solo en la transicion a "recien aprobado", y chequea que no exista ya una
-// fila para este source_id antes de insertar — asi los reintentos de webhook
-// de Mercado Pago no duplican la comision.
+// tanto en la activacion inicial de una compra/suscripcion como en cada
+// cobro recurrente posterior, y chequea que no exista ya una fila para este
+// source_id antes de insertar — asi los reintentos de webhook de Mercado
+// Pago no duplican la comision.
 async function creditAffiliateCommission(
   supabase: ServiceClient,
   {
@@ -161,61 +162,97 @@ async function handleNotification(request: NextRequest) {
       const paymentClient = new Payment(getMercadoPagoConfig("checkout"))
       const payment = await paymentClient.get({ id: dataId })
 
-      const purchaseId = payment.external_reference
-      if (!purchaseId) {
+      const referenceId = payment.external_reference
+      if (!referenceId) {
         console.error("Pago de Mercado Pago sin external_reference", payment.id)
         return NextResponse.json({ received: true })
       }
 
-      // Traemos el estado previo antes de actualizar para saber si esta
-      // notificacion es la que recien aprueba el pago (y no un reenvio de
-      // MP de un pago que ya estaba approved).
+      // Primero probamos si el external_reference corresponde a una compra
+      // individual (purchases.id).
       const { data: existingPurchase } = await supabase
         .from("purchases")
         .select("status, user_id, amount, courses(title, resource_url)")
-        .eq("id", purchaseId)
+        .eq("id", referenceId)
         .maybeSingle()
 
-      const newStatus = mapPaymentStatus(payment.status)
+      if (existingPurchase) {
+        const newStatus = mapPaymentStatus(payment.status)
 
-      const { error } = await supabase
-        .from("purchases")
-        .update({
-          status: newStatus,
-          mp_payment_id: String(payment.id),
-        })
-        .eq("id", purchaseId)
+        const { error } = await supabase
+          .from("purchases")
+          .update({
+            status: newStatus,
+            mp_payment_id: String(payment.id),
+          })
+          .eq("id", referenceId)
 
-      if (error) {
-        console.error("Error actualizando purchase desde webhook", error)
-        return NextResponse.json({ error: "db error" }, { status: 500 })
-      }
-
-      if (existingPurchase && existingPurchase.status !== "approved" && newStatus === "approved") {
-        const course = existingPurchase.courses as unknown as {
-          title: string
-          resource_url: string | null
-        } | null
-        const { data: userData } = await supabase.auth.admin.getUserById(existingPurchase.user_id)
-        const email = userData?.user?.email
-
-        if (email && course) {
-          await sendEmailSafely(() =>
-            sendPurchaseApprovedEmail({
-              to: email,
-              courseTitle: course.title,
-              resourceUrl: course.resource_url,
-            })
-          )
+        if (error) {
+          console.error("Error actualizando purchase desde webhook", error)
+          return NextResponse.json({ error: "db error" }, { status: 500 })
         }
 
+        if (existingPurchase.status !== "approved" && newStatus === "approved") {
+          const course = existingPurchase.courses as unknown as {
+            title: string
+            resource_url: string | null
+          } | null
+          const { data: userData } = await supabase.auth.admin.getUserById(existingPurchase.user_id)
+          const email = userData?.user?.email
+
+          if (email && course) {
+            await sendEmailSafely(() =>
+              sendPurchaseApprovedEmail({
+                to: email,
+                courseTitle: course.title,
+                resourceUrl: course.resource_url,
+              })
+            )
+          }
+
+          await creditAffiliateCommission(supabase, {
+            userId: existingPurchase.user_id,
+            sourceType: "purchase",
+            sourceId: referenceId,
+            amount: Number(existingPurchase.amount),
+          })
+        }
+
+        return NextResponse.json({ received: true })
+      }
+
+      // Si no es una compra, puede ser un cobro (inicial o recurrente) de
+      // una suscripcion — Mercado Pago copia el external_reference del
+      // preapproval a los pagos que genera. Solo acreditamos comision
+      // recurrente si la suscripcion ya tuvo su primer cobro acreditado
+      // (first_commission_credited, seteado en la rama de
+      // subscription_preapproval mas abajo) — asi no se duplica el primer
+      // mes entre el evento de activacion y el evento de pago.
+      const { data: existingSubscription } = await supabase
+        .from("subscriptions")
+        .select("id, user_id, first_commission_credited")
+        .eq("id", referenceId)
+        .maybeSingle()
+
+      if (!existingSubscription) {
+        console.error(
+          "Pago de Mercado Pago sin purchase ni subscription asociada — revisar si MP copia el external_reference distinto",
+          referenceId,
+          payment.id
+        )
+        return NextResponse.json({ received: true })
+      }
+
+      if (payment.status === "approved" && existingSubscription.first_commission_credited) {
         await creditAffiliateCommission(supabase, {
-          userId: existingPurchase.user_id,
-          sourceType: "purchase",
-          sourceId: purchaseId,
-          amount: Number(existingPurchase.amount),
+          userId: existingSubscription.user_id,
+          sourceType: "subscription",
+          sourceId: String(payment.id),
+          amount: Number(payment.transaction_amount ?? 0),
         })
       }
+
+      return NextResponse.json({ received: true })
     } else {
       const preapprovalClient = new PreApproval(getMercadoPagoConfig("suscripciones"))
       const preapproval = await preapprovalClient.get({ id: dataId })
@@ -233,11 +270,14 @@ async function handleNotification(request: NextRequest) {
         .maybeSingle()
 
       const status = mapSubscriptionStatus(preapproval.status)
+      const becameActive = !!existingSubscription && existingSubscription.status !== "active" && status === "active"
+
       const { error } = await supabase
         .from("subscriptions")
         .update({
           status,
           mp_subscription_id: String(preapproval.id),
+          ...(becameActive ? { first_commission_credited: true } : {}),
         })
         .eq("id", subscriptionId)
 
@@ -246,7 +286,7 @@ async function handleNotification(request: NextRequest) {
         return NextResponse.json({ error: "db error" }, { status: 500 })
       }
 
-      if (existingSubscription && existingSubscription.status !== "active" && status === "active") {
+      if (becameActive && existingSubscription) {
         const { data: userData } = await supabase.auth.admin.getUserById(existingSubscription.user_id)
         const email = userData?.user?.email
 
