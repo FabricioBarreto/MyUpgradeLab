@@ -23,10 +23,14 @@ Los fuentes (HTML) y el PDF final de cada curso se guardan en `/cursos/<categori
   webhook ahora acredita comision en cada evento `payment` cuyo `external_reference`
   corresponde a una suscripcion (no a una compra), gateado por la nueva columna
   `subscriptions.first_commission_credited` para no duplicar la comision del primer mes
-  entre el evento de activacion y el evento de pago. Falta: activar el topic `payments`
-  en el panel de MP (app Suscripciones, pestana Modo productivo) y verificar con el
-  primer cobro recurrente real de un suscriptor referido, revisando en Vercel > Logs
-  que no aparezca el error de pago sin purchase ni subscription asociada.
+  entre el evento de activacion y el evento de pago. Topic `payments` activado en el
+  panel de MP (21/08/2026). Falta verificar con el primer cobro recurrente real de un
+  suscriptor referido, revisando en Vercel > Logs que no aparezca el error de pago sin
+  purchase ni subscription asociada.
+  Verificado (21/08/2026): una suscripcion real de un usuario sin afiliado confirmo que
+  el cobro base sigue funcionando bien, pero no sirve para probar la comision recurrente
+  (no vino con `?ref=`). Sigue pendiente esperar un cobro recurrente real de un suscriptor
+  que si haya entrado con codigo de afiliado.
  [x] ~~Integracion Mercado Pago (Suscripciones) — incluir periodo de prueba de 7 dias~~ — superado, ver
   Done (08/08/2026): se saco el `free_trial`, la suscripcion ya no tiene periodo de prueba. La integracion
   en si (preapproval ad-hoc, webhook, boton de suscripcion) esta completa y probada con un pago real.
