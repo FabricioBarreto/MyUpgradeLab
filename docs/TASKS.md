@@ -16,10 +16,17 @@ Los fuentes (HTML) y el PDF final de cada curso se guardan en `/cursos/<categori
 - [ ] Rama de descuento del programa de afiliados (doble beneficio para el referido casual) — depende de agregar soporte de cupon en el checkout (`coupon_code` en la preferencia de Mercado Pago). La rama de comision cash ya esta hecha, ver Done (04/08/2026).
 - [ ] Dashboard "segui donde quedaste" — descartado por decision del fundador junto con el tracking de progreso en general (ver Done, 04/08/2026): la idea del negocio es que la persona avanza a su ritmo sin que la plataforma trackee nada.
 - [ ] Revision trimestral de precios (proceso de negocio, no requiere codigo — ver regla en MASTER.md)
-- [ ] Comision de afiliados en renovaciones de suscripcion: hoy solo se acredita una vez, cuando la suscripcion pasa a `active` por primera vez — no en cada cobro mensual recurrente, porque el webhook solo trackea el estado del preapproval (no cada pago individual del cobro recurrente). Si se quiere comision mes a mes, hay que engancharse a los eventos de pago recurrente de MP, no solo al de autorizacion inicial.
 - [ ] Revision legal profesional de `/terminos`, `/privacidad`, `/cookies` y `/reembolsos` (04/08/2026) — Claude redacto un borrador razonable basado en la normativa vigente (Ley 24.240, Codigo Civil y Comercial art. 1116, Ley 25.326, Disposicion 954/2025), pero no es abogado. Antes de promocionar fuerte la pagina conviene que un abogado lo revise, en particular la exclusion del derecho de arrepentimiento (si esta mal redactada, no protege).
 
 ## In Progress
+- [ ] Comision de afiliados en renovaciones de suscripcion — implementado (21/08/2026): el
+  webhook ahora acredita comision en cada evento `payment` cuyo `external_reference`
+  corresponde a una suscripcion (no a una compra), gateado por la nueva columna
+  `subscriptions.first_commission_credited` para no duplicar la comision del primer mes
+  entre el evento de activacion y el evento de pago. Falta: activar el topic `payments`
+  en el panel de MP (app Suscripciones, pestana Modo productivo) y verificar con el
+  primer cobro recurrente real de un suscriptor referido, revisando en Vercel > Logs
+  que no aparezca el error de pago sin purchase ni subscription asociada.
 - [ ] Probar de punta a punta el pago de comisiones con comprobante (14/08/2026, ver detalle en Done): subir
   un comprobante real desde `/admin/afiliados`, confirmar que aparece en Cloudinary como `authenticated`,
   simular el vencimiento a 30 dias en Supabase y confirmar que `/api/cron/expire-affiliate-proofs` lo borra.
