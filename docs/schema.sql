@@ -104,8 +104,8 @@ create table public.subscriptions (
   mp_subscription_id text,
   current_period_start timestamptz,
   current_period_end timestamptz,
-  created_at timestamptz not null default now()
-  first_commission_credited boolean not null default false,
+  created_at timestamptz not null default now(),
+  first_commission_credited boolean not null default false
 );
 
 create index subscriptions_user_id_idx on public.subscriptions(user_id);
