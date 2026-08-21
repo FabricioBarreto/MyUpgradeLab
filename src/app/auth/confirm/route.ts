@@ -16,6 +16,9 @@ export async function GET(request: NextRequest) {
     if (!error) {
       return NextResponse.redirect(`${origin}${next}`)
     }
+    console.error('Error canjeando codigo de recuperacion:', error.message, error)
+  } else {
+    console.error('Ruta /auth/confirm llamada sin parametro code')
   }
 
   return NextResponse.redirect(
