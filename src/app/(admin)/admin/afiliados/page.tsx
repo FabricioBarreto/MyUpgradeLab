@@ -113,12 +113,13 @@ export default async function AdminAfiliadosPage() {
                 </div>
                 <div>
                   <label className="block text-xs text-neutral-500">
-                    Comprobante (opcional, se borra a los 30 dias)
+                    Comprobante (obligatorio, se borra a los 30 dias)
                   </label>
                   <input
                     type="file"
                     name="proof"
                     accept="image/*"
+                    required
                     className="mt-1 text-sm"
                   />
                 </div>

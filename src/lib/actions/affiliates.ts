@@ -119,14 +119,17 @@ export async function markAffiliatePaid(formData: FormData) {
   const maturedIds = (matured ?? []).map((r) => r.id);
   if (maturedIds.length === 0) return;
 
-  // El comprobante es opcional: si no se sube nada, se sigue marcando como
-  // pagado igual, solo sin evidencia adjunta.
-  let proofPublicId: string | null = null;
-  if (proofFile && proofFile.size > 0) {
-    const buffer = Buffer.from(await proofFile.arrayBuffer());
-    const { publicId } = await uploadAffiliatePaymentProof(buffer, affiliateId);
-    proofPublicId = publicId;
+  // El comprobante es obligatorio (04/08/2026 lo dejamos opcional, pero el
+  // fundador prefiere no poder marcar un pago como hecho sin evidencia
+  // adjunta que despues pueda revisar). Si falta, no se marca nada como
+  // pagado y no se tocan las filas de affiliate_referrals.
+  if (!proofFile || proofFile.size === 0) {
+    return;
   }
+
+  const buffer = Buffer.from(await proofFile.arrayBuffer());
+  const { publicId } = await uploadAffiliatePaymentProof(buffer, affiliateId);
+  const proofPublicId = publicId;
 
   await supabase
     .from("affiliate_referrals")
