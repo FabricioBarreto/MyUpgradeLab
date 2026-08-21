@@ -71,6 +71,12 @@ export default async function AdminAfiliadosPage() {
                     <>
                       Alias/CBU:{" "}
                       <span className="font-medium">{a.payout_alias}</span>
+                      {a.payout_name && (
+                        <span className="text-neutral-500"> — Titular: {a.payout_name}</span>
+                      )}
+                      {!a.payout_name && (
+                        <span className="ml-1 text-amber-600">(sin nombre de titular cargado)</span>
+                      )}
                     </>
                   ) : (
                     <span className="text-amber-600">

@@ -84,24 +84,33 @@ export default async function AfiliadosPage() {
         <p className="mt-1 text-xs text-neutral-500">
           Lo necesitamos para poder transferirte tu comision el dia de pago.
         </p>
-        <form action={updatePayoutAlias} className="mt-3 flex flex-col gap-2 sm:flex-row">
+        <form action={updatePayoutAlias} className="mt-3 flex flex-col gap-2">
           <input
             type="text"
-            name="payoutAlias"
-            defaultValue={affiliate.payout_alias ?? ""}
-            placeholder="mi.alias.mp o CBU de 22 digitos"
+            name="payoutName"
+            defaultValue={affiliate.payout_name ?? ""}
+            placeholder="Nombre y apellido del titular de la cuenta"
             className="w-full rounded-md border border-neutral-300 px-3 py-2 text-sm focus:border-neutral-900 focus:outline-none"
           />
-          <button
-            type="submit"
-            className="shrink-0 rounded-md bg-neutral-900 px-4 py-2 text-sm font-medium text-white hover:bg-neutral-800"
-          >
-            Guardar
-          </button>
+          <div className="flex flex-col gap-2 sm:flex-row">
+            <input
+              type="text"
+              name="payoutAlias"
+              defaultValue={affiliate.payout_alias ?? ""}
+              placeholder="mi.alias.mp o CBU de 22 digitos"
+              className="w-full rounded-md border border-neutral-300 px-3 py-2 text-sm focus:border-neutral-900 focus:outline-none"
+            />
+            <button
+              type="submit"
+              className="shrink-0 rounded-md bg-neutral-900 px-4 py-2 text-sm font-medium text-white hover:bg-neutral-800"
+            >
+              Guardar
+            </button>
+          </div>
         </form>
-        {!affiliate.payout_alias && (
+        {(!affiliate.payout_alias || !affiliate.payout_name) && (
           <p className="mt-2 text-xs text-amber-600">
-            Todavia no cargaste un alias/CBU — no vamos a poder pagarte hasta que lo hagas.
+            Todavia no cargaste el nombre del titular y/o el alias/CBU — no vamos a poder pagarte hasta que completes los dos.
           </p>
         )}
       </div>

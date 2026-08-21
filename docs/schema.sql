@@ -120,6 +120,9 @@ create table public.affiliates (
   -- Alias o CBU donde se le transfiere la comision. Lo carga el propio
   -- afiliado desde /dashboard/afiliados (ver policy affiliates_update_own).
   payout_alias text,
+  -- Nombre y apellido del titular de la cuenta destino, para poder confirmar
+  -- que se le transfiere a la persona correcta antes de pagar (21/08/2026).
+  payout_name text,
   created_at timestamptz not null default now()
 );
 

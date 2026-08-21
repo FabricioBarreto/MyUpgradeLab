@@ -56,6 +56,7 @@ export async function becomeAffiliate() {
 // la comision acumulada el dia de pago (proceso manual, ver docs/TASKS.md).
 export async function updatePayoutAlias(formData: FormData) {
   const payoutAlias = (formData.get("payoutAlias") as string)?.trim();
+  const payoutName = (formData.get("payoutName") as string)?.trim();
 
   const supabase = await createClient();
   const {
@@ -66,7 +67,7 @@ export async function updatePayoutAlias(formData: FormData) {
 
   await supabase
     .from("affiliates")
-    .update({ payout_alias: payoutAlias || null })
+    .update({ payout_alias: payoutAlias || null, payout_name: payoutName || null })
     .eq("user_id", user.id);
 
   revalidatePath("/dashboard/afiliados");
