@@ -19,23 +19,26 @@ Los fuentes (HTML) y el PDF final de cada curso se guardan en `/cursos/<categori
 - [ ] Revision legal profesional de `/terminos`, `/privacidad`, `/cookies` y `/reembolsos` (04/08/2026) — Claude redacto un borrador razonable basado en la normativa vigente (Ley 24.240, Codigo Civil y Comercial art. 1116, Ley 25.326, Disposicion 954/2025), pero no es abogado. Antes de promocionar fuerte la pagina conviene que un abogado lo revise, en particular la exclusion del derecho de arrepentimiento (si esta mal redactada, no protege).
 
 ## In Progress
-- [ ] Comision de afiliados en renovaciones de suscripcion — implementado (21/08/2026): el
-  webhook ahora acredita comision en cada evento `payment` cuyo `external_reference`
-  corresponde a una suscripcion (no a una compra), gateado por la nueva columna
-  `subscriptions.first_commission_credited` para no duplicar la comision del primer mes
-  entre el evento de activacion y el evento de pago. Topic `payments` activado en el
-  panel de MP (21/08/2026). Falta verificar con el primer cobro recurrente real de un
-  suscriptor referido, revisando en Vercel > Logs que no aparezca el error de pago sin
-  purchase ni subscription asociada.
-  Verificado (21/08/2026): una suscripcion real de un usuario sin afiliado confirmo que
-  el cobro base sigue funcionando bien, pero no sirve para probar la comision recurrente
-  (no vino con `?ref=`). Sigue pendiente esperar un cobro recurrente real de un suscriptor
-  que si haya entrado con codigo de afiliado.
  [x] ~~Integracion Mercado Pago (Suscripciones) — incluir periodo de prueba de 7 dias~~ — superado, ver
   Done (08/08/2026): se saco el `free_trial`, la suscripcion ya no tiene periodo de prueba. La integracion
   en si (preapproval ad-hoc, webhook, boton de suscripcion) esta completa y probada con un pago real.
 
 ## Done
+- [x] Comision de afiliados en renovaciones de suscripcion — implementado (21/08/2026) y dado por
+  cerrado sin verificacion end-to-end de un cobro recurrente real (22/08/2026, decision del
+  fundador). El codigo ya esta revisado y el primer cobro de suscripcion (sin afiliado) confirmo
+  que el flujo base de pagos sigue funcionando bien tras el cambio. Riesgo aceptado: si la logica
+  de `first_commission_credited` tuviera un caso de borde no contemplado, el peor escenario es que
+  un afiliado no cobre la comision de un mes de renovacion puntual — detectable revisando
+  `affiliate_referrals` si algun afiliado reporta un monto que no cierra, y corregible a mano en ese
+  momento.
+- [x] Verificado build de produccion y lint limpios (21/08/2026): `npm run build` compila sin
+  errores (TypeScript + Turbopack) y `npm run lint` no reporta problemas. Confirmadas en Vercel
+  todas las variables de entorno de produccion con credenciales reales (no `TEST-`):
+  `MP_ACCESS_TOKEN_CHECKOUT`, `MP_ACCESS_TOKEN_SUSCRIP`, `MP_WEBHOOK_SECRET_CHECKOUT`,
+  `MP_WEBHOOK_SECRET_SUSCRIP`, `SUPABASE_SERVICE_ROLE_KEY`, `CRON_SECRET`, `SMTP_HOST`,
+  `SMTP_PORT`, `SMTP_USER`, `SMTP_PASSWORD`, `CLOUDINARY_CLOUD_NAME`, `CLOUDINARY_API_KEY`,
+  `CLOUDINARY_API_SECRET`.
 - [x] Probado de punta a punta el flujo de pago de comisiones a afiliados con comprobante
   (21/08/2026). `CRON_SECRET` ya estaba cargado en Vercel (Production/Preview) desde el
   14/08. Se armo una fila de prueba en `affiliate_referrals` (madura, 31 dias atras) para
