@@ -27,16 +27,22 @@ Los fuentes (HTML) y el PDF final de cada curso se guardan en `/cursos/<categori
   en el panel de MP (app Suscripciones, pestana Modo productivo) y verificar con el
   primer cobro recurrente real de un suscriptor referido, revisando en Vercel > Logs
   que no aparezca el error de pago sin purchase ni subscription asociada.
-- [ ] Probar de punta a punta el pago de comisiones con comprobante (14/08/2026, ver detalle en Done): subir
-  un comprobante real desde `/admin/afiliados`, confirmar que aparece en Cloudinary como `authenticated`,
-  simular el vencimiento a 30 dias en Supabase y confirmar que `/api/cron/expire-affiliate-proofs` lo borra.
-  Falta tambien cargar `CRON_SECRET` en las Environment Variables de Vercel (Production) — sin eso el cron
-  no corre en produccion aunque el codigo ya este deployado.
  [x] ~~Integracion Mercado Pago (Suscripciones) — incluir periodo de prueba de 7 dias~~ — superado, ver
   Done (08/08/2026): se saco el `free_trial`, la suscripcion ya no tiene periodo de prueba. La integracion
   en si (preapproval ad-hoc, webhook, boton de suscripcion) esta completa y probada con un pago real.
 
 ## Done
+- [x] Probado de punta a punta el flujo de pago de comisiones a afiliados con comprobante
+  (21/08/2026). `CRON_SECRET` ya estaba cargado en Vercel (Production/Preview) desde el
+  14/08. Se armo una fila de prueba en `affiliate_referrals` (madura, 31 dias atras) para
+  poder pagarla sin esperar el ciclo real, se subio un comprobante desde `/admin/afiliados`,
+  se confirmo el registro correcto en la base (`proof_url`, `proof_uploaded_at`, `paid_at`,
+  `status`), se forzo el vencimiento a 30+ dias y se disparo `/api/cron/expire-affiliate-proofs`
+  a mano con `curl` — borro el comprobante vencido y limpio las columnas sin tocar `paid_at`.
+  De paso se detecto que el primer intento de pago se completo sin comprobante (el campo era
+  opcional): se decidio hacerlo obligatorio para asegurar que todo pago quede con evidencia
+  adjunta — `markAffiliatePaid` ahora corta sin marcar nada si falta el archivo, y el input
+  del formulario tiene `required`.
 - [x] Periodo de espera de 30 dias antes de habilitar el pago de una comision (14/08/2026). Antes,
   cualquier comision recien generada (`affiliate_referrals.status = pending`) aparecia lista para pagar
   de inmediato en `/admin/afiliados`. Ahora solo se muestra y se puede pagar lo que ya paso
