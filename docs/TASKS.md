@@ -19,6 +19,20 @@ Los fuentes (HTML) y el PDF final de cada curso se guardan en `/cursos/<categori
 - [ ] Revision legal profesional de `/terminos`, `/privacidad`, `/cookies` y `/reembolsos` (04/08/2026) — Claude redacto un borrador razonable basado en la normativa vigente (Ley 24.240, Codigo Civil y Comercial art. 1116, Ley 25.326, Disposicion 954/2025), pero no es abogado. Antes de promocionar fuerte la pagina conviene que un abogado lo revise, en particular la exclusion del derecho de arrepentimiento (si esta mal redactada, no protege).
 
 ## In Progress
+- [x] ~~Revisar que recuperar contraseña funcione correctamente~~ — resuelto y mejorado
+  (22/08/2026). El email de recuperacion ahora lo mandamos nosotros por nuestro propio
+  SMTP (Gmail) en vez de depender del sistema de emails de Supabase. Detalle tecnico
+  para el futuro: `admin.generateLink()` NO es compatible con el flujo PKCE que usa
+  este proyecto (confirmado en github.com/supabase/auth-js/issues/767) — el
+  `action_link` que devuelve apunta al dominio de Supabase y no sirve para nuestro
+  `/auth/confirm` (que antes solo manejaba `?code=` via `exchangeCodeForSession`).
+  La solucion: usar `data.properties.hashed_token` (no `action_link`) para armar un
+  link propio a `/auth/confirm?token_hash=...&type=recovery`, y agregar soporte en
+  esa ruta para verificar con `supabase.auth.verifyOtp({ type, token_hash })` en vez
+  de `exchangeCodeForSession` — sin tocar nada en el panel de Supabase (nunca se pasa
+  por el dominio de Supabase, todo el link es propio). Probado de punta a punta en
+  produccion: email llega por SMTP propio, el link no se traba en "Verificando el
+  link", y el cambio de contraseña se guarda correctamente.
  [x] ~~Integracion Mercado Pago (Suscripciones) — incluir periodo de prueba de 7 dias~~ — superado, ver
   Done (08/08/2026): se saco el `free_trial`, la suscripcion ya no tiene periodo de prueba. La integracion
   en si (preapproval ad-hoc, webhook, boton de suscripcion) esta completa y probada con un pago real.
