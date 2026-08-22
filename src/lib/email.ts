@@ -84,6 +84,22 @@ export async function sendSubscriptionActiveEmail(params: { to: string }): Promi
 
   await sendEmail(to, 'Tu suscripcion a UpgradeLab esta activa', html)
 }
+// Se dispara desde requestPasswordReset (src/lib/actions/auth.ts). Generamos
+// el link de recuperacion nosotros mismos (service role, admin.generateLink)
+// y lo mandamos por nuestro propio SMTP, en vez de depender del email/SMTP
+// que gestiona Supabase internamente — asi tenemos control total del
+// template y evitamos depender de esa configuracion.
+export async function sendPasswordResetEmail(params: { to: string; actionLink: string }): Promise<void> {
+  const { to, actionLink } = params
+  const html = layout(
+    'Recuperá tu contraseña',
+    `<p>Recibimos un pedido para restablecer tu contraseña. Tocá el botón para elegir una nueva.</p>
+     <p style="margin:20px 0;"><a href="${actionLink}" style="background:#171717;color:#ffffff;text-decoration:none;padding:10px 20px;border-radius:6px;font-size:14px;display:inline-block;">Restablecer contraseña</a></p>
+     <p style="color:#666;font-size:12px;">Si no pediste esto, podés ignorar este email con tranquilidad.</p>`
+  )
+
+  await sendEmail(to, 'Recuperá tu contraseña — UpgradeLab', html)
+}
 
 // Notifica al admin (SMTP_USER) cuando alguien envia el formulario de
 // "boton de arrepentimiento" (ver src/app/(public)/reembolsos). Cumple con

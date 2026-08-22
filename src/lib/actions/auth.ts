@@ -4,6 +4,7 @@ import { createClient } from '@/lib/supabase/server'
 import { createServiceClient } from '@/lib/supabase/service'
 import { becomeAffiliate } from '@/lib/actions/affiliates'
 import { getAppUrl } from '@/lib/constants'
+import { sendPasswordResetEmail } from '@/lib/email'
 import { cookies } from 'next/headers'
 import { redirect } from 'next/navigation'
 
@@ -118,11 +119,29 @@ export async function signOut() {
 
 export async function requestPasswordReset(formData: FormData) {
   const email = formData.get('email') as string
-  const supabase = await createClient()
 
-  await supabase.auth.resetPasswordForEmail(email, {
-       redirectTo: `${getAppUrl()}/auth/confirm?next=/reset-password`,
+  const service = createServiceClient()
+
+  const { data, error } = await service.auth.admin.generateLink({
+    type: 'recovery',
+    email,
   })
+
+  // No revelamos si el email existe o no: generamos el link nosotros mismos
+  // (service role) y lo mandamos por nuestro propio SMTP. admin.generateLink
+  // no es compatible con el flujo PKCE que usa este proyecto (confirmado:
+  // github.com/supabase/auth-js/issues/767) — el `action_link` que devuelve
+  // apunta al dominio de Supabase y no sirve para nuestro /auth/confirm.
+  // En cambio usamos el `hashed_token` en crudo para armar nuestro propio
+  // link, verificado ahi con verifyOtp (no exchangeCodeForSession).
+  if (!error && data?.properties?.hashed_token) {
+    const actionLink = `${getAppUrl()}/auth/confirm?token_hash=${data.properties.hashed_token}&type=recovery&next=/reset-password`
+    try {
+      await sendPasswordResetEmail({ to: email, actionLink })
+    } catch (err) {
+      console.error('Error enviando email de recuperacion de contraseña', err)
+    }
+  }
 
   // Mensaje generico siempre (exista o no el email) para no revelar que
   // direcciones estan registradas.
