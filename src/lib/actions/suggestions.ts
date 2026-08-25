@@ -3,6 +3,7 @@
 import { createClient } from '@/lib/supabase/server'
 import { revalidatePath } from 'next/cache'
 import { redirect } from 'next/navigation'
+import { checkRateLimit } from '@/lib/rate-limit'
 
 // Cualquiera puede sugerir (incluso sin cuenta) — la policy suggestions_insert_any
 // del schema permite insert con check(true). Si hay sesion, guardamos el
@@ -14,6 +15,11 @@ export async function createSuggestion(formData: FormData) {
 
   if (!message) {
     redirect(`/sugerencias?error=${encodeURIComponent('Escribi tu sugerencia antes de enviar')}`)
+  }
+
+  const allowed = await checkRateLimit('suggestion')
+  if (!allowed) {
+    redirect(`/sugerencias?error=${encodeURIComponent('Ya enviaste varias sugerencias, esperá unos minutos antes de volver a intentar')}`)
   }
 
   const supabase = await createClient()

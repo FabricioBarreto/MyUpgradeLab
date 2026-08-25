@@ -2,6 +2,7 @@
 
 import { redirect } from 'next/navigation'
 import { sendArrepentimientoRequestEmail } from '@/lib/email'
+import { checkRateLimit } from '@/lib/rate-limit'
 
 function generateCode(): string {
   const date = new Date()
@@ -24,6 +25,11 @@ export async function submitArrepentimiento(formData: FormData) {
 
   if (!email) {
     redirect(`/reembolsos?error=${encodeURIComponent('Ingresa el email con el que compraste')}`)
+  }
+
+  const allowed = await checkRateLimit('arrepentimiento')
+  if (!allowed) {
+    redirect(`/reembolsos?error=${encodeURIComponent('Ya enviaste varios pedidos, esperá unos minutos antes de volver a intentar')}`)
   }
 
   const code = generateCode()

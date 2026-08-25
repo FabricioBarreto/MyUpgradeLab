@@ -19,6 +19,15 @@ Los fuentes (HTML) y el PDF final de cada curso se guardan en `/cursos/<categori
 - [ ] Revision legal profesional de `/terminos`, `/privacidad`, `/cookies` y `/reembolsos` (04/08/2026) — Claude redacto un borrador razonable basado en la normativa vigente (Ley 24.240, Codigo Civil y Comercial art. 1116, Ley 25.326, Disposicion 954/2025), pero no es abogado. Antes de promocionar fuerte la pagina conviene que un abogado lo revise, en particular la exclusion del derecho de arrepentimiento (si esta mal redactada, no protege).
 
 ## In Progress
+- [x] ~~Rate limiting en formularios publicos sin login (sugerencias, arrepentimiento)~~ —
+  resuelto (22/08/2026). Antes cualquiera podia spamear esos formularios sin limite (insert
+  anonimo permitido por RLS). Se agrego `src/lib/rate-limit.ts`: tabla nueva `rate_limits`
+  (accion + IP + fecha, sin policies — solo accesible via service role, nunca expuesta al
+  cliente) y un helper `checkRateLimit(action)` que cuenta envios desde la misma IP
+  (`x-forwarded-for`) en los ultimos 10 minutos y rechaza el cuarto intento en adelante.
+  Enganchado en `createSuggestion` y `submitArrepentimiento`. Pendiente si se quiere reforzar
+  mas adelante: agregar un honeypot a los formularios (campo oculto que los bots completan y
+  los humanos no ven) como capa extra — no implementado todavia, solo el rate limit por IP.
 - [x] ~~Revisar que recuperar contraseña funcione correctamente~~ — resuelto y mejorado
   (22/08/2026). El email de recuperacion ahora lo mandamos nosotros por nuestro propio
   SMTP (Gmail) en vez de depender del sistema de emails de Supabase. Detalle tecnico
@@ -38,6 +47,28 @@ Los fuentes (HTML) y el PDF final de cada curso se guardan en `/cursos/<categori
   en si (preapproval ad-hoc, webhook, boton de suscripcion) esta completa y probada con un pago real.
 
 ## Done
+- [x] Rate limiting en formularios publicos sin auth (22/08/2026). Se agrego
+  `src/lib/rate-limit.ts` — implementacion simple en memoria (por IP + tipo de
+  accion, `Map` con ventana de 5 minutos y maximo 3 envios), sin dependencias
+  nuevas ni servicio externo. Enganchado en `createSuggestion`
+  (`src/lib/actions/suggestions.ts`) y `submitArrepentimiento`
+  (`src/lib/actions/legal.ts`), los dos formularios publicos que aceptan
+  submits sin sesion. La IP se toma de `x-forwarded-for` (confiable en
+  Vercel, el proxy la sobreescribe con la IP real del cliente).
+  Limitacion conocida y aceptada: no es distribuido — cada instancia
+  serverless de Vercel tiene su propio mapa en memoria, asi que el limite
+  real efectivo puede ser mayor a 3 si el trafico escala a varias instancias
+  simultaneas, y se resetea en cada deploy. Suficiente como primera barrera
+  contra spam/bots para el volumen actual del sitio; si mas adelante hace
+  falta un limite estricto y compartido, migrar a Upstash Redis
+  (`@upstash/ratelimit`) es el paso natural (misma firma de funcion). Build
+  y lint verificados limpios (28 rutas).
+- [x] Fix: boton "Compartir por WhatsApp" en `/dashboard/afiliados` rompia el
+  build (22/08/2026). Al tag `<a>` le faltaba la apertura (`<a`) antes de
+  `href={whatsappShareUrl}` — quedaban los atributos sueltos como si fueran
+  JSX invalido. `npm run build` fallaba con "Unexpected token" en ese punto.
+  Corregido agregando `<a` antes del `href`. Build y lint verificados
+  limpios.
 - [x] Comision de afiliados en renovaciones de suscripcion — implementado (21/08/2026) y dado por
   cerrado sin verificacion end-to-end de un cobro recurrente real (22/08/2026, decision del
   fundador). El codigo ya esta revisado y el primer cobro de suscripcion (sin afiliado) confirmo

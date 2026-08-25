@@ -162,6 +162,22 @@ create table public.suggestions (
   created_at timestamptz not null default now()
 );
 
+
+-- ---------- rate_limits ----------
+-- Rate limiting simple por IP para formularios publicos sin login
+-- (sugerencias, boton de arrepentimiento). Sin policies a proposito: solo
+-- se accede via service role (src/lib/rate-limit.ts), nunca expuesta al
+-- cliente. Ver "Rate limiting en formularios publicos" en TASKS.md (22/08/2026).
+create table public.rate_limits (
+  id uuid primary key default gen_random_uuid(),
+  action text not null,
+  ip text not null,
+  created_at timestamptz not null default now()
+);
+
+create index rate_limits_action_ip_created_idx on public.rate_limits(action, ip, created_at);
+alter table public.rate_limits enable row level security;
+
 -- ============================================================
 -- RLS
 -- ============================================================
