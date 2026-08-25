@@ -1,59 +1,44 @@
 import { headers } from 'next/headers'
+import { createServiceClient } from '@/lib/supabase/service'
 
-// Rate limiting simple en memoria, pensado para frenar abuso basico en
-// formularios publicos sin auth (sugerencias, arrepentimiento). Limita por
-// IP + tipo de accion.
-//
-// Limitacion conocida: no es distribuido. En Vercel cada instancia
-// serverless tiene su propio mapa en memoria, asi que si el trafico escala
-// a varias instancias el limite real efectivo puede terminar siendo mas alto
-// que MAX_REQUESTS (cada instancia cuenta por separado). Para el volumen
-// actual del sitio esto alcanza como primera barrera; si mas adelante hace
-// falta un limite estricto y compartido entre instancias, migrar a Upstash
-// Redis (@upstash/ratelimit) es el paso natural — misma firma de funcion,
-// solo cambia la implementacion interna.
+// Rate limiting simple por IP para formularios publicos sin login
+// (sugerencias, arrepentimiento). No usa Redis/Upstash — alcanza con una
+// tabla en Supabase dado el volumen actual del sitio. Usa siempre el
+// service role: la tabla rate_limits no tiene policies, asi que solo es
+// accesible desde el servidor, nunca desde el cliente.
+const WINDOW_MINUTES = 10
+const MAX_REQUESTS_PER_WINDOW = 3
 
-const WINDOW_MS = 5 * 60 * 1000 // ventana de 5 minutos
-const MAX_REQUESTS = 3 // maximo de envios por IP+accion dentro de la ventana
-
-type Bucket = { count: number; windowStart: number }
-
-const buckets = new Map<string, Bucket>()
-
-// Barrido perezoso: cada llamada limpia entradas vencidas, para no acumular
-// memoria indefinidamente en una misma instancia de larga vida.
-function cleanup(now: number) {
-  for (const [key, bucket] of buckets) {
-    if (now - bucket.windowStart > WINDOW_MS) {
-      buckets.delete(key)
-    }
-  }
-}
-
-// Devuelve true si la request esta permitida, false si supero el limite.
+// Devuelve true si el envio esta permitido (y lo registra). Devuelve false
+// si ya se supero el limite en la ventana de tiempo — en ese caso no
+// registra nada nuevo, para no extender la ventana de bloqueo indefinidamente.
 export async function checkRateLimit(action: string): Promise<boolean> {
   const headersList = await headers()
-  const ip =
-    headersList.get('x-forwarded-for')?.split(',')[0]?.trim() ??
-    headersList.get('x-real-ip') ??
-    'unknown'
+  const ip = headersList.get('x-forwarded-for')?.split(',')[0]?.trim() || 'unknown'
 
-  const key = `${action}:${ip}`
-  const now = Date.now()
+  const service = createServiceClient()
+  const cutoff = new Date(Date.now() - WINDOW_MINUTES * 60 * 1000).toISOString()
 
-  cleanup(now)
+  const { count, error: countError } = await service
+    .from('rate_limits')
+    .select('id', { count: 'exact', head: true })
+    .eq('action', action)
+    .eq('ip', ip)
+    .gte('created_at', cutoff)
 
-  const existing = buckets.get(key)
-
-  if (!existing || now - existing.windowStart > WINDOW_MS) {
-    buckets.set(key, { count: 1, windowStart: now })
+  if (countError) {
+    console.error('Error consultando rate_limits, se permite el envio por defecto', countError)
     return true
   }
 
-  if (existing.count >= MAX_REQUESTS) {
+  if ((count ?? 0) >= MAX_REQUESTS_PER_WINDOW) {
     return false
   }
 
-  existing.count += 1
+  const { error: insertError } = await service.from('rate_limits').insert({ action, ip })
+  if (insertError) {
+    console.error('Error registrando rate_limits', insertError)
+  }
+
   return true
 }
