@@ -1,0 +1,152 @@
+
+
+
+
+
+
+
+  <h2>01 · Introducción</h2>
+  <p>En 2026 ya no hace falta estudiar programación durante años para crear una app, una web o una herramienta que resuelva un problema real. Hace falta saber pedirle bien las cosas a la IA — y eso es exactamente lo que enseña esta guía.</p>
+
+  <p>A este estilo de trabajo se lo conoce como <strong>"vibe coding"</strong>: describís en lenguaje natural lo que querés construir, y la IA escribe el código completo por vos — interfaz, lógica, base de datos y, en muchos casos, hasta el despliegue online. No es magia ni es solo para prototipos de juguete: hoy hay productos reales, con usuarios reales y hasta con ingresos reales, construidos así.</p>
+
+  <p>Esta guía es el <strong>Nivel 1</strong> de la serie de Programación/IA de UpgradeLab. Está pensada para quien parte de cero. Si ya programás y buscás integrar IA a tu flujo de trabajo profesional, el contenido que te sirve es el Nivel 2 (Flujos de trabajo). Si ya diste tus primeros pasos y querés construir un proyecto completo de punta a punta, te espera el Nivel 3.</p>
+
+  <blockquote><strong>Qué vas a poder hacer al terminar esta guía</strong><br />Elegir la herramienta correcta para tu primer proyecto, escribir prompts que realmente te den lo que pedís, entender lo mínimo indispensable de vocabulario técnico para no perderte, y saber qué hacer cuando el resultado no es el esperado — que va a pasar, y es normal.</blockquote>
+
+
+
+  <h2>02 · El panorama de herramientas</h2>
+  <p>No todas sirven para lo mismo. Elegir mal la herramienta es la causa número uno de frustración en quien recién arranca.</p>
+
+  <table>
+    <tbody><tr><th>Herramienta</th><th>Para qué sirve</th><th>Ideal si...</th></tr>
+    <tr>
+      <td><strong>Bolt.new</strong></td>
+      <td>Crear apps completas (interfaz + funcionalidad + base de datos) desde el navegador, sin instalar nada</td>
+      <td>Sos principiante absoluto y querés ver resultados en minutos</td>
+    </tr>
+    <tr>
+      <td><strong>Lovable</strong></td>
+      <td>Similar a Bolt, pensado especialmente para quien no programa: interfaz muy guiada</td>
+      <td>Querés construir un producto (no solo un prototipo) sin tocar código</td>
+    </tr>
+    <tr>
+      <td><strong>Replit</strong></td>
+      <td>Entorno completo en el navegador con su propio agente de IA, ideal para aprender viendo el código</td>
+      <td>Te interesa además ir entendiendo qué hace el código, no solo obtener el resultado</td>
+    </tr>
+    <tr>
+      <td><strong>v0 (de Vercel)</strong></td>
+      <td>Generar interfaces visuales (pantallas, componentes) a partir de una descripción o una imagen</td>
+      <td>Lo que necesitás es sobre todo el diseño visual de una pantalla o app</td>
+    </tr>
+  </tbody></table>
+
+  <p>Las cuatro aceptan instrucciones en español y devuelven todo en español (textos, botones, menús), así que no hay barrera de idioma para arrancar.</p>
+
+  <blockquote><strong>Recomendación para tu primer proyecto</strong><br />Empezá con <strong>Bolt.new</strong> o <strong>Replit</strong>. Son gratuitos para probar, no requieren instalar nada, y en el capítulo 4 vamos a usar uno de los dos para el ejemplo paso a paso.</blockquote>
+
+
+
+  <h2>03 · Cómo pedir bien las cosas</h2>
+  <p>La diferencia entre un buen resultado y uno frustrante casi nunca es la herramienta — es el prompt.</p>
+
+  <p>Pedirle a la IA que construya algo es distinto de charlar con un chatbot. Un buen prompt de construcción tiene cuatro partes:</p>
+
+  <ol>
+    <li><strong>Qué es</strong> — una frase clara de qué querés construir.</li>
+    <li><strong>Para quién</strong> — quién lo va a usar, porque cambia el tono y las funciones necesarias.</li>
+    <li><strong>Qué tiene que poder hacer</strong> — la lista concreta de funciones, en orden de importancia.</li>
+    <li><strong>Cómo se tiene que ver</strong> — estilo visual, colores, referencias ("como Notion pero más simple", por ejemplo).</li>
+  </ol>
+
+  <pre><code>Prompt de ejemplo — flojo (evitalo)
+Hazme una app para organizar tareas</code></pre>
+
+  <pre><code>Prompt de ejemplo — bueno
+Quiero una app para organizar tareas personales, pensada para uso individual (no en equipo). Tiene que permitir: crear tareas con fecha límite, marcarlas como completadas, y agruparlas por categoría (trabajo, personal, urgente). Estilo visual minimalista, blanco y negro, tipografía grande y legible, sin decoración de más.</code></pre>
+
+  <p>Notá que el segundo prompt no menciona nada de código, lenguajes de programación ni tecnología — y no hace falta. Eso es justamente lo que hace la IA por vos.</p>
+
+
+
+  <h2>04 · Tu primer proyecto, paso a paso</h2>
+  <p>Vamos a construir algo real de punta a punta: una landing page simple para un negocio o proyecto personal.</p>
+
+  <li><strong>Entrá a Bolt.new o Replit y creá un proyecto nuevo</strong> 
+      
+      <p>No hace falta cuenta paga para empezar a probar.</p>
+    </li>
+
+  <li><strong>Escribí el prompt inicial siguiendo la estructura del capítulo 3</strong> 
+      
+      <p>Describí qué es, para quién, qué secciones necesita (por ejemplo: presentación, servicios, contacto) y el estilo visual.</p>
+    </li>
+
+  <li><strong>Mirá el resultado antes de seguir pidiendo cosas nuevas</strong> 
+      
+      <p>La tentación es pedir todo de una — mejor ver primero qué generó, para dar el siguiente pedido con contexto de lo que ya existe.</p>
+    </li>
+
+  <li><strong>Pedí cambios puntuales, uno por vez</strong> 
+      
+      <p>En vez de "mejorala", pedí cosas concretas: "el botón principal tiene que ser más grande y estar centrado", "agregá una sección de preguntas frecuentes debajo de servicios".</p>
+    </li>
+
+  <li><strong>Publicala</strong> 
+      
+      <p>Tanto Bolt como Replit tienen un botón de publicar/deploy que te da un link funcionando, sin necesidad de configurar servidores ni dominios técnicos.</p>
+    </li>
+
+  <pre><code>Prompt inicial de ejemplo para este ejercicio
+Quiero una landing page de una página para [tu negocio o proyecto]. Secciones: portada con título y frase corta, qué ofrezco (3 puntos), cómo contactarme (whatsapp y email). Estilo minimalista, un solo color de acento, tipografía grande.</code></pre>
+
+
+
+  <h2>05 · Lo mínimo que conviene entender</h2>
+  <p>No hace falta ser programador, pero cuatro o cinco términos te van a ahorrar mucha confusión.</p>
+
+  <ul><li><strong>Componente</strong> — Una pieza reutilizable de la interfaz (un botón, una tarjeta, un menú). Cuando le pedís a la IA "cambiá el botón de arriba", está identificando un componente.</li><li><strong>Base de datos</strong> — Donde se guarda la información de tu app (usuarios, tareas, productos) para que no se pierda al cerrar la pantalla. Herramientas como Bolt y Lovable la configuran automáticamente si se lo pedís.</li><li><strong>Deploy / publicar</strong> — El paso que convierte tu proyecto de "algo que solo vos ves" a un link real que cualquiera puede abrir desde internet.</li><li><strong>Variable de entorno</strong> — Un dato sensible (como una contraseña o una clave de acceso a otro servicio) que se guarda por separado del código, para no exponerlo.</li><li><strong>API / integración</strong> — La forma en que tu app se conecta con otro servicio externo (por ejemplo, un sistema de pagos o de envío de emails).</li></ul>
+
+
+
+  <h2>06 · Cuando la IA no te da lo que pediste</h2>
+  <p>Va a pasar. No es un fracaso tuyo ni de la herramienta — es parte normal del proceso.</p>
+
+  <ul>
+    <li><strong>Sé específico, no genérico.</strong> "No me gusta" no le da información útil a la IA. "El texto es muy chico y el botón debería estar centrado" sí.</li>
+    <li><strong>Volvé un paso atrás si hace falta.</strong> Todas estas herramientas guardan el historial de versiones — si un cambio rompió algo, podés volver a la versión anterior y pedir el cambio de otra forma.</li>
+    <li><strong>Dividí pedidos grandes en pedidos chicos.</strong> Es mejor pedir tres cambios chicos y confirmar cada uno, que un cambio enorme que después es difícil de corregir si algo sale mal.</li>
+    <li><strong>Copiá el error exacto si algo se rompe.</strong> Si aparece un mensaje de error en pantalla, pegárselo tal cual a la IA suele resolver el problema más rápido que describirlo con tus palabras.</li>
+  </ul>
+
+
+
+  <h2>07 · Límites y cuidados</h2>
+
+  <ul>
+    <li><strong>Datos sensibles.</strong> No le pidas a la IA que maneje contraseñas, tarjetas o información personal de terceros sin entender primero cómo se está guardando esa información.</li>
+    <li><strong>Escalabilidad.</strong> Estas herramientas son excelentes para lanzar algo rápido y validar una idea. Si tu proyecto crece mucho (miles de usuarios), en algún punto vas a necesitar ayuda de alguien con conocimiento técnico más profundo — y está bien, es una señal de que el proyecto funcionó.</li>
+    <li><strong>No todo lo que se ve bien funciona bien.</strong> Probá siempre tu app como la probaría un usuario real, no solo mirando que la pantalla se vea prolija.</li>
+  </ul>
+
+  <blockquote><strong>Ojo:</strong> antes de publicar algo con datos de usuarios reales (registros, pagos, información personal), es buena idea que alguien con experiencia técnica revise al menos los aspectos de seguridad básicos. El Nivel 2 y el Nivel 3 de esta serie profundizan justamente en eso.</blockquote>
+
+
+
+  <h2>08 · Checklist y hacia dónde seguir</h2>
+
+  <ul>
+    <li>Elegí la herramienta correcta para tu primer proyecto (Bolt.new o Replit para empezar).</li>
+    <li>Escribí tu primer prompt siguiendo la estructura de 4 partes: qué es, para quién, qué hace, cómo se ve.</li>
+    <li>Construiste algo real, paso a paso, sin pedir todo de una vez.</li>
+    <li>Sabés qué significan componente, base de datos, deploy, variable de entorno y API.</li>
+    <li>Sabés qué hacer cuando el resultado no es el esperado: ser específico, volver atrás, dividir en pedidos chicos.</li>
+  </ul>
+
+  <blockquote><strong>Siguiente paso</strong><br />Cuando ya te sientas cómodo construyendo cosas así, el <strong>Nivel 2 — Flujos de trabajo</strong> te muestra cómo se usa la IA cuando ya se programa de forma más tradicional: herramientas como Claude Code, Cursor y GitHub Copilot, pensadas para trabajar sobre proyectos de código más grandes y complejos.</blockquote>
+
+
+
+

@@ -176,6 +176,7 @@ create table public.rate_limits (
 );
 
 create index rate_limits_action_ip_created_idx on public.rate_limits(action, ip, created_at);
+
 alter table public.rate_limits enable row level security;
 
 -- ============================================================
