@@ -6,6 +6,7 @@ import { accessTypeLabel, categoryLabel, formatPrice } from "@/lib/format"
 import { createCheckoutPreference } from "@/lib/actions/checkout"
 import { PaymentBadge } from "@/components/payment-badge"
 import { TrackedSubmitButton } from "@/components/tracked-submit-button"
+import { extractFirstChapter } from "@/lib/toc"
 
 // Titulo/descripcion/imagen por curso: sin esto, compartir el link de un
 // curso puntual (WhatsApp, LinkedIn, el propio programa de afiliados) mostraba
@@ -99,6 +100,13 @@ export default async function CursoDetallePage({
 
   const hasAccess = hasPurchase || hasActiveSubscription
 
+  // Preview publico del capitulo 1, sin login ni compra — reduce la friccion
+  // de comprar a ciegas (hoy la pagina solo mostraba titulo/precio/descripcion
+  // corta). Solo tiene sentido para quien todavia no tiene acceso: quien ya
+  // compro o esta suscripto tiene el link a "Leer curso"/"Descargar PDF" arriba.
+  const previewHtml =
+    !hasAccess && course.content_html ? extractFirstChapter(course.content_html) : null
+
   return (
     <div className="mx-auto max-w-3xl px-6 py-12">
       <Link href="/cursos" className="text-sm text-neutral-500 hover:text-neutral-900">
@@ -130,7 +138,7 @@ export default async function CursoDetallePage({
         <p className="mt-6 rounded-md bg-red-50 px-3 py-2 text-sm text-red-700">{error}</p>
       )}
 
-      <div className="mt-8 rounded-lg border border-neutral-200 bg-white p-6">
+      <div id="comprar" className="mt-8 rounded-lg border border-neutral-200 bg-white p-6">
         {hasAccess ? (
           <>
             {hasPurchase ? (
@@ -198,6 +206,28 @@ export default async function CursoDetallePage({
           </>
         )}
       </div>
+
+      {previewHtml && (
+        <div className="mt-10">
+          <h2 className="text-xs font-medium uppercase tracking-wide text-neutral-400">
+            Vista previa — primer capítulo
+          </h2>
+          <div className="relative mt-3 overflow-hidden rounded-lg border border-neutral-200 bg-white p-6">
+            <article
+              className="course-article"
+              dangerouslySetInnerHTML={{ __html: previewHtml }}
+            />
+            <div className="pointer-events-none absolute inset-x-0 bottom-0 h-28 bg-gradient-to-t from-white to-transparent" />
+          </div>
+          <p className="mt-4 text-center text-sm text-neutral-500">
+            ¿Te sirvió lo que leíste?{" "}
+            <a href="#comprar" className="font-medium text-neutral-900 hover:underline">
+              Volvé arriba para acceder al curso completo
+            </a>
+            .
+          </p>
+        </div>
+      )}
     </div>
   )
 }

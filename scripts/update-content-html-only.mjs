@@ -1,24 +1,26 @@
+// Variante de publish-course.mjs SIN el paso de PDF (Puppeteer no puede
+// correr en este entorno: faltan librerias del sistema y no hay permisos
+// para instalarlas). Actualiza solo `content_html` en Supabase, dejando
+// `resource_url` (el PDF ya subido) intacto. El PDF se tiene que regenerar
+// aparte, corriendo `publish-course.mjs <categoria> <slug> --update` desde
+// una maquina con Chrome disponible.
 import { readFileSync, writeFileSync, existsSync } from "fs"
-import { v2 as cloudinary } from "cloudinary"
 import { createClient } from "@supabase/supabase-js"
 import sanitizeHtml from "sanitize-html"
-import puppeteer from "puppeteer"
 import * as cheerio from "cheerio"
 
 const args = process.argv.slice(2)
 const dryRun = args.includes("--dry-run")
-const isUpdate = args.includes("--update")
 const [category, slug] = args.filter((a) => !a.startsWith("--"))
 
 if (!category || !slug) {
-  console.error("Uso: node scripts/publish-course.mjs <categoria> <slug> [--dry-run] [--update]")
+  console.error("Uso: node scripts/update-content-html-only.mjs <categoria> <slug> [--dry-run]")
   process.exit(1)
 }
 
 const baseDir = `cursos/${category}`
 const htmlPath = `${baseDir}/${slug}.html`
 const jsonPath = `${baseDir}/${slug}.json`
-const pdfPath = `${baseDir}/${slug}.pdf`
 const previewPath = `${baseDir}/${slug}.content-preview.html`
 
 if (!existsSync(htmlPath)) {
@@ -34,20 +36,7 @@ const meta = JSON.parse(readFileSync(jsonPath, "utf-8"))
 const rawHtml = readFileSync(htmlPath, "utf-8")
 const dbSlug = meta.slug || slug
 
-console.log(`\n=== ${isUpdate ? "Actualizando" : "Publicando"} "${meta.title}" (${category}/${slug}) ${dryRun ? "[DRY RUN]" : ""} ===\n`)
-
-console.log("[1/5] Generando PDF...")
-const browser = await puppeteer.launch()
-const page = await browser.newPage()
-await page.goto(`file://${process.cwd()}/${htmlPath}`, { waitUntil: "networkidle0" })
-await page.pdf({
-  path: pdfPath,
-  format: "A4",
-  printBackground: true,
-  margin: { top: "20mm", bottom: "20mm", left: "15mm", right: "15mm" },
-})
-await browser.close()
-console.log(`      OK -> ${pdfPath}`)
+console.log(`\n=== Actualizando SOLO content_html de "${meta.title}" (${category}/${slug}) ${dryRun ? "[DRY RUN]" : ""} ===\n`)
 
 function stripPrintMarkup(html) {
   const $ = cheerio.load(html)
@@ -118,64 +107,28 @@ const contentHtml = sanitizeHtml(cleanHtml, {
   allowedAttributes: { a: ["href", "target", "rel"], img: ["src", "alt"] },
   allowedSchemes: ["http", "https", "mailto"],
 })
-console.log("[2/5] content_html generado y sanitizado")
+console.log("content_html generado y sanitizado")
+
+writeFileSync(previewPath, contentHtml, "utf-8")
 
 if (dryRun) {
-  writeFileSync(previewPath, contentHtml, "utf-8")
-  console.log(`\n🔍 DRY RUN: nada se subio a Cloudinary ni a Supabase.`)
+  console.log(`\n🔍 DRY RUN: nada se subio a Supabase.`)
   console.log(`   Revisa el resultado en: ${previewPath}\n`)
   process.exit(0)
 }
-
-cloudinary.config({
-  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
-  api_key: process.env.CLOUDINARY_API_KEY,
-  api_secret: process.env.CLOUDINARY_API_SECRET,
-})
-
-console.log("[3/5] Subiendo a Cloudinary...")
-const uploadResult = await cloudinary.uploader.upload(pdfPath, {
-  resource_type: "raw",
-  folder: "courses",
-  public_id: dbSlug,
-  overwrite: true,
-})
-
-console.log("[4/5] Convirtiendo a authenticated...")
-await cloudinary.uploader.rename(uploadResult.public_id, uploadResult.public_id, {
-  resource_type: "raw",
-  to_type: "authenticated",
-  invalidate: true,
-  overwrite: true,
-})
-const resourceUrl = uploadResult.secure_url
-console.log(`      OK -> ${resourceUrl}`)
 
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL,
   process.env.SUPABASE_SERVICE_ROLE_KEY
 )
 
-console.log(`[5/5] ${isUpdate ? "Actualizando" : "Cargando"} curso en Supabase...`)
-const courseData = {
-  title: meta.title,
-  slug: dbSlug,
-  description: meta.description,
-  category: category.replace(/-/g, "_"),
-  price: meta.price,
-  access_type: meta.accessType,
-  resource_url: resourceUrl,
-  content_html: contentHtml,
-}
-
-const { error } = isUpdate
-  ? await supabase.from("courses").update(courseData).eq("slug", dbSlug)
-  : await supabase.from("courses").insert(courseData)
+console.log("Actualizando content_html en Supabase (PDF/resource_url queda igual que estaba)...")
+const { error } = await supabase.from("courses").update({ content_html: contentHtml }).eq("slug", dbSlug)
 
 if (error) {
   console.error("ERROR en Supabase:", error.message)
   process.exit(1)
 }
 
-console.log(`\n✅ Curso ${isUpdate ? "actualizado" : "publicado"}: ${meta.title}`)
-console.log(`   Verificar en /cursos/${dbSlug} y /dashboard/leer/${dbSlug}\n`)
+console.log(`\n✅ content_html actualizado: ${meta.title}`)
+console.log(`   PENDIENTE: correr "node --env-file=.env scripts/publish-course.mjs ${category} ${slug} --update" desde una maquina con Chrome para regenerar el PDF con los mismos cambios.\n`)

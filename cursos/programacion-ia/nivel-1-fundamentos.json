@@ -1,6 +1,7 @@
 {
+  "slug": "programar-con-ia-nivel-1-fundamentos",
   "title": "Programar con IA — Nivel 1: Fundamentos",
-  "description": "Test dry-run, no se usa",
+  "description": "Primeros pasos para crear apps, webs y herramientas reales usando IA, sin saber programar. Comparativa de Lovable, Bolt.new, Replit y v0, como escribir prompts que funcionan, un proyecto guiado paso a paso y el vocabulario minimo indispensable.",
   "price": 4000,
   "accessType": "both"
 }

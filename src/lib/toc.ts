@@ -15,6 +15,16 @@ export function slugify(text: string): string {
 
 export type Chapter = { id: string; label: string }
 
+// Extrae el primer capitulo (desde el primer <h2> hasta justo antes del
+// segundo, o hasta el final si el curso tiene uno solo) para mostrarlo como
+// preview publico en /cursos/[slug] sin requerir sesion ni compra — reduce
+// la friccion de comprar a ciegas (ver docs/TASKS.md).
+export function extractFirstChapter(html: string): string | null {
+  const parts = html.split(/(?=<h2>)/)
+  const chapterParts = parts.filter((part) => part.startsWith("<h2>"))
+  return chapterParts[0] ?? null
+}
+
 export function addChapterIds(html: string): { html: string; chapters: Chapter[] } {
   const chapters: Chapter[] = []
   const usedIds = new Set<string>()

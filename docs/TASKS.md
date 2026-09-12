@@ -1,5 +1,35 @@
 # TASKS — UpgradeLab
 
+## Convencion: publicacion automatizada de cursos nuevos (22/08/2026)
+Desde este curso en adelante, la generacion y publicacion de un curso nuevo se hace con
+`scripts/publish-course.mjs` en vez de a mano paso por paso. Requiere dos archivos de entrada
+por curso: `cursos/<categoria>/<slug>.html` (fuente, misma convencion de siempre) y
+`cursos/<categoria>/<slug>.json` (metadata: title, description, price, accessType).
+
+El script hace de punta a punta: (1) genera el PDF con Puppeteer (Chrome headless, elegido en vez
+de WeasyPrint para no depender de Python en Windows), (2) transforma el `.html` de impresion en
+HTML de lectura con Cheerio — saca portada e indice impreso, convierte el `h1` de cada
+`.chapter` a `h2` (asi `src/lib/toc.ts` arma bien la tabla de contenidos), convierte el
+glosario (`dl/dt/dd`) a lista, los prompts destacados a `pre/code`, las cajas de recomendacion
+a `blockquote`, y los pasos numerados (`.flow-step`) a `ol` agrupados por capitulo — (3)
+sanitiza ese HTML con `sanitize-html` (mismas reglas que ya usaba el panel admin), (4) sube el
+PDF a Cloudinary y lo convierte a `authenticated`, y (5) inserta el curso completo en la tabla
+`courses` de Supabase usando el service role.
+
+Uso: `node --env-file=.env scripts/publish-course.mjs <categoria> <slug>`. Acepta `--dry-run`
+para generar el PDF y un preview del `content_html` sin tocar Cloudinary ni Supabase — util para
+revisar el resultado antes de publicar de verdad.
+
+Nota tecnica: el primer intento de la transformacion Cheerio tenia un bug — los pasos numerados de
+`.flow-step` se buscaban como `<li>` sueltos hijos directos de `<body>`, pero en realidad
+quedaban anidados dentro del `<div class="chapter">`, que despues `sanitize-html` elimina (no
+esta en la whitelist de tags permitidos) sin agruparlos nunca en un `<ol>`. Se corrigio agrupando
+los `flow-step` en un `<ol>` propio dentro de cada `.chapter`, antes de que el div se pierda en
+la sanitizacion. Validado contra `nivel-1-fundamentos` (curso existente) y contra el curso nuevo
+de automatizacion, en ambos casos verificado en produccion real (catalogo, lectura por
+suscripcion, descarga de PDF).
+
+
 ## Convencion: donde viven los archivos de los cursos
 Los fuentes (HTML) y el PDF final de cada curso se guardan en `/cursos/<categoria>/<slug-del-nivel-o-curso>.html|.pdf` (28/07/2026, reorganizado desde archivos sueltos en la raiz). El PDF servido a los compradores vive en Cloudinary (carpeta `courses/`, ver `resource_url` en la tabla `courses` de Supabase) — la copia en `/cursos` es el original de referencia para editar o resubir el PDF. **Desde el 08/08/2026 este `.html` cumple un segundo rol**: es tambien la fuente de la que se deriva `courses.content_html` (lo que lee quien accede por suscripcion, ver "Lectura de cursos por suscripcion en HTML" en Done). Si se edita el contenido de un curso, conviene actualizar este `.html` fuente y regenerar ambos (el PDF para la compra individual, y el `content_html` en Supabase para la suscripcion) para que no queden desincronizados. `estudiar-con-ia-notebooklm-claude-nano-banana` es la unica excepcion: nunca tuvo un `.html` fuente guardado, solo el PDF (su `content_html` se reconstruyo extrayendo texto del PDF, no de una fuente HTML real). Estructura actual:
 - `cursos/estudio-ia/estudiar-con-ia-notebooklm-claude-nano-banana.pdf`
@@ -13,6 +43,10 @@ Los fuentes (HTML) y el PDF final de cada curso se guardan en `/cursos/<categori
 - `cursos/ventas-freelance/software-medida-ia-negocios.html` + `.pdf`
 
 ## To Do
+- [ ] Documentar en MASTER.md ("Formato de los cursos") el pipeline automatizado
+  `publish-course.mjs` — hoy esa seccion solo describe el camino manual por el panel admin.
+  Desactualizacion menor, no urgente.
+
 - [ ] Rama de descuento del programa de afiliados (doble beneficio para el referido casual) — depende de agregar soporte de cupon en el checkout (`coupon_code` en la preferencia de Mercado Pago). La rama de comision cash ya esta hecha, ver Done (04/08/2026).
 - [ ] Dashboard "segui donde quedaste" — descartado por decision del fundador junto con el tracking de progreso en general (ver Done, 04/08/2026): la idea del negocio es que la persona avanza a su ritmo sin que la plataforma trackee nada.
 - [ ] Revision trimestral de precios (proceso de negocio, no requiere codigo — ver regla en MASTER.md)
@@ -47,6 +81,126 @@ Los fuentes (HTML) y el PDF final de cada curso se guardan en `/cursos/<categori
   en si (preapproval ad-hoc, webhook, boton de suscripcion) esta completa y probada con un pago real.
 
 ## Done
+- [x] Actualizar Next.js a 16.3.3 (12/09/2026) — el fundador corrio `npm install`,
+  `npm audit fix` y `npm audit fix --force` desde su maquina. Quedo instalado
+  `next@16.3.3` / `eslint-config-next@16.3.3` (confirmado en `node_modules/next/package.json`
+  y `package-lock.json`), `npm audit` reporta 0 vulnerabilidades (antes 6 altas: SSRF en
+  Server Actions, DoS, cache confusion, exposicion de endpoints internos, mas las
+  transitivas de `postcss`/`sharp`). `npm run lint` y `npx tsc --noEmit` corrieron sin
+  errores.
+- [x] `sitemap.xml` y `robots.txt` (12/09/2026) — cerraba el gap de SEO detectado en la
+  auditoria del 09/09. `src/app/sitemap.ts`: dinamico, arma una entrada por cada curso
+  `is_active = true` (via `createClient()`, lectura publica por RLS) mas las paginas
+  publicas estaticas (home, `/cursos`, `/afiliados`, legales); se recalcula en cada visita
+  de un crawler en vez de a build time, asi un curso nuevo aparece sin redeploy.
+  `src/app/robots.ts`: permite todo salvo `/dashboard`, `/admin`, `/api`, `/auth`,
+  `/login`, `/register`, `/forgot-password`, `/reset-password` y `/checkout` (zonas
+  privadas o con tokens en la query string), y apunta al sitemap. Verificado por el
+  fundador con `npm run lint` y `npx tsc --noEmit` (12/09/2026, sin errores) luego de la
+  actualizacion de Next.js — ver entrada de arriba.
+- [x] Auditoria exhaustiva de cursos + estructura del proyecto (09/09/2026) — revision
+  completa: 10/10 cursos activos en Supabase, 8/10 con metadata `.json` local sin drift
+  contra la DB, 9/10 con seccion de Recursos (1 exclusion deliberada, ver entrada de
+  28/08/2026), 2 cursos legacy (`estudiar-con-ia-notebooklm-claude-nano-banana`,
+  `venta-consultiva-discovery-calls`) usan el pipeline de contenido mas viejo
+  (clases `label`/`bullet`/`checklist` en vez del sanitize-html actual) — funcional,
+  solo es tooling de otra generacion, y esos mismos 2 tienen el `public_id` de Cloudinary
+  con nombre distinto al slug actual (cosmetico, no rompe nada). Estructura del sitio
+  verificada: sin `middleware.ts` global pero con chequeo de auth por layout en `admin` y
+  `dashboard` (mas chequeo de `role` en admin), sin slugs hardcodeados, `.env` nunca
+  commiteado, cron de Vercel para expiracion de comprobantes de afiliados bien
+  configurado. `tsc`/`lint` limpios. Se encontraron 3 items reales que quedaron como To Do:
+  actualizar Next.js (vulnerabilidades), agregar sitemap.xml/robots.txt, y documentar el
+  pipeline `publish-course.mjs` en MASTER.md — los primeros dos pendientes de confirmacion
+  del fundador antes de aplicar.
+- [x] Regenerar el PDF del curso de automatizacion con el link de descarga del workflow
+  (09/09/2026) — corrido por el fundador desde su maquina:
+  `node --env-file=.env scripts/publish-course.mjs programacion-ia automatizacion-n8n-make --update`.
+  Confirmado con la salida del comando (PDF regenerado, subido a Cloudinary, `content_html`
+  y `resource_url` actualizados en Supabase). Con esto el PDF ya incluye el link a
+  `recordatorios-turnos-whatsapp.json` agregado el 28/08/2026.
+- [x] Preview publico del primer capitulo, sin login ni compra (28/08/2026) — hoy
+  `/cursos/[slug]` solo mostraba titulo/categoria/precio/descripcion corta, sin nada del
+  contenido real; la persona compraba a ciegas. Se agrego:
+  - `src/lib/toc.ts`: nueva funcion `extractFirstChapter(html)` — corta el `content_html`
+    justo antes del segundo `<h2>` (o devuelve todo si el curso tiene un solo capitulo, o
+    `null` si no hay ningun `<h2>`). Probada contra el contenido real de Nivel 1: devuelve
+    limpio el capitulo 01 completo, sin nada del 02.
+  - `cursos/[slug]/page.tsx`: si el usuario no tiene acceso (ni compro ni esta suscripto),
+    se muestra el capitulo 1 completo debajo de la caja de compra, con un degrade blanco
+    abajo (misma idea que el "Look Inside" de Amazon o los previews de Gumroad/Notion) y un
+    link `#comprar` de vuelta a la caja de compra/suscripcion. A quien ya tiene acceso no se
+    le muestra — ya tiene el link a "Leer curso"/"Descargar PDF" arriba.
+  - No hizo falta agregar ninguna columna nueva a `courses`: al ser siempre el capitulo 01
+    (la introduccion/pitch del curso, nunca la parte "cara"), no hace falta marcar nada a
+    mano por curso.
+  - Verificado con `tsc --noEmit`, `npm run lint`, y un test manual del extractor contra
+    varios casos limite (un solo capitulo, sin capitulos, string vacio).
+- [x] Archivo descargable en el curso de automatizacion (28/08/2026) — el capitulo 04
+  describia los 4 nodos del flujo de recordatorios de turno por WhatsApp, pero no daba un
+  archivo real para importar en n8n. Se armo `public/downloads/recordatorios-turnos-whatsapp.json`,
+  un workflow de n8n valido (Schedule Trigger a las 8am, Google Calendar, Filter, Set,
+  WhatsApp) que reproduce exactamente los 4 pasos descriptos en el capitulo, con notas
+  aclarando que hace falta cargar credenciales propias antes de activarlo. Se linkeo desde
+  el `.html` fuente del curso (capitulo 04) y se actualizo `content_html` en Supabase.
+  Nota: el archivo es publico (no requiere login) — vive en `/downloads/`, sin el mismo
+  nivel de proteccion que el PDF (que es un recurso `authenticated` de Cloudinary detras de
+  un proxy). Se opto por esto por simplicidad, dado que es un extra dentro de un capitulo ya
+  pago, no el contenido principal; si en algun momento se quiere protegerlo igual que el
+  PDF, hay que subirlo a Cloudinary como `authenticated` y armar un proxy como
+  `/api/cursos/[slug]/leer`.
+- [x] Seccion de "Recursos" con links reales, extendida a los 6 cursos que faltaban
+  (28/08/2026) — ya estaba hecho para los 4 de `programacion_ia` (ver entrada de mas abajo,
+  22/08/2026); esta entrada cubre el resto del catalogo:
+  - `posiciona-tu-negocio-herramientas-gratuitas`: Canva, Freepik AI, Image Creator from
+    Designer (nombre actual de Bing Image Creator, verificado por busqueda — Microsoft lo
+    renombro), CapCut, Metricool.
+  - `software-medida-ia-negocios-locales`: Bolt.new, Lovable, v0 (las mismas de Nivel 1,
+    que este curso reusa explicitamente en el capitulo 4).
+  - `entrevistas-trabajo-para-developers`: no menciona herramientas puntuales, pero el
+    capitulo 6 (negociacion salarial) le pide al lector "investigar el rango de mercado" sin
+    decir donde — se agrego Sysarmy (encuesta de sueldos IT Argentina), Levels.fyi y
+    Glassdoor como fuentes reales para eso.
+  - `ingles-tecnico-para-developers`: el capitulo 8 sugiere practicar con "herramientas de
+    IA conversacional" sin nombrar ninguna — se linkeo Claude y ChatGPT.
+  - `estudiar-con-ia-notebooklm-claude-nano-banana`: NotebookLM, Claude, y Nano Banana
+    (verificado por busqueda que hoy se accede desde la app de Gemini, gemini.google.com).
+    Caso especial: este curso no tiene `.html` fuente (nunca lo tuvo, ver nota al principio
+    de este archivo), asi que el capitulo de Recursos se agrego directo sobre el
+    `content_html` en Supabase con `scripts/add-recursos-estudiar-ia.mjs` — el PDF de este
+    curso en particular no se puede regenerar ni actualizar, queda sin el capitulo nuevo.
+  - `venta-consultiva-discovery-calls`: **decision de no agregar nada** — es una guia de
+    metodologia (framework SPIN) que no menciona ninguna herramienta ni servicio externo
+    puntual en ningun capitulo. Forzar links (por ejemplo a LinkedIn, para la investigacion
+    previa del capitulo 3) se sintio como relleno mas que valor real, asi que se dejo afuera
+    a proposito. Es el unico de los 10 cursos sin seccion de Recursos.
+  - Detalle tecnico: para los 4 cursos con `.html` fuente se creo su `.json` de metadata
+    (title/description/price/accessType/slug) siguiendo la convencion de
+    `scripts/publish-course.mjs`, y se les agrego el capitulo de Recursos al `.html` con
+    `scripts/add-recursos-2.mjs` (mismo patron que `add-recursos.mjs`, usado para los 4
+    cursos de `programacion_ia`). El `content_html` de Supabase se actualizo con
+    `scripts/update-content-html-only.mjs` — una variante de `publish-course.mjs` sin el
+    paso de generar el PDF (Puppeteer no corre en el entorno de Claude). El fundador corrio
+    despues, el mismo dia, `publish-course.mjs <categoria> <slug> --update` para los 4 desde
+    su maquina, regenerando el PDF con el capitulo de Recursos y resubiendolo a Cloudinary —
+    confirmado en Supabase (`resource_url` con version nueva de Cloudinary en los 4).
+- [x] Curso "Automatización con IA: n8n y Make sin código" (22/08/2026) — cuarto curso de la
+  categoria `programacion_ia`, complementa la serie de Niveles 1-3 con un enfoque distinto:
+  automatizar procesos de negocio con n8n/Make en vez de programar una solucion a medida. Hilo
+  conductor: continuidad del taller mecanico ya usado en "Software a Medida con IA para Negocios
+  Locales". Contenido: n8n vs Make, primeros pasos (trigger/accion/nodo/workflow), caso guiado
+  completo (recordatorios de turno por WhatsApp via Google Calendar), sumar un nodo de IA para
+  clasificar mensajes entrantes, tabla de automatizaciones vendibles con precio orientativo
+  (ARS), errores comunes, y cierre hacia el concepto de agentes. 8 capitulos, 11 paginas de PDF.
+  $8.000 ARS, `access_type` both.
+
+  Primer curso publicado enteramente con `scripts/publish-course.mjs` (ver convencion arriba) —
+  HTML fuente escrito, `--dry-run` revisado, publicado de punta a punta en un solo comando
+  (PDF, Cloudinary authenticated, `content_html` sanitizado, insert en Supabase). Verificado en
+  produccion: aparece en `/cursos`, la lectura por suscripcion en `/dashboard/leer/[slug]`
+  arma bien la tabla de contenidos de los 8 capitulos con el estilo del sitio, y la descarga via
+  `/api/cursos/[slug]/leer` sirve el PDF completo de 11 paginas. `npm run build` y
+  `npm run lint` limpios (no se toco codigo de la app, solo datos).
 - [x] Rate limiting en formularios publicos sin auth (22/08/2026). Se agrego
   `src/lib/rate-limit.ts` — implementacion simple en memoria (por IP + tipo de
   accion, `Map` con ventana de 5 minutos y maximo 3 envios), sin dependencias
@@ -63,6 +217,15 @@ Los fuentes (HTML) y el PDF final de cada curso se guardan en `/cursos/<categori
   falta un limite estricto y compartido, migrar a Upstash Redis
   (`@upstash/ratelimit`) es el paso natural (misma firma de funcion). Build
   y lint verificados limpios (28 rutas).
+- [x] CORRECCION (22/08/2026, mas tarde el mismo dia): la entrada de arriba
+  ("Rate limiting en formularios publicos sin auth") describia una implementacion en
+  memoria que en un momento de la sesion sobrescribio por error la version real del
+  archivo, que ya usaba la tabla `rate_limits` en Supabase (ver entrada "Rate limiting
+  por IP en formularios publicos" en In Progress, mas completa y correcta). El archivo
+  `src/lib/rate-limit.ts` quedo restaurado a la version con tabla en Supabase (commit
+  `fe61dd9`). La entrada de arriba se deja tal cual por trazabilidad de lo que paso en
+  esa sesion, pero **no describe el estado actual del archivo** — para el detalle
+  correcto y vigente, ver la entrada de In Progress.
 - [x] Fix: boton "Compartir por WhatsApp" en `/dashboard/afiliados` rompia el
   build (22/08/2026). Al tag `<a>` le faltaba la apertura (`<a`) antes de
   `href={whatsappShareUrl}` — quedaban los atributos sueltos como si fueran

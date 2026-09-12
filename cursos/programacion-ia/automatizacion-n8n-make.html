@@ -1,0 +1,476 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>Automatización con IA: n8n y Make sin código</title>
+<style>
+  @page {
+    size: A4;
+    margin: 2.4cm 2.2cm 2.6cm 2.2cm;
+    @bottom-center {
+      content: "UpgradeLab — Automatización con IA";
+      font-family: 'Helvetica', 'Arial', sans-serif;
+      font-size: 8pt;
+      color: #999;
+    }
+    @bottom-right {
+      content: counter(page);
+      font-family: 'Helvetica', 'Arial', sans-serif;
+      font-size: 8pt;
+      color: #999;
+    }
+  }
+  @page cover {
+    margin: 0;
+    @bottom-center { content: none; }
+    @bottom-right { content: none; }
+  }
+
+  * { box-sizing: border-box; }
+  body {
+    font-family: 'Helvetica', 'Arial', sans-serif;
+    color: #1a1a1a;
+    font-size: 10.5pt;
+    line-height: 1.55;
+  }
+
+  .cover {
+    page: cover;
+    height: 100vh;
+    width: 100%;
+    background: #171717;
+    color: #ffffff;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: 3cm 2.4cm;
+  }
+  .cover .brand { font-size: 14pt; font-weight: 700; letter-spacing: 0.02em; }
+  .cover .brand .dot { color: #5ec9c2; }
+  .cover .cover-main { margin-top: 6cm; }
+  .cover .kicker {
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    font-size: 9pt;
+    color: #5ec9c2;
+    margin-bottom: 0.6cm;
+  }
+  .cover h1 { font-size: 30pt; line-height: 1.15; margin: 0 0 0.5cm 0; font-weight: 700; color: #ffffff; }
+  .cover .subtitle { font-size: 12pt; color: #cfcfcf; max-width: 12cm; }
+  .cover .tools-row { margin-top: 1cm; display: flex; gap: 0.4cm; flex-wrap: wrap; }
+  .cover .tool-pill {
+    border: 1px solid #444;
+    border-radius: 999px;
+    padding: 0.18cm 0.5cm;
+    font-size: 9pt;
+    color: #e5e5e5;
+  }
+  .cover .footer-note {
+    font-size: 8.5pt;
+    color: #888;
+    border-top: 1px solid #333;
+    padding-top: 0.4cm;
+  }
+
+  h1 {
+    font-size: 19pt;
+    color: #171717;
+    margin: 0 0 0.5cm 0;
+    padding-bottom: 0.25cm;
+    border-bottom: 2px solid #171717;
+  }
+  h2 { font-size: 13.5pt; color: #171717; margin: 0.9cm 0 0.35cm 0; }
+  h3 { font-size: 11.5pt; color: #171717; margin: 0.6cm 0 0.25cm 0; }
+  p { margin: 0 0 0.35cm 0; text-align: left; }
+  ul, ol { margin: 0 0 0.4cm 0; padding-left: 0.5cm; }
+  li { margin-bottom: 0.18cm; }
+  strong { color: #171717; }
+
+  .chapter { page-break-before: always; }
+  .lead { font-size: 11.5pt; color: #444; margin-bottom: 0.6cm; }
+
+  .box {
+    background: #f2f9f8;
+    border-left: 3px solid #171717;
+    border-radius: 4px;
+    padding: 0.4cm 0.55cm;
+    margin: 0.4cm 0 0.5cm 0;
+  }
+  .box .box-label {
+    font-size: 8pt;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: #888;
+    margin-bottom: 0.15cm;
+    display: block;
+  }
+  .prompt {
+    background: #171717;
+    color: #f5f5f5;
+    border-radius: 4px;
+    padding: 0.4cm 0.55cm;
+    margin: 0.3cm 0 0.5cm 0;
+    font-family: 'Courier New', monospace;
+    font-size: 9pt;
+    line-height: 1.5;
+    white-space: pre-wrap;
+  }
+  .prompt .prompt-label {
+    display: block;
+    font-family: 'Helvetica', sans-serif;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    font-size: 7.5pt;
+    color: #5ec9c2;
+    margin-bottom: 0.15cm;
+  }
+
+  table.usecases {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 0.3cm 0 0.5cm 0;
+    font-size: 9.5pt;
+  }
+  table.usecases th {
+    background: #171717;
+    color: #fff;
+    text-align: left;
+    padding: 0.22cm 0.3cm;
+    font-size: 9pt;
+  }
+  table.usecases td {
+    border-bottom: 1px solid #e2e2e2;
+    padding: 0.22cm 0.3cm;
+    vertical-align: top;
+  }
+
+  .toc { page-break-before: always; }
+  .toc-item {
+    display: flex;
+    justify-content: space-between;
+    border-bottom: 1px dotted #ccc;
+    padding: 0.22cm 0;
+    font-size: 10.5pt;
+  }
+  .toc-item .num { color: #5ec9c2; font-weight: 700; margin-right: 0.3cm; }
+
+  .checklist { list-style: none; padding-left: 0; }
+  .checklist li { padding-left: 0.7cm; position: relative; }
+  .checklist li::before {
+    content: "✓";
+    position: absolute;
+    left: 0;
+    color: #171717;
+    font-weight: 700;
+  }
+
+  .flow-step { display: flex; gap: 0.4cm; margin-bottom: 0.4cm; }
+  .flow-step .flow-num {
+    flex: 0 0 0.9cm;
+    height: 0.9cm;
+    background: #171717;
+    color: #fff;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 11pt;
+    font-weight: 700;
+  }
+  .flow-step .flow-body { flex: 1; padding-top: 0.05cm; }
+  .flow-step .flow-body h3 { margin-top: 0; }
+
+  .callout-warning {
+    border: 1px solid #e0b400;
+    background: #fffaeb;
+    border-radius: 4px;
+    padding: 0.4cm 0.55cm;
+    margin: 0.4cm 0;
+    font-size: 9.5pt;
+  }
+
+  .glossary dt { font-weight: 700; color: #171717; margin-top: 0.3cm; }
+  .glossary dd { margin: 0.05cm 0 0 0; color: #333; }
+</style>
+</head>
+<body>
+
+<div class="cover">
+  <div class="brand">Upgrade<span class="dot">Lab</span></div>
+  <div class="cover-main">
+    <div class="kicker">Programación / IA</div>
+    <h1>Automatización con IA: n8n y Make sin código</h1>
+    <p class="subtitle">Automatizá flujos de trabajo reales combinando IA con n8n, sin escribir una sola línea de código. Pensado para freelancers y devs que ya construyen soluciones para negocios.</p>
+    <div class="tools-row">
+      <span class="tool-pill">n8n</span>
+      <span class="tool-pill">Make</span>
+      <span class="tool-pill">WhatsApp API</span>
+      <span class="tool-pill">IA / LLM</span>
+    </div>
+  </div>
+  <div class="footer-note">UpgradeLab · Categoría: Programación / IA</div>
+</div>
+
+<div class="toc">
+  <h1>Índice</h1>
+  <div class="toc-item"><span><span class="num">01</span>Qué es automatizar con IA (y por qué te conviene saberlo)</span></div>
+  <div class="toc-item"><span><span class="num">02</span>n8n vs Make: cuál elegir según el caso</span></div>
+  <div class="toc-item"><span><span class="num">03</span>Primeros pasos: cuenta, triggers, nodos, tu primera automatización</span></div>
+  <div class="toc-item"><span><span class="num">04</span>Caso guiado: recordatorios de turnos por WhatsApp para un taller</span></div>
+  <div class="toc-item"><span><span class="num">05</span>Sumar IA al flujo: clasificar mensajes entrantes con un LLM</span></div>
+  <div class="toc-item"><span><span class="num">06</span>Automatizaciones que podés vender ya</span></div>
+  <div class="toc-item"><span><span class="num">07</span>Errores comunes y límites</span></div>
+  <div class="toc-item"><span><span class="num">08</span>Cómo seguir: de automatizaciones simples a agentes</span></div>
+  <div class="toc-item"><span><span class="num">09</span>Recursos — links directos a las herramientas de esta guía</span></div>
+</div>
+
+<div class="chapter">
+  <h1>01 · Qué es automatizar con IA</h1>
+  <p class="lead">Automatizar no es programar un robot — es conectar herramientas que ya usás para que hagan solas lo que hoy hacés a mano, repetidas veces, todos los días.</p>
+
+  <p>Pensalo así: cada vez que copiás un dato de un lugar a otro, mandás el mismo mensaje de WhatsApp, o revisás una casilla de email para reaccionar a algo puntual, estás haciendo el trabajo de una automatización que todavía no armaste. Herramientas como <strong>n8n</strong> y <strong>Make</strong> te dejan construir esos flujos arrastrando y conectando bloques ("nodos"), sin escribir código — y sumándole IA en el medio, esos flujos pueden tomar decisiones simples por sí solos: clasificar, priorizar, redactar una respuesta.</p>
+
+  <p>Para vos, que ya construís software con IA (Niveles 1-3) o le vendés servicios a negocios locales, esto es una extensión natural: en vez de programar una solución a medida desde cero para cada cliente, muchas veces alcanza con automatizar 3 o 4 pasos de su operación diaria — y eso se arma en horas, no en semanas.</p>
+
+  <div class="box">
+    <span class="box-label">Qué vas a poder hacer al terminar esta guía</span>
+    Elegir entre n8n y Make según el caso, armar tu primera automatización de punta a punta, sumarle IA para que tome decisiones simples, y tener una lista concreta de automatizaciones que podés ofrecerle hoy mismo a un cliente.
+  </div>
+</div>
+
+<div class="chapter">
+  <h1>02 · n8n vs Make: cuál elegir</h1>
+  <p class="lead">Las dos hacen lo mismo en el fondo — conectar servicios y automatizar pasos — pero con filosofías distintas.</p>
+
+  <table class="usecases">
+    <tr><th>Herramienta</th><th>Cómo funciona</th><th>Ideal si...</th></tr>
+    <tr>
+      <td><strong>n8n</strong></td>
+      <td>Gratuito si lo hosteás vos mismo (self-hosted), o con plan pago en la nube. Interfaz visual de nodos, muy flexible, comunidad grande en español.</td>
+      <td>Querés control total, no te importa configurar el hosting una vez, o vas a construir muchas automatizaciones y necesitás que sea barato a largo plazo.</td>
+    </tr>
+    <tr>
+      <td><strong>Make</strong></td>
+      <td>Solo en la nube (no self-hosted), plan gratuito limitado, interfaz también visual pero con otra lógica de "escenarios".</td>
+      <td>Querés arrancar ya sin instalar nada, y tu volumen de automatizaciones es bajo (el plan gratuito alcanza para probar).</td>
+    </tr>
+  </table>
+
+  <p>En esta guía usamos <strong>n8n</strong> como protagonista: es gratuito de verdad si lo hosteás vos (por ejemplo, en un servidor barato o en su versión cloud con plan gratis), tiene mejor documentación en español, y es la opción que más vas a encontrar si después querés ofrecer esto como servicio — muchos negocios prefieren que la automatización corra en infraestructura propia, no atada a la cuenta personal de otro.</p>
+
+  <div class="box">
+    <span class="box-label">Si preferís arrancar con Make</span>
+    Todo lo que ves en esta guía se traduce casi 1 a 1: donde n8n dice "nodo", Make dice "módulo"; donde n8n dice "trigger", Make dice "disparador". La lógica es la misma, solo cambia el nombre de los botones.
+  </div>
+</div>
+
+<div class="chapter">
+  <h1>03 · Primeros pasos</h1>
+  <p class="lead">Vamos a crear tu cuenta y armar la automatización más simple posible, para entender las piezas antes de complicar nada.</p>
+
+  <div class="flow-step">
+    <div class="flow-num">1</div>
+    <div class="flow-body">
+      <h3>Creá tu cuenta en n8n</h3>
+      <p>Podés usar la versión cloud (gratis para empezar, con límite de ejecuciones) o instalarlo vos mismo si ya tenés experiencia con servidores. Para esta guía, la versión cloud alcanza de sobra.</p>
+    </div>
+  </div>
+
+  <div class="flow-step">
+    <div class="flow-num">2</div>
+    <div class="flow-body">
+      <h3>Entendé las dos piezas básicas: trigger y acción</h3>
+      <p>Todo flujo empieza con un <strong>trigger</strong> (qué dispara la automatización: llega un email, pasa una hora, alguien completa un formulario) y sigue con una o más <strong>acciones</strong> (qué hace la automatización en respuesta: mandar un mensaje, guardar un dato, actualizar una hoja de cálculo).</p>
+    </div>
+  </div>
+
+  <div class="flow-step">
+    <div class="flow-num">3</div>
+    <div class="flow-body">
+      <h3>Armá tu primer flujo: "cada vez que se agrega una fila en Google Sheets, mandame un email"</h3>
+      <p>Es el ejercicio clásico para entender la lógica sin complicarte con integraciones nuevas: usás un trigger de Google Sheets y una acción de Email, ambos con conectores ya armados en n8n.</p>
+    </div>
+  </div>
+
+  <div class="flow-step">
+    <div class="flow-num">4</div>
+    <div class="flow-body">
+      <h3>Probalo y mirá la ejecución</h3>
+      <p>n8n te muestra el recorrido de datos paso a paso — qué entró, qué salió de cada nodo. Es la forma más rápida de entender por qué algo no funcionó como esperabas.</p>
+    </div>
+  </div>
+
+  <div class="box">
+    <span class="box-label">Vocabulario mínimo</span>
+    <strong>Nodo</strong>: cada bloque del flujo (un trigger o una acción). <strong>Workflow</strong>: el flujo completo, de punta a punta. <strong>Ejecución</strong>: cada vez que el workflow corrió, con sus datos de entrada y salida guardados para revisar después.
+  </div>
+</div>
+
+<div class="chapter">
+  <h1>04 · Caso guiado: recordatorios de turnos por WhatsApp</h1>
+  <p class="lead">Seguimos con el taller mecánico que ya usamos en "Software a Medida con IA para Negocios Locales" — ahora en vez de programarle una solución a medida, le automatizamos algo que hoy hace a mano.</p>
+
+  <p>El problema real: el dueño del taller anota los turnos en una agenda de papel o en Google Calendar, y todos los días llama o manda WhatsApp uno por uno para recordarle el turno a cada cliente. Es tiempo que le saca a arreglar autos.</p>
+
+  <div class="flow-step">
+    <div class="flow-num">1</div>
+    <div class="flow-body">
+      <h3>Trigger: revisar Google Calendar todas las mañanas</h3>
+      <p>Un nodo de tipo "Schedule" (programado) que corre todos los días a las 8am, seguido de un nodo que lee los eventos de Calendar del día.</p>
+    </div>
+  </div>
+
+  <div class="flow-step">
+    <div class="flow-num">2</div>
+    <div class="flow-body">
+      <h3>Filtrar solo los turnos de hoy</h3>
+      <p>Un nodo de tipo "Filter" que se queda solo con los eventos cuya fecha coincide con hoy — así no manda recordatorios de turnos de otros días.</p>
+    </div>
+  </div>
+
+  <div class="flow-step">
+    <div class="flow-num">3</div>
+    <div class="flow-body">
+      <h3>Armar el mensaje personalizado</h3>
+      <p>Un nodo que toma el nombre del cliente y la hora del turno (ya guardados en el evento de Calendar) y arma el texto del mensaje.</p>
+    </div>
+  </div>
+
+  <div class="flow-step">
+    <div class="flow-num">4</div>
+    <div class="flow-body">
+      <h3>Enviar por WhatsApp</h3>
+      <p>Un nodo conectado a la API de WhatsApp Business (o un servicio intermediario como Twilio) que manda el mensaje al número guardado en el evento.</p>
+    </div>
+  </div>
+
+  <div class="prompt">
+    <span class="prompt-label">Ejemplo de mensaje armado por el flujo</span>Hola Marcelo! Te recordamos tu turno hoy a las 15:00hs en el taller para el service del Corsa. Cualquier cosa avisanos por acá. Nos vemos!</div>
+
+  <p>Con esto, el dueño del taller no manda un solo mensaje manual — el flujo corre solo todas las mañanas. Este es exactamente el tipo de automatización que podés ofrecer como servicio: resuelve un problema real, en horas de trabajo, sin código complejo.</p>
+
+  <div class="box">
+    <span class="box-label">Workflow listo para importar</span>
+    Este flujo completo (los 4 nodos de arriba, ya conectados) está disponible para descargar como archivo JSON e importar directo en tu n8n — <a href="/downloads/recordatorios-turnos-whatsapp.json" target="_blank" rel="noopener noreferrer">descargar recordatorios-turnos-whatsapp.json</a>. Solo hace falta cargar tus propias credenciales de Google Calendar y WhatsApp Business antes de activarlo.
+  </div>
+</div>
+
+<div class="chapter">
+  <h1>05 · Sumar IA al flujo</h1>
+  <p class="lead">Hasta acá automatizamos pasos fijos. Ahora sumamos IA para que el flujo tome una decisión simple por su cuenta.</p>
+
+  <p>Siguiendo con el taller: además de los recordatorios, le llegan mensajes de WhatsApp de clientes preguntando cosas distintas — algunos quieren sacar turno, otros preguntan precios, otros ya tienen el auto ahí y preguntan cuánto falta. Hoy el dueño lee cada uno y responde a mano.</p>
+
+  <div class="flow-step">
+    <div class="flow-num">1</div>
+    <div class="flow-body">
+      <h3>Trigger: llega un mensaje nuevo de WhatsApp</h3>
+      <p>El mismo conector de WhatsApp de antes, pero ahora como trigger en vez de acción.</p>
+    </div>
+  </div>
+
+  <div class="flow-step">
+    <div class="flow-num">2</div>
+    <div class="flow-body">
+      <h3>Nodo de IA: clasificar el mensaje</h3>
+      <p>Un nodo que le manda el texto del mensaje a un modelo de lenguaje (por ejemplo, vía la API de OpenAI o Claude, ambas tienen conector directo en n8n) con una instrucción clara de qué categorías usar.</p>
+    </div>
+  </div>
+
+  <div class="prompt">
+    <span class="prompt-label">Instrucción para el nodo de IA</span>Clasificá el siguiente mensaje de un cliente de taller mecánico en una sola categoría: "turno_nuevo", "consulta_precio", "consulta_estado", u "otro". Respondé solo con la categoría, sin texto adicional.
+
+Mensaje: {{mensaje del cliente}}</div>
+
+  <div class="flow-step">
+    <div class="flow-num">3</div>
+    <div class="flow-body">
+      <h3>Nodo "Switch": ramificar según la categoría</h3>
+      <p>Según lo que respondió la IA, el flujo sigue caminos distintos — por ejemplo, "turno_nuevo" dispara un mensaje con el link para agendar, mientras que "otro" le avisa al dueño que hay un mensaje que necesita revisar a mano.</p>
+    </div>
+  </div>
+
+  <div class="callout-warning">
+    <strong>Ojo:</strong> la IA clasifica, no decide todo sola. Para los casos ambiguos ("otro"), lo correcto es avisarle a una persona real, no que la IA improvise una respuesta. Esto evita que el cliente reciba una respuesta rara o incorrecta.
+  </div>
+</div>
+
+<div class="chapter">
+  <h1>06 · Automatizaciones que podés vender ya</h1>
+  <p class="lead">Ideas concretas, con un rango de precio orientativo para el mercado argentino, pensadas para ofrecer a pequeños negocios locales.</p>
+
+  <table class="usecases">
+    <tr><th>Automatización</th><th>Para qué negocio</th><th>Precio orientativo (ARS)</th></tr>
+    <tr>
+      <td>Recordatorios de turno por WhatsApp</td>
+      <td>Talleres, peluquerías, consultorios, estudios</td>
+      <td>$40.000 - $80.000 (única vez) + mantenimiento mensual opcional</td>
+    </tr>
+    <tr>
+      <td>Clasificación de mensajes entrantes con IA</td>
+      <td>Cualquier negocio con volumen de WhatsApp</td>
+      <td>$60.000 - $120.000</td>
+    </tr>
+    <tr>
+      <td>Sincronizar ventas con hoja de cálculo o sistema contable</td>
+      <td>Kioscos, comercios chicos, estudios contables</td>
+      <td>$50.000 - $90.000</td>
+    </tr>
+    <tr>
+      <td>Publicación automática en redes desde un calendario de contenido</td>
+      <td>Negocios que ya arman su calendario (ver curso de Marketing con Herramientas Gratuitas)</td>
+      <td>$40.000 - $70.000</td>
+    </tr>
+  </table>
+
+  <p>La clave para vender esto no es hablar de "n8n" ni de "nodos" — es hablar del tiempo que le devolvés al dueño del negocio. Usá el mismo enfoque de discovery call que ya viste en "Venta Consultiva para Developers y Freelancers": preguntá primero qué hace hoy a mano, repetidas veces, todos los días.</p>
+</div>
+
+<div class="chapter">
+  <h1>07 · Errores comunes y límites</h1>
+
+  <ul>
+    <li><strong>No automatices lo que casi nunca pasa.</strong> Si algo ocurre una vez cada tanto, el tiempo que ahorra la automatización no justifica el tiempo que te toma armarla y mantenerla.</li>
+    <li><strong>Cuidado con las credenciales.</strong> Cada conexión (WhatsApp, email, Calendar) queda guardada con una clave de acceso dentro de n8n. Nunca compartas esas credenciales en capturas de pantalla ni las dejes en un flujo que otra persona pueda copiar.</li>
+    <li><strong>No dejes que la IA responda directo al cliente sin revisión, al principio.</strong> Hasta confirmar que el flujo funciona bien, es más seguro que la IA arme un borrador y una persona lo apruebe, en vez de mandar la respuesta sola.</li>
+    <li><strong>Un flujo roto es peor que ningún flujo.</strong> Si la automatización falla silenciosamente (por ejemplo, WhatsApp cambia algo en su API), el negocio puede quedar sin responder a clientes durante días sin darse cuenta. Configurá siempre una alerta de error.</li>
+  </ul>
+
+  <div class="callout-warning">
+    <strong>Ojo:</strong> las APIs de WhatsApp, Google y otros servicios cambian sus condiciones de uso con el tiempo. Antes de ofrecer una automatización a un cliente, confirmá que el método que estás usando sigue vigente y es compatible con los términos de servicio de cada plataforma.
+  </div>
+</div>
+
+<div class="chapter">
+  <h1>08 · Cómo seguir</h1>
+
+  <ul class="checklist">
+    <li>Entendés la diferencia entre n8n y Make, y cuál conviene según el caso.</li>
+    <li>Armaste tu primera automatización simple de punta a punta.</li>
+    <li>Sabés cómo sumarle un nodo de IA para que el flujo tome una decisión simple.</li>
+    <li>Tenés una lista de automatizaciones concretas para ofrecer, con precio orientativo.</li>
+    <li>Conocés los errores más comunes y cómo evitarlos.</li>
+  </ul>
+
+  <div class="box">
+    <span class="box-label">Siguiente paso</span>
+    Lo que armamos acá son flujos que reaccionan a un evento puntual. El siguiente nivel son los <strong>agentes</strong>: sistemas que encadenan varias decisiones seguidas, sin que una persona intervenga entre paso y paso — por ejemplo, un agente que no solo clasifica un mensaje, sino que además busca la información necesaria, arma una respuesta completa, y solo pide aprobación humana en los casos más ambiguos. Es el terreno que están explorando hoy las herramientas de automatización más avanzadas, y el camino natural una vez que domines los flujos simples de esta guía.
+  </div>
+</div>
+
+
+<div class="chapter">
+  <h1>09 · Recursos</h1>
+  <p class="lead">Links directos a las herramientas mencionadas en esta guía.</p>
+  <ul>
+    <li><strong>n8n</strong> — <a href="https://n8n.io" target="_blank" rel="noopener noreferrer">n8n.io</a></li>
+    <li><strong>Make</strong> — <a href="https://www.make.com" target="_blank" rel="noopener noreferrer">www.make.com</a></li>
+    <li><strong>WhatsApp Business Platform</strong> — <a href="https://business.whatsapp.com" target="_blank" rel="noopener noreferrer">business.whatsapp.com</a></li>
+    <li><strong>Twilio</strong> — <a href="https://www.twilio.com" target="_blank" rel="noopener noreferrer">www.twilio.com</a></li>
+    <li><strong>OpenAI</strong> — <a href="https://openai.com" target="_blank" rel="noopener noreferrer">openai.com</a></li>
+    <li><strong>Claude</strong> — <a href="https://claude.ai" target="_blank" rel="noopener noreferrer">claude.ai</a></li>
+  </ul>
+</div>
+
+</body>
+</html>

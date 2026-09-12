@@ -1,0 +1,7 @@
+{
+  "slug": "programar-con-ia-nivel-2-flujos-de-trabajo",
+  "title": "Programar con IA — Nivel 2: Flujos de trabajo",
+  "description": "Para quien ya programa: como integrar Claude Code, Cursor y GitHub Copilot a un flujo de trabajo real. Prompting tecnico con contexto, casos de uso (debugging, refactor, tests, documentacion), integracion con git y buenas practicas.",
+  "price": 5500,
+  "accessType": "both"
+}
