@@ -24,6 +24,18 @@ de `courses`:
 - Al cargar o editar un curso nuevo desde ahora (`/admin/courses/new` o `/admin/courses/[id]/edit`),
   conviene cargar los dos: el PDF para quien compra suelto, el HTML para quien lee por
   suscripción. Ver DATABASE.md ("Lectura de cursos: PDF vs HTML") para el detalle técnico.
+- **Camino recomendado desde el 22/08/2026: `scripts/publish-course.mjs`.** En vez de armar
+  el PDF y cargar el curso a mano por el panel admin, se arman dos archivos de entrada
+  (`cursos/<categoria>/<slug>.html` con el contenido fuente y `cursos/<categoria>/<slug>.json`
+  con `title`/`description`/`price`/`accessType`) y se corre
+  `node --env-file=.env scripts/publish-course.mjs <categoria> <slug>` desde una máquina con
+  Chrome disponible (Puppeteer no corre en el sandbox de Claude). El script genera el PDF,
+  deriva el `content_html` del mismo HTML fuente, sube el PDF a Cloudinary como `authenticated`,
+  y carga todo en `courses` de Supabase de punta a punta. Acepta `--dry-run` para previsualizar
+  sin tocar Cloudinary ni Supabase, y `--update` para regenerar un curso ya publicado. El panel
+  admin (`/admin/courses/new`) sigue funcionando para ediciones puntuales o correcciones rápidas,
+  pero ya no es el camino principal para cursos nuevos. Ver la convención completa en
+  `docs/TASKS.md`.
 
 ## Nombre de marca
 UpgradeLab

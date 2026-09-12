@@ -1,0 +1,548 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>Agentes de IA aplicados a un negocio real</title>
+<style>
+  @page {
+    size: A4;
+    margin: 2.4cm 2.2cm 2.6cm 2.2cm;
+    @bottom-center {
+      content: "UpgradeLab — Agentes de IA aplicados a un negocio real";
+      font-family: 'Helvetica', 'Arial', sans-serif;
+      font-size: 8pt;
+      color: #999;
+    }
+    @bottom-right {
+      content: counter(page);
+      font-family: 'Helvetica', 'Arial', sans-serif;
+      font-size: 8pt;
+      color: #999;
+    }
+  }
+  @page cover {
+    margin: 0;
+    @bottom-center { content: none; }
+    @bottom-right { content: none; }
+  }
+
+  * { box-sizing: border-box; }
+  body {
+    font-family: 'Helvetica', 'Arial', sans-serif;
+    color: #1a1a1a;
+    font-size: 10.5pt;
+    line-height: 1.55;
+  }
+
+  .cover {
+    page: cover;
+    height: 100vh;
+    width: 100%;
+    background: #171717;
+    color: #ffffff;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: 3cm 2.4cm;
+  }
+  .cover .brand { font-size: 14pt; font-weight: 700; letter-spacing: 0.02em; }
+  .cover .brand .dot { color: #5ec9c2; }
+  .cover .cover-main { margin-top: 6cm; }
+  .cover .kicker {
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    font-size: 9pt;
+    color: #5ec9c2;
+    margin-bottom: 0.6cm;
+  }
+  .cover h1 { font-size: 30pt; line-height: 1.15; margin: 0 0 0.5cm 0; font-weight: 700; color: #ffffff; }
+  .cover .subtitle { font-size: 12pt; color: #cfcfcf; max-width: 12cm; }
+  .cover .tools-row { margin-top: 1cm; display: flex; gap: 0.4cm; flex-wrap: wrap; }
+  .cover .tool-pill {
+    border: 1px solid #444;
+    border-radius: 999px;
+    padding: 0.18cm 0.5cm;
+    font-size: 9pt;
+    color: #e5e5e5;
+  }
+  .cover .footer-note {
+    font-size: 8.5pt;
+    color: #888;
+    border-top: 1px solid #333;
+    padding-top: 0.4cm;
+  }
+
+  h1 {
+    font-size: 19pt;
+    color: #171717;
+    margin: 0 0 0.5cm 0;
+    padding-bottom: 0.25cm;
+    border-bottom: 2px solid #171717;
+  }
+  h2 { font-size: 13.5pt; color: #171717; margin: 0.9cm 0 0.35cm 0; }
+  h3 { font-size: 11.5pt; color: #171717; margin: 0.6cm 0 0.25cm 0; }
+  p { margin: 0 0 0.35cm 0; text-align: left; }
+  ul, ol { margin: 0 0 0.4cm 0; padding-left: 0.5cm; }
+  li { margin-bottom: 0.18cm; }
+  strong { color: #171717; }
+
+  .chapter { page-break-before: always; }
+  .lead { font-size: 11.5pt; color: #444; margin-bottom: 0.6cm; }
+
+  .box {
+    background: #f2f9f8;
+    border-left: 3px solid #171717;
+    border-radius: 4px;
+    padding: 0.4cm 0.55cm;
+    margin: 0.4cm 0 0.5cm 0;
+  }
+  .box .box-label {
+    font-size: 8pt;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: #888;
+    margin-bottom: 0.15cm;
+    display: block;
+  }
+  .prompt {
+    background: #171717;
+    color: #f5f5f5;
+    border-radius: 4px;
+    padding: 0.4cm 0.55cm;
+    margin: 0.3cm 0 0.5cm 0;
+    font-family: 'Courier New', monospace;
+    font-size: 9pt;
+    line-height: 1.5;
+    white-space: pre-wrap;
+  }
+  .prompt .prompt-label {
+    display: block;
+    font-family: 'Helvetica', sans-serif;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    font-size: 7.5pt;
+    color: #5ec9c2;
+    margin-bottom: 0.15cm;
+  }
+
+  table.usecases {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 0.3cm 0 0.5cm 0;
+    font-size: 9.5pt;
+  }
+  table.usecases th {
+    background: #171717;
+    color: #fff;
+    text-align: left;
+    padding: 0.22cm 0.3cm;
+    font-size: 9pt;
+  }
+  table.usecases td {
+    border-bottom: 1px solid #e2e2e2;
+    padding: 0.22cm 0.3cm;
+    vertical-align: top;
+  }
+
+  .toc { page-break-before: always; }
+  .toc-item {
+    display: flex;
+    justify-content: space-between;
+    border-bottom: 1px dotted #ccc;
+    padding: 0.22cm 0;
+    font-size: 10.5pt;
+  }
+  .toc-item .num { color: #5ec9c2; font-weight: 700; margin-right: 0.3cm; }
+
+  .checklist { list-style: none; padding-left: 0; }
+  .checklist li { padding-left: 0.7cm; position: relative; }
+  .checklist li::before {
+    content: "✓";
+    position: absolute;
+    left: 0;
+    color: #171717;
+    font-weight: 700;
+  }
+
+  .flow-step { display: flex; gap: 0.4cm; margin-bottom: 0.4cm; }
+  .flow-step .flow-num {
+    flex: 0 0 0.9cm;
+    height: 0.9cm;
+    background: #171717;
+    color: #fff;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 11pt;
+    font-weight: 700;
+  }
+  .flow-step .flow-body { flex: 1; padding-top: 0.05cm; }
+  .flow-step .flow-body h3 { margin-top: 0; }
+
+  .callout-warning {
+    border: 1px solid #e0b400;
+    background: #fffaeb;
+    border-radius: 4px;
+    padding: 0.4cm 0.55cm;
+    margin: 0.4cm 0;
+    font-size: 9.5pt;
+  }
+
+  .glossary dt { font-weight: 700; color: #171717; margin-top: 0.3cm; }
+  .glossary dd { margin: 0.05cm 0 0 0; color: #333; }
+</style>
+</head>
+<body>
+
+<div class="cover">
+  <div class="brand">Upgrade<span class="dot">Lab</span></div>
+  <div class="cover-main">
+    <div class="kicker">Programación / IA</div>
+    <h1>Agentes de IA aplicados a un negocio real</h1>
+    <p class="subtitle">De automatizar pasos fijos a construir agentes que encadenan decisiones solos: arman un agente de verdad, con herramientas, memoria y aprobación humana, y lo aplican a un caso real de atención al cliente.</p>
+    <div class="tools-row">
+      <span class="tool-pill">n8n AI Agent</span>
+      <span class="tool-pill">Lindy</span>
+      <span class="tool-pill">Relevance AI</span>
+      <span class="tool-pill">IA / LLM</span>
+    </div>
+  </div>
+  <div class="footer-note">UpgradeLab · Categoría: Programación / IA</div>
+</div>
+
+<div class="toc">
+  <h1>Índice</h1>
+  <div class="toc-item"><span><span class="num">01</span>Qué es un agente de IA (y en qué se diferencia de una automatización)</span></div>
+  <div class="toc-item"><span><span class="num">02</span>Anatomía de un agente: modelo, herramientas, memoria y objetivo</span></div>
+  <div class="toc-item"><span><span class="num">03</span>Cuándo conviene un agente (y cuándo alcanza con una automatización simple)</span></div>
+  <div class="toc-item"><span><span class="num">04</span>Armar tu primer agente en n8n con el nodo AI Agent</span></div>
+  <div class="toc-item"><span><span class="num">05</span>Caso guiado: agente de atención al cliente por WhatsApp para el taller</span></div>
+  <div class="toc-item"><span><span class="num">06</span>Humano en el loop: aprobación y límites de seguridad</span></div>
+  <div class="toc-item"><span><span class="num">07</span>Alternativas no-code: Lindy y Relevance AI</span></div>
+  <div class="toc-item"><span><span class="num">08</span>Cuánto cobrar por un agente que armás para un cliente</span></div>
+  <div class="toc-item"><span><span class="num">09</span>Errores comunes, límites y cómo seguir</span></div>
+  <div class="toc-item"><span><span class="num">10</span>Recursos — links directos a las herramientas de esta guía</span></div>
+</div>
+
+<div class="chapter">
+  <h1>01 · Qué es un agente de IA</h1>
+  <p class="lead">En "Automatización con IA: n8n y Make" armaste flujos que reaccionan a un evento y, como mucho, le piden a la IA que clasifique algo puntual. Un agente va un paso más allá: encadena varias decisiones seguidas, sin que una persona intervenga entre paso y paso, hasta llegar a un resultado.</p>
+
+  <p>La diferencia no es de herramienta, es de <strong>quién decide el camino</strong>. En una automatización tradicional, el camino lo definiste vos de antemano con nodos conectados en un orden fijo: si pasa A, hacé B, después C. En un agente, le das un objetivo y un set de herramientas, y es la IA la que decide en qué orden usarlas y cuándo considera que terminó — como delegarle una tarea a una persona junior en vez de darle un instructivo paso a paso.</p>
+
+  <div class="box">
+    <span class="box-label">Ejemplo concreto de la diferencia</span>
+    Automatización: "cuando llega un WhatsApp, clasificalo en una categoría y mandá una respuesta prearmada según la categoría". Agente: "cuando llega un WhatsApp, resolvé la consulta del cliente" — y el agente decide solo si necesita buscar el turno en el calendario, consultar un precio, redactar una respuesta personalizada, o escalarle el mensaje a una persona porque no está seguro.
+  </div>
+
+  <p>Esto no es una moda pasajera: para 2026 la mayoría de las plataformas de automatización (n8n, Make, Zapier) ya integraron un nodo o bloque de "agente" con acceso a herramientas, y surgieron plataformas pensadas exclusivamente para esto (Lindy, Relevance AI, entre otras). Para vos, que ya sabés armar automatizaciones, es una extensión natural de lo que ya hacés — no un lenguaje ni un stack nuevo.</p>
+
+  <div class="box">
+    <span class="box-label">Qué vas a poder hacer al terminar esta guía</span>
+    Entender cuándo un agente resuelve algo que una automatización simple no puede, armar un agente real en n8n con herramientas y memoria, aplicarlo a un caso de atención al cliente con aprobación humana en los casos ambiguos, y saber cuánto cobrar por armar uno para un cliente.
+  </div>
+</div>
+
+<div class="chapter">
+  <h1>02 · Anatomía de un agente</h1>
+  <p class="lead">Todo agente que funciona de verdad tiene las mismas cuatro piezas, sin importar en qué herramienta lo armes.</p>
+
+  <div class="flow-step">
+    <div class="flow-num">1</div>
+    <div class="flow-body">
+      <h3>Modelo (el "cerebro")</h3>
+      <p>El modelo de lenguaje que razona y decide los pasos — GPT, Claude o Gemini, conectados vía su API. Es el mismo tipo de modelo que ya usaste para clasificar mensajes en la guía anterior, pero acá con más autonomía: no solo responde, decide qué hacer.</p>
+    </div>
+  </div>
+
+  <div class="flow-step">
+    <div class="flow-num">2</div>
+    <div class="flow-body">
+      <h3>Instrucciones (system prompt)</h3>
+      <p>El texto que define el rol del agente, qué puede y no puede hacer, y el tono de sus respuestas. A diferencia de un mensaje suelto, estas instrucciones quedan fijas — el agente no las olvida ni las reemplaza aunque el cliente le escriba algo distinto.</p>
+    </div>
+  </div>
+
+  <div class="flow-step">
+    <div class="flow-num">3</div>
+    <div class="flow-body">
+      <h3>Herramientas (tools)</h3>
+      <p>Las acciones concretas que el agente puede ejecutar: consultar un calendario, buscar en una base de datos, mandar un mensaje, leer un documento. Sin herramientas, un agente solo puede conversar — con herramientas, puede resolver algo de verdad.</p>
+    </div>
+  </div>
+
+  <div class="flow-step">
+    <div class="flow-num">4</div>
+    <div class="flow-body">
+      <h3>Memoria</h3>
+      <p>Lo que el agente recuerda entre mensajes de una misma conversación (para no perder el hilo) y, en los casos más avanzados, entre conversaciones distintas (para no volver a preguntar algo que el cliente ya contó antes).</p>
+    </div>
+  </div>
+
+  <div class="box">
+    <span class="box-label">Vocabulario mínimo</span>
+    <strong>Tool / herramienta</strong>: una acción puntual que el agente puede invocar (ej. "buscar turno en Google Calendar"). <strong>Memoria simple</strong>: recuerda solo la conversación actual, se pierde si el flujo se reinicia. <strong>RAG (Retrieval Augmented Generation)</strong>: el agente busca información en una base de conocimiento propia (documentos, FAQs) antes de responder, en vez de inventar la respuesta. <strong>MCP (Model Context Protocol)</strong>: un estándar cada vez más adoptado para conectar agentes a herramientas externas de forma prolija, sin armar una integración distinta para cada una.
+  </div>
+</div>
+
+<div class="chapter">
+  <h1>03 · Cuándo conviene un agente</h1>
+  <p class="lead">No todo lo que hoy hacés a mano necesita un agente. Muchas veces una automatización simple, como las de la guía anterior, resuelve el problema con menos riesgo y menos costo de mantenimiento.</p>
+
+  <table class="usecases">
+    <tr><th>Situación</th><th>Conviene automatización simple</th><th>Conviene agente</th></tr>
+    <tr>
+      <td>El camino de decisión es siempre el mismo</td>
+      <td>Sí — es predecible, más barato y más fácil de debuggear</td>
+      <td>No hace falta la flexibilidad extra</td>
+    </tr>
+    <tr>
+      <td>Las consultas varían mucho y no se pueden anticipar todas</td>
+      <td>Se vuelve una lista interminable de "si pasa esto, hacé aquello"</td>
+      <td>Sí — el agente decide en el momento según el caso</td>
+    </tr>
+    <tr>
+      <td>Necesita combinar información de varias fuentes antes de responder</td>
+      <td>Posible, pero hay que programar cada combinación a mano</td>
+      <td>Sí — el agente elige qué herramientas usar y en qué orden</td>
+    </tr>
+    <tr>
+      <td>El error tiene consecuencias serias (dinero, salud, datos sensibles)</td>
+      <td>Preferible — es más controlable</td>
+      <td>Solo con aprobación humana obligatoria antes de ejecutar (ver capítulo 06)</td>
+    </tr>
+  </table>
+
+  <div class="callout-warning">
+    <strong>Ojo:</strong> un agente mal armado no falla "un poco distinto" — puede tomar un camino completamente inesperado, porque decide sobre la marcha. Cuanto más autonomía le des, más importante es limitarle bien las herramientas y agregar revisión humana en lo sensible. Nunca actives un agente sin haberlo probado a fondo con casos reales primero.
+  </div>
+</div>
+
+<div class="chapter">
+  <h1>04 · Armar tu primer agente en n8n</h1>
+  <p class="lead">n8n incorporó el nodo <strong>AI Agent</strong> (parte de su integración con LangChain) como bloque nativo — es la forma más directa de pasar de automatización a agente sin cambiar de herramienta.</p>
+
+  <div class="flow-step">
+    <div class="flow-num">1</div>
+    <div class="flow-body">
+      <h3>Agregá el nodo "AI Agent"</h3>
+      <p>Buscalo en el panel de nodos de n8n. A diferencia de un nodo común, este trae tres conexiones propias que hay que completar: modelo de chat, herramientas y memoria.</p>
+    </div>
+  </div>
+
+  <div class="flow-step">
+    <div class="flow-num">2</div>
+    <div class="flow-body">
+      <h3>Conectá el modelo de chat</h3>
+      <p>Elegí el proveedor (OpenAI, Anthropic/Claude o Google Gemini, todos con conector directo) y cargá tu API key. Este es el "cerebro" del capítulo anterior.</p>
+    </div>
+  </div>
+
+  <div class="flow-step">
+    <div class="flow-num">3</div>
+    <div class="flow-body">
+      <h3>Escribí el system prompt</h3>
+      <p>Definí con claridad el rol, qué información tiene disponible, qué puede y no puede hacer, y cuándo debe pedir ayuda humana en vez de responder solo. Conviene guardarlo en un nodo "Set" separado (no escrito directo adentro del agente) para poder versionarlo y ajustarlo sin tocar el resto del flujo.</p>
+    </div>
+  </div>
+
+  <div class="flow-step">
+    <div class="flow-num">4</div>
+    <div class="flow-body">
+      <h3>Sumá herramientas</h3>
+      <p>Cada herramienta es, en el fondo, otro nodo de n8n (un HTTP Request, una consulta a Google Calendar, una búsqueda en una hoja de cálculo) que el agente puede decidir invocar. Empezá con una o dos herramientas simples — es mucho más fácil confiar en un agente con pocas herramientas bien probadas que en uno con diez mal probadas.</p>
+    </div>
+  </div>
+
+  <div class="flow-step">
+    <div class="flow-num">5</div>
+    <div class="flow-body">
+      <h3>Elegí el tipo de memoria</h3>
+      <p>La "Simple Memory" alcanza para empezar (recuerda la conversación en curso, sin configuración extra) pero se pierde si el flujo se reinicia — para producción real conviene memoria persistente conectada a una base de datos.</p>
+    </div>
+  </div>
+
+  <div class="prompt">
+    <span class="prompt-label">Ejemplo de system prompt para el caso del capítulo siguiente</span>Sos el asistente de atención al cliente del taller mecánico. Tu objetivo es resolver la consulta del cliente usando las herramientas disponibles (buscar turno, consultar precio de servicios). Respondé en tono cordial y directo. Si la consulta es ambigua, involucra un reclamo, o no podés resolverla con las herramientas que tenés, NO improvises una respuesta: marcá la conversación para revisión humana.</div>
+
+  <div class="box">
+    <span class="box-label">Antes de seguir</span>
+    Probá el agente en el editor de n8n con al menos 10 mensajes distintos, incluyendo casos raros a propósito (preguntas fuera de tema, pedidos ambiguos, intentos de que "olvide" sus instrucciones). Mirá el panel de ejecución paso a paso: ahí ves exactamente qué herramienta decidió usar el agente y por qué, igual que revisabas los nodos en la guía de automatización.
+  </div>
+</div>
+
+<div class="chapter">
+  <h1>05 · Caso guiado: agente de atención al cliente por WhatsApp</h1>
+  <p class="lead">Seguimos con el taller mecánico de las guías anteriores. Ya automatizamos los recordatorios de turno y la clasificación de mensajes — ahora el agente resuelve la consulta completa, no solo la clasifica.</p>
+
+  <p>El problema real: al dueño del taller le llegan por WhatsApp preguntas de todo tipo — "¿a qué hora es mi turno de mañana?", "¿cuánto sale un cambio de aceite?", "el auto quedó haciendo un ruido raro después del service, ¿es normal?". Las dos primeras tiene la información para resolverlas sin pensar mucho; la tercera necesita su criterio como mecánico.</p>
+
+  <div class="flow-step">
+    <div class="flow-num">1</div>
+    <div class="flow-body">
+      <h3>Trigger: llega un mensaje de WhatsApp</h3>
+      <p>Mismo conector que en la guía anterior, ahora alimentando directo al nodo AI Agent en vez de a un simple clasificador.</p>
+    </div>
+  </div>
+
+  <div class="flow-step">
+    <div class="flow-num">2</div>
+    <div class="flow-body">
+      <h3>Herramienta 1: buscar turno en Google Calendar</h3>
+      <p>El agente puede consultar los eventos del calendario filtrando por el número de teléfono del cliente que escribió, para responder con la fecha y hora exactas.</p>
+    </div>
+  </div>
+
+  <div class="flow-step">
+    <div class="flow-num">3</div>
+    <div class="flow-body">
+      <h3>Herramienta 2: consultar la lista de precios</h3>
+      <p>Una hoja de cálculo simple (Google Sheets) con servicio y precio, que el agente puede leer para responder consultas de precio sin inventar un número.</p>
+    </div>
+  </div>
+
+  <div class="flow-step">
+    <div class="flow-num">4</div>
+    <div class="flow-body">
+      <h3>Salida: responder, o escalar</h3>
+      <p>Si el agente resolvió la consulta con las herramientas disponibles, responde directo por WhatsApp. Si la consulta requiere criterio (como el ruido raro después del service), el system prompt le indica marcarla para revisión humana en vez de arriesgar una respuesta técnica incorrecta — ver capítulo 06.</p>
+    </div>
+  </div>
+
+  <p>La diferencia con la automatización de la guía anterior es notoria: ahí el flujo solo clasificaba y disparaba una respuesta prearmada. Acá el agente busca el dato real (el turno exacto, el precio exacto) y arma una respuesta personalizada, sin que el dueño del taller escriba una palabra — salvo en los casos que de verdad necesitan su criterio.</p>
+
+  <div class="callout-warning">
+    <strong>Ojo:</strong> nunca le des al agente una herramienta que pueda causar daño si se equivoca (cobrar, cancelar un turno, borrar un dato) sin aprobación humana de por medio. Dale solo herramientas de <em>consulta</em> hasta que confíes en su criterio para las de <em>acción</em>.
+  </div>
+</div>
+
+<div class="chapter">
+  <h1>06 · Humano en el loop</h1>
+  <p class="lead">"Humano en el loop" (human in the loop) significa que, en los pasos que importan, una persona aprueba antes de que algo se ejecute de verdad — el agente propone, no decide solo.</p>
+
+  <div class="flow-step">
+    <div class="flow-num">1</div>
+    <div class="flow-body">
+      <h3>Definí qué necesita aprobación y qué no</h3>
+      <p>Consultar información (buscar un turno, un precio) generalmente no necesita aprobación. Ejecutar una acción con consecuencias (cancelar, cobrar, prometer algo en nombre del negocio) sí.</p>
+    </div>
+  </div>
+
+  <div class="flow-step">
+    <div class="flow-num">2</div>
+    <div class="flow-body">
+      <h3>Armá el paso de aprobación en n8n</h3>
+      <p>Un nodo que le manda al dueño del negocio (por WhatsApp, Slack o email) la respuesta que el agente propone, con un botón de aprobar/rechazar, antes de mandarla al cliente. n8n tiene soporte nativo para este patrón de "esperar aprobación humana" dentro de un flujo con agente.</p>
+    </div>
+  </div>
+
+  <div class="flow-step">
+    <div class="flow-num">3</div>
+    <div class="flow-body">
+      <h3>Medí cuánto interviene el agente sin ayuda</h3>
+      <p>Llevá un registro simple de cuántas consultas resuelve solo el agente versus cuántas escala. Es el número que le vas a mostrar a un cliente como resultado — y el que te dice si conviene darle más autonomía con el tiempo.</p>
+    </div>
+  </div>
+
+  <div class="box">
+    <span class="box-label">Referencia de mercado</span>
+    Casos documentados de agentes de atención al cliente bien implementados en negocios chicos muestran que absorben entre el 40% y el 70% de las consultas repetitivas sin intervención humana, liberando horas semanales del dueño o del equipo — el resto queda, a propósito, para que lo resuelva una persona.
+  </div>
+</div>
+
+<div class="chapter">
+  <h1>07 · Alternativas no-code</h1>
+  <p class="lead">Armar el agente en n8n te da control total y es la opción más barata a largo plazo, pero exige mantener el flujo vos. Si un cliente prefiere algo más manejado, hay plataformas pensadas exclusivamente para esto.</p>
+
+  <table class="usecases">
+    <tr><th>Plataforma</th><th>Cómo funciona</th><th>Ideal si...</th></tr>
+    <tr>
+      <td><strong>Lindy</strong></td>
+      <td>Se configura conversando con la propia IA en lenguaje natural, sin armar un diagrama de nodos. Pensada para no-técnicos.</td>
+      <td>El cliente quiere algo simple de mantener él mismo después, sin depender de vos para cada ajuste chico.</td>
+    </tr>
+    <tr>
+      <td><strong>Relevance AI</strong></td>
+      <td>Un punto medio entre no-code y control técnico: pensada para coordinar varios agentes relacionados entre sí (uno que califica un lead, otro que lo prioriza, otro que lo deriva).</td>
+      <td>El negocio necesita más de un agente trabajando en conjunto, no un caso aislado.</td>
+    </tr>
+    <tr>
+      <td><strong>n8n (AI Agent)</strong></td>
+      <td>La opción de esta guía: control total sobre el prompt, las herramientas y el flujo completo, con el mismo costo bajo que ya conocés de la automatización.</td>
+      <td>Vos vas a mantener el sistema, o el cliente ya tiene un plan de n8n de una automatización anterior.</td>
+    </tr>
+  </table>
+
+  <p>Para la mayoría de los casos que vas a encontrar en negocios chicos, n8n alcanza y te conviene más a vos como quien vende el servicio: no dependés de otra suscripción externa, y ya sabés moverte en la herramienta desde la guía anterior. Reservá Lindy o Relevance AI para cuando el cliente pida explícitamente algo que pueda tocar él mismo sin tu ayuda.</p>
+
+  <div class="callout-warning">
+    <strong>Ojo con los precios:</strong> estas plataformas no-code suelen cobrar por "créditos" o "acciones" ejecutadas, no por un precio fijo simple — un agente con mucho volumen de conversaciones puede salir bastante más caro de lo que parece en la landing. Revisá siempre el precio real con volumen antes de recomendarle una a un cliente (ver Recursos).
+  </div>
+</div>
+
+<div class="chapter">
+  <h1>08 · Cuánto cobrar por un agente</h1>
+  <p class="lead">Un agente resuelve más que una automatización simple, así que se cobra más — pero el criterio para el precio es el mismo: no le cobrás por "IA", le cobrás por el tiempo y el problema que le resolvés.</p>
+
+  <table class="usecases">
+    <tr><th>Servicio</th><th>Para qué negocio</th><th>Precio orientativo (ARS)</th></tr>
+    <tr>
+      <td>Agente de atención al cliente por WhatsApp (2-3 herramientas)</td>
+      <td>Talleres, peluquerías, consultorios, comercios con volumen de consultas repetidas</td>
+      <td>$150.000 - $280.000 (única vez) + mantenimiento mensual</td>
+    </tr>
+    <tr>
+      <td>Agente de calificación y seguimiento de leads</td>
+      <td>Inmobiliarias, estudios, negocios con venta consultiva</td>
+      <td>$180.000 - $350.000</td>
+    </tr>
+    <tr>
+      <td>Mantenimiento mensual (ajustes, monitoreo, nuevas herramientas)</td>
+      <td>Cualquiera de los anteriores</td>
+      <td>$25.000 - $60.000/mes</td>
+    </tr>
+  </table>
+
+  <p>El mantenimiento mensual no es opcional para vos como vendedor: un agente que nadie revisa tiende a degradarse (cambia una API, el negocio agrega un servicio nuevo que el agente no conoce, aparecen preguntas que no anticipaste). Ofrecelo siempre como parte del paquete, igual que ya lo veías en "Venta Consultiva para Developers y Freelancers".</p>
+</div>
+
+<div class="chapter">
+  <h1>09 · Errores comunes, límites y cómo seguir</h1>
+
+  <ul>
+    <li><strong>Demasiada autonomía, demasiado rápido.</strong> Empezá con pocas herramientas y aprobación humana en todo, y sacá restricciones de a poco a medida que confirmás que el agente responde bien.</li>
+    <li><strong>System prompt vago.</strong> "Ayudá al cliente" no alcanza — un agente necesita instrucciones tan específicas como le darías a un empleado nuevo el primer día.</li>
+    <li><strong>Sin límite de costo.</strong> Cada mensaje que procesa el agente consume API del modelo (y, en plataformas no-code, créditos). Configurá alertas de uso para que un pico inesperado no te sorprenda en la factura.</li>
+    <li><strong>Confundir "agente" con "infalible".</strong> Sigue siendo un modelo de lenguaje: puede entender mal una consulta ambigua. Por eso el capítulo 06 no es opcional.</li>
+  </ul>
+
+  <ul class="checklist">
+    <li>Entendés la diferencia real entre una automatización y un agente.</li>
+    <li>Sabés armar un agente en n8n con modelo, instrucciones, herramientas y memoria.</li>
+    <li>Aplicaste el patrón a un caso real de atención al cliente, con aprobación humana en lo sensible.</li>
+    <li>Conocés cuándo conviene una alternativa no-code en vez de n8n.</li>
+    <li>Tenés un precio de referencia para ofrecer esto como servicio.</li>
+  </ul>
+
+  <div class="box">
+    <span class="box-label">Siguiente paso</span>
+    De acá en más, la práctica es la que te va a dar criterio: probá el agente de este capítulo con datos reales de un negocio (el tuyo, o el de un cliente piloto) antes de ofrecerlo como servicio pago. Un agente que probaste vos mismo a fondo es un argumento de venta mucho más fuerte que uno armado en teoría.
+  </div>
+</div>
+
+<div class="chapter">
+  <h1>10 · Recursos</h1>
+  <p class="lead">Links directos a las herramientas mencionadas en esta guía.</p>
+  <ul>
+    <li><strong>n8n — nodo AI Agent</strong> — <a href="https://docs.n8n.io/integrations/builtin/cluster-nodes/root-nodes/n8n-nodes-langchain.agent/" target="_blank" rel="noopener noreferrer">docs.n8n.io — AI Agent node</a></li>
+    <li><strong>Lindy</strong> — <a href="https://www.lindy.ai" target="_blank" rel="noopener noreferrer">www.lindy.ai</a></li>
+    <li><strong>Relevance AI</strong> — <a href="https://relevanceai.com" target="_blank" rel="noopener noreferrer">relevanceai.com</a></li>
+    <li><strong>OpenAI</strong> — <a href="https://openai.com" target="_blank" rel="noopener noreferrer">openai.com</a></li>
+    <li><strong>Claude</strong> — <a href="https://claude.ai" target="_blank" rel="noopener noreferrer">claude.ai</a></li>
+    <li><strong>Model Context Protocol (MCP)</strong> — <a href="https://modelcontextprotocol.io" target="_blank" rel="noopener noreferrer">modelcontextprotocol.io</a></li>
+  </ul>
+</div>
+
+</body>
+</html>

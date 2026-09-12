@@ -43,10 +43,6 @@ Los fuentes (HTML) y el PDF final de cada curso se guardan en `/cursos/<categori
 - `cursos/ventas-freelance/software-medida-ia-negocios.html` + `.pdf`
 
 ## To Do
-- [ ] Documentar en MASTER.md ("Formato de los cursos") el pipeline automatizado
-  `publish-course.mjs` — hoy esa seccion solo describe el camino manual por el panel admin.
-  Desactualizacion menor, no urgente.
-
 - [ ] Rama de descuento del programa de afiliados (doble beneficio para el referido casual) — depende de agregar soporte de cupon en el checkout (`coupon_code` en la preferencia de Mercado Pago). La rama de comision cash ya esta hecha, ver Done (04/08/2026).
 - [ ] Dashboard "segui donde quedaste" — descartado por decision del fundador junto con el tracking de progreso en general (ver Done, 04/08/2026): la idea del negocio es que la persona avanza a su ritmo sin que la plataforma trackee nada.
 - [ ] Revision trimestral de precios (proceso de negocio, no requiere codigo — ver regla en MASTER.md)
@@ -81,6 +77,37 @@ Los fuentes (HTML) y el PDF final de cada curso se guardan en `/cursos/<categori
   en si (preapproval ad-hoc, webhook, boton de suscripcion) esta completa y probada con un pago real.
 
 ## Done
+- [x] Contenido del curso "Agentes de IA aplicados a un negocio real" (12/09/2026) — quinto
+  curso de `programacion_ia`, continuacion directa de "Automatización con IA: n8n y Make"
+  (retoma el cierre de esa guia, que ya invitaba a pasar de automatizaciones a agentes) y el
+  mismo hilo conductor del taller mecanico. Investigado con busquedas web actuales (no solo
+  training data, dado el salto de meses hasta hoy) sobre: diferencia agente vs automatizacion,
+  el nodo AI Agent de n8n (modelo, system prompt, tools, memoria — incluye RAG y MCP como
+  conceptos), plataformas no-code alternativas (Lindy, Relevance AI) con precios reales
+  relevados en 12/09/2026, y datos de adopcion real (agentes de atencion al cliente absorbiendo
+  40-70% de consultas repetitivas en negocios chicos). Contenido: 10 capitulos — que es un
+  agente, anatomia (modelo/instrucciones/herramientas/memoria), cuando conviene uno y cuando
+  no, armar el primero en n8n paso a paso, caso guiado de atencion al cliente por WhatsApp con
+  2 herramientas (calendario + precios), humano en el loop (aprobacion antes de ejecutar
+  acciones sensibles), alternativas no-code, tabla de precios orientativos (ARS) para vender
+  esto como servicio, errores comunes, y Recursos con links reales (docs de n8n AI Agent,
+  Lindy, Relevance AI, OpenAI, Claude, Model Context Protocol). $8.500 ARS (por encima de
+  automatizacion-n8n-make a $8.000, es el contenido mas avanzado de la categoria),
+  `access_type` both. Archivos: `cursos/programacion-ia/agentes-ia-negocio-real.html` +
+  `.json`.
+- [x] Publicado el curso "Agentes de IA aplicados a un negocio real" (12/09/2026) — corrido
+  por el fundador desde su maquina: `--dry-run` primero (preview revisado, sin problemas),
+  despues `node --env-file=.env scripts/publish-course.mjs programacion-ia
+  agentes-ia-negocio-real` de punta a punta. PDF generado, subido a Cloudinary como
+  `authenticated` (`courses/agentes-ia-negocio-real.pdf`), curso cargado en `courses` de
+  Supabase. Es el quinto curso de `programacion_ia` y el decimoprimero del catalogo. Pendiente
+  solo verificar visualmente en `/cursos/agentes-ia-negocio-real` y
+  `/dashboard/leer/agentes-ia-negocio-real`.
+- [x] Documentar `publish-course.mjs` en MASTER.md (12/09/2026) — la seccion "Formato de
+  los cursos" solo describia el camino manual por el panel admin; se agrego un punto
+  explicando el pipeline automatizado (archivos `.html`/`.json` de entrada, comando, que
+  hace de punta a punta, `--dry-run`/`--update`, y que el panel admin queda como camino
+  secundario para ediciones puntuales).
 - [x] Actualizar Next.js a 16.3.3 (12/09/2026) — el fundador corrio `npm install`,
   `npm audit fix` y `npm audit fix --force` desde su maquina. Quedo instalado
   `next@16.3.3` / `eslint-config-next@16.3.3` (confirmado en `node_modules/next/package.json`
